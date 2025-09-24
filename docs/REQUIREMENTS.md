@@ -76,3 +76,11 @@ The Following contains the Communication Diagram for a user who is registered an
 
 <img width="571" height="432" alt="CPS 490 - Communication Diagram drawio" src="https://github.com/user-attachments/assets/a1eb4b54-6a0a-424e-b73b-b61ad3e22953" />
 
+#### Activity Diagram - Adding Auction Item
+
+The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction.
+
+<img width="421" height="521" alt="CPS 490 - Activity Diagram drawio" src="https://github.com/user-attachments/assets/5ff66213-0941-48f6-ac83-f78b8c96edcf" />
+
+
+
