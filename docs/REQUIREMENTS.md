@@ -1,6 +1,6 @@
 # Requirements Document
 
-TODO: add overview here
+The **treasure-trove** project will implement a rudimentary proof-of-concept online marketplace platform for users to view, bid on and purchase various items up for auction.
 
 ## Use Cases
 
