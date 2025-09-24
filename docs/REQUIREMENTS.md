@@ -52,8 +52,20 @@ Logged in users will be able to view a history of all items they've purchased in
 
 ### Administrators
 
+There will be certain administrative privileges reserved for the site managers.
+
+The administrator role will be hardcoded for the managers' accounts. There is no way for a regular registered user to become an admin or access any admin tools.
+
 #### User Management
+
+Administrators will have the ability to view a list of all users in the platform and lock or remove any users who have been abusing the platform.
 
 #### Auction Management
 
+Administrators will have the ability to lock or remove any active auctions if they determine that an item is unsuitable for the platform or contains illegal or explicit content or products.
+
 #### Token Management
+
+Administrators will have the ability to gift more tokens to users. This will be done purely at the administrators' discretion.
+
+Administrators will not be able to take tokens away once they are given. If a user is abusing the platform then the best way to mitigate the problem will be to [lock the user](#user-management).
