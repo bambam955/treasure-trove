@@ -69,3 +69,10 @@ Administrators will have the ability to lock or remove any active auctions if th
 Administrators will have the ability to gift more tokens to users. This will be done purely at the administrators' discretion.
 
 Administrators will not be able to take tokens away once they are given. If a user is abusing the platform then the best way to mitigate the problem will be to [lock the user](#user-management).
+
+#### Sequence Diagram - Adding Auction Item
+
+The Following contains the Communication Diagram for a user who is registered and would like to add an item for auction. 
+
+<img width="571" height="432" alt="CPS 490 - Communication Diagram drawio" src="https://github.com/user-attachments/assets/a1eb4b54-6a0a-424e-b73b-b61ad3e22953" />
+
