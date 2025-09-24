@@ -22,13 +22,33 @@ This is the first action a registered user will take when visiting the platform.
 
 #### Add Auction Items
 
+Logged in users can add auction items for other platform users to view and bid on.
+
+The following information is required to add a new item:
+
+- Name of the item
+- Description of the item
+- Pictures of the item
+- Minimum bid (tokens)
+- Auction length (days)
+
 #### View All Auctions
+
+Logged in users will be able to view all auction items available for bid on the platform, including their own items. This view will only show the important details, such as the name and main picture of the item and the time remaining in the auction.
 
 #### View Auction Details
 
+Logged in users will be able to select a particular item up for auction to view more details about it. This view will show all details of the item (name, description, picture) in addition to all details of the auction, including time remaining, current bid, and bidding history.
+
+The bidding history shall update in real-time as other users bid on the item. It will display the amount, date, and user for each bid.
+
 #### Bid on Auctions
 
+Logged in users will be able to make bids on an auction from the item's details page. Bids will be made with a user's available tokens. If a user does not have enough tokens to make a bid then the bidding UX will be unavailable for that auction.
+
 #### View Purchased Items
+
+Logged in users will be able to view a history of all items they've purchased in the past. This view will include all of the details and bidding history for each item. It will function similarly to the [active auctions view](#view-all-auctions), except it will show purchased items instead of active auctions.
 
 ### Administrators
 
