@@ -78,7 +78,7 @@ The Following contains the Communication Diagram for a user who is registered an
 
 #### Activity Diagram - Adding Auction Item
 
-The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction.
+The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction. The Only way to proceed to posting your iten is to have all the required fields filled out. 
 
 <img width="421" height="521" alt="CPS 490 - Activity Diagram drawio" src="https://github.com/user-attachments/assets/5ff66213-0941-48f6-ac83-f78b8c96edcf" />
 
