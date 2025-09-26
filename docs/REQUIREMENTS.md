@@ -32,6 +32,25 @@ The following information is required to add a new item:
 - Minimum bid (tokens)
 - Auction length (days)
 
+Comunication Diagram - Adding Auction Item
+
+The Following contains the Communication Diagram for a user who is registered and would like to add an item for auction. 
+
+1. Within the Communication Diagram a user needs to be registered to access the site and add an item. Once a User is registered they will be able to login to the Auction site.
+2. Once the User logs into the auction site they will be authenticated and the auction site will display the full site.
+3. Now that the user is logged in with full access to the site they will have the option to add an item to publish onto the auction site.
+4. Once the Add item button is selected the site will display the required fields that need to be filled out before publishing the site.
+5. The User will now be able to add to the required fields (ie: Name of the item, Description of the item, Pictures of the item, Minimum bid (tokens), Auction length (days)) then post the item onto the site.
+6. The auction site will then process the enter fields and if they meet the requirements the site will post the item for auction. 
+
+![CPS 490 - Communication Diagram drawio](./_assets/communication-diagrams/add-auction-item-communication-diagram.png)
+
+Activity Diagram - Adding Auction Item
+
+The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction. The Only way to proceed to posting your iten is to have all the required fields filled out.
+
+![CPS 490 - Activity Diagram drawio](./_assets/activity-diagrams/add-auction-item-activity-diagram.png)
+
 #### View All Auctions
 
 Logged in users will be able to view all auction items available for bid on the platform, including their own items. This view will only show the important details, such as the name and main picture of the item and the time remaining in the auction.
@@ -69,16 +88,3 @@ Administrators will have the ability to lock or remove any active auctions if th
 Administrators will have the ability to gift more tokens to users. This will be done purely at the administrators' discretion.
 
 Administrators will not be able to take tokens away once they are given. If a user is abusing the platform then the best way to mitigate the problem will be to [lock the user](#user-management).
-
-#### Comunication Diagram - Adding Auction Item
-
-The Following contains the Communication Diagram for a user who is registered and would like to add an item for auction. 
-
-![CPS 490 - Communication Diagram drawio](./_assets/communication-diagrams/add-auction-item-communication-diagram.png)
-
-#### Activity Diagram - Adding Auction Item
-
-The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction. The Only way to proceed to posting your iten is to have all the required fields filled out. 
-
-![CPS 490 - Activity Diagram drawio](./_assets/activity-diagrams/add-auction-item-activity-diagram.png)
-
