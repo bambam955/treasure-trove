@@ -70,7 +70,7 @@ Administrators will have the ability to gift more tokens to users. This will be 
 
 Administrators will not be able to take tokens away once they are given. If a user is abusing the platform then the best way to mitigate the problem will be to [lock the user](#user-management).
 
-#### Sequence Diagram - Adding Auction Item
+#### Comunication Diagram - Adding Auction Item
 
 The Following contains the Communication Diagram for a user who is registered and would like to add an item for auction. 
 
