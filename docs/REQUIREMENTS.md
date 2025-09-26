@@ -25,7 +25,20 @@ This is the first action a registered user will take when visiting the platform.
 
 Users will be able to log out on the autction site homepage which will bring them back to the sign-in page.
 
+##### *Activity Diagram - Creating Account and Signing-in*
+
 ![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/Activity_Diagram_For_Account_Management_And_Viewing_Page.png)
+
+##### *Comunication Diagram - Creating Account and Signing-in*
+
+The Following contains the Communication Diagram for a person who needs to register account and be able to sign-in to the auction site.
+
+1. The user will input a username and password that has input validation fields.
+2. The site will log the username and password into the database and send the unregistered user to a sign-in page.
+3. The user is able to sign-in if their username and password is authenticated in the database.
+4. The site will display the home page once the user is authenticated.
+
+![Communication Diagram for Creating Account and Logging-In](./_assets/communication-diagrams/Communication_Diagram_For_Creating_Account_And_Logging_In.png)
 
 #### Add Auction Items
 
@@ -61,6 +74,19 @@ The Following contains the Activity Diagram for a user who is registered and wou
 #### View All Auctions
 
 Logged in users will be able to view all auction items available for bid on the platform, including their own items. This view will only show the important details, such as the name and main picture of the item and the time remaining in the auction.
+
+##### *Comunication Diagram - Viewing Auction Site*
+
+The Following contains the Communication Diagram for a user who is registered and is viewing the auction site. 
+
+1. Within the Communication Diagram a user is able to search for items and those items will display in real time based on the characters inputed to match that item.
+2. The site will display all those items that is searched for in the search bar and filter out the items that are not matching with what is being searched.
+3. The user is able to select their purchased items from their history of purchases.
+4. The site will bring the user to a sub-page that displays their purchases. Similar searching functionality will be available on this page as well.
+5. The user can logout of the homepage at the top right of the screen.
+6. The auction site will then process the request and send the user to the login screen.
+
+![Communication Diagram for Viewing All Auctions](./_assets/communication-diagrams/Communication_Diagram_For_Site_Display_And_Interaction.png)
 
 #### View Auction Details
 
