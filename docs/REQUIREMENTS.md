@@ -9,6 +9,7 @@ The **treasure-trove** project will implement a rudimentary proof-of-concept onl
 ### Unregistered Users
 
 The only action unregistered users (i.e. users without an active account) can take is to **create an account** in the system. Users are not able to interact with any of the core features of the platform until they have created an account.
+Unregistered users will have to create a username and then password that satisfies input validation to log their account into the database.
 
 ### Registered Users
 
@@ -18,7 +19,13 @@ Registered users can perform all of the following actions.
 
 #### Log in
 
-This is the first action a registered user will take when visiting the platform. In the same way that unregistered users cannot access any features of the site until they create an account and log in, users who already have an account still must log in before gaining access to the platform.
+This is the first action a registered user will take when visiting the platform. In the same way that unregistered users cannot access any features of the site until they create an account and log in, users who already have an account still must log in before gaining access to the platform. The user will have to input their correct account information to access the auction site or will be prompted to try again.
+
+#### Log out
+
+Users will be able to log out on the autction site homepage which will bring them back to the sign-in page.
+
+![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/Activity_Diagram_For_Account_Management_And_Viewing_Page.png)
 
 #### Add Auction Items
 
