@@ -32,7 +32,7 @@ The following information is required to add a new item:
 - Minimum bid (tokens)
 - Auction length (days)
 
-Comunication Diagram - Adding Auction Item
+##### *Comunication Diagram - Adding Auction Item*
 
 The Following contains the Communication Diagram for a user who is registered and would like to add an item for auction. 
 
@@ -45,7 +45,7 @@ The Following contains the Communication Diagram for a user who is registered an
 
 ![CPS 490 - Communication Diagram drawio](./_assets/communication-diagrams/add-auction-item-communication-diagram.png)
 
-Activity Diagram - Adding Auction Item
+##### *Activity Diagram - Adding Auction Item*
 
 The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction. The Only way to proceed to posting your iten is to have all the required fields filled out.
 
