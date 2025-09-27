@@ -90,9 +90,21 @@ Logged in users will be able to select a particular item up for auction to view 
 
 The bidding history shall update in real-time as other users bid on the item. It will display the amount, date, and user for each bid.
 
+The activity and communication diagrams for this use case are documented in the [bidding](#bid-on-auctions) section.
+
 #### Bid on Auctions
 
 Logged in users will be able to make bids on an auction from the item's details page. Bids will be made with a user's available tokens. If a user does not have enough tokens to make a bid then the bidding UX will be unavailable for that auction.
+
+##### *Activity Diagram - View and Bid on Auctions*
+
+The Following contains the Activity Diagram for a user who is registered and would like to view an auction and make a bid on it. When the user attempts to make a bid, the system verifies a number of things:
+
+- Auction has not completed yet (i.e. the countdown has not run out yet)
+- User has enough tokens to make a bid larger than the most recent bid
+- User's bid is at least as large as the minimum bid, if there are no prior bids
+
+![activity diagram describing the flow of interactions for viewing and bidding on auctions](./_assets//activity-diagrams/view-and-bid-on-auction-activity-diagram.png)
 
 #### View Purchased Items
 
