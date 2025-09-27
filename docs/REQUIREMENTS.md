@@ -6,6 +6,8 @@ The **treasure-trove** project will implement a rudimentary proof-of-concept onl
 
 The following contains a diagram of the overall use cases for the system. These are documented in further detail below.
 
+NOTE: the admin use cases have not been fully fleshed out yet, and they are not technically MVP requirements; however, we do want to make sure that platform admins have the ability to perform the actions shown in the diagram, even if it's not a real platform feature. In other words, we would like to integrate these features into the site, but it's possible we just perform the tasks via direct edits of the database.
+
 ![diagram of the use cases for various roles in the marketplace system](./_assets/use-cases-overall-diagram.png)
 
 ### Unregistered Users
