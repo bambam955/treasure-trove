@@ -4,7 +4,7 @@ The **treasure-trove** project will implement a rudimentary proof-of-concept onl
 
 ## Use Cases
 
-![diagram of the use cases for various roles in the marketplace system](./_assets/use-case-diagram.png)
+![diagram of the use cases for various roles in the marketplace system](./_assets/use-cases-overall-diagram.png)
 
 ### Unregistered Users
 
@@ -23,7 +23,7 @@ This is the first action a registered user will take when visiting the platform.
 
 ##### *Activity Diagram - Creating Account and Signing-in*
 
-![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/Activity_Diagram_For_Account_Management_And_Viewing_Page.png)
+![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/account-management-and-auctions-list-view-page-activity-diagram.png)
 
 ##### *Comunication Diagram - Creating Account and Signing-in*
 
@@ -34,7 +34,7 @@ The Following contains the Communication Diagram for a person who needs to regis
 3. The user is able to sign-in if their username and password is authenticated in the database.
 4. The site will display the home page once the user is authenticated.
 
-![Communication Diagram for Creating Account and Logging-In](./_assets/communication-diagrams/Communication_Diagram_For_Creating_Account_And_Logging_In.png)
+![Communication Diagram for Creating Account and Logging-In](./_assets/communication-diagrams/create-account-and-login-communication-diagram.png)
 
 #### Add Auction Items
 
@@ -82,7 +82,7 @@ The Following contains the Communication Diagram for a user who is registered an
 5. The user can logout of the homepage at the top right of the screen.
 6. The auction site will then process the request and send the user to the login screen.
 
-![Communication Diagram for Viewing All Auctions](./_assets/communication-diagrams/Communication_Diagram_For_Site_Display_And_Interaction.png)
+![Communication Diagram for Viewing All Auctions](./_assets/communication-diagrams/site-display-interaction-communication-diagram.png)
 
 #### View Auction Details
 
