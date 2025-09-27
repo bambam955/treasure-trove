@@ -23,7 +23,7 @@ This is the first action a registered user will take when visiting the platform.
 
 ##### *Activity Diagram - Creating Account and Signing-in*
 
-![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/account-management-and-auctions-list-view-page-activity-diagram.png)
+![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/account-management-and-auctions-list-view-page.png)
 
 ##### *Comunication Diagram - Creating Account and Signing-in*
 
@@ -34,7 +34,7 @@ The Following contains the Communication Diagram for a person who needs to regis
 3. The user is able to sign-in if their username and password is authenticated in the database.
 4. The site will display the home page once the user is authenticated.
 
-![Communication Diagram for Creating Account and Logging-In](./_assets/communication-diagrams/create-account-and-login-communication-diagram.png)
+![Communication Diagram for Creating Account and Logging-In](./_assets/communication-diagrams/create-account-and-login.png)
 
 #### Add Auction Items
 
@@ -59,13 +59,13 @@ The Following contains the Communication Diagram for a user who is registered an
 5. The User will now be able to add to the required fields (ie: Name of the item, Description of the item, Pictures of the item, Minimum bid (tokens), Auction length (days)) then post the item onto the site.
 6. The auction site will then process the enter fields and if they meet the requirements the site will post the item for auction. 
 
-![CPS 490 - Communication Diagram drawio](./_assets/communication-diagrams/add-auction-item-communication-diagram.png)
+![CPS 490 - Communication Diagram drawio](./_assets/communication-diagrams/add-auction-item.png)
 
 ##### *Activity Diagram - Adding Auction Item*
 
 The Following contains the Activity Diagram for a user who is registered and would like to add an item for auction. The Only way to proceed to posting your item is to have all the required fields filled out.
 
-![CPS 490 - Activity Diagram drawio](./_assets/activity-diagrams/add-auction-item-activity-diagram.png)
+![CPS 490 - Activity Diagram drawio](./_assets/activity-diagrams/add-auction-item.png)
 
 #### View All Auctions
 
@@ -82,7 +82,7 @@ The Following contains the Communication Diagram for a user who is registered an
 5. The user can logout of the homepage at the top right of the screen.
 6. The auction site will then process the request and send the user to the login screen.
 
-![Communication Diagram for Viewing All Auctions](./_assets/communication-diagrams/site-display-interaction-communication-diagram.png)
+![Communication Diagram for Viewing All Auctions](./_assets/communication-diagrams/site-display-interaction.png)
 
 #### View Auction Details
 
@@ -104,7 +104,7 @@ The Following contains the Activity Diagram for a user who is registered and wou
 - User has enough tokens to make a bid larger than the most recent bid
 - User's bid is at least as large as the minimum bid, if there are no prior bids
 
-![activity diagram describing the flow of interactions for viewing and bidding on auctions](./_assets//activity-diagrams/view-and-bid-on-auction-activity-diagram.png)
+![activity diagram describing the flow of interactions for viewing and bidding on auctions](./_assets//activity-diagrams/view-and-bid-on-auction.png)
 
 #### View Purchased Items
 
