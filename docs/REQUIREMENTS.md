@@ -21,10 +21,6 @@ Registered users can perform all of the following actions.
 
 This is the first action a registered user will take when visiting the platform. In the same way that unregistered users cannot access any features of the site until they create an account and log in, users who already have an account still must log in before gaining access to the platform. The user will have to input their correct account information to access the auction site or will be prompted to try again.
 
-#### Log out
-
-Users will be able to log out on the autction site homepage which will bring them back to the sign-in page.
-
 ##### *Activity Diagram - Creating Account and Signing-in*
 
 ![Activity diagram for creating account and signing-in to view the Auction site.](./_assets/activity-diagrams/Activity_Diagram_For_Account_Management_And_Viewing_Page.png)
