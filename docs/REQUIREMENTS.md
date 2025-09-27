@@ -145,4 +145,4 @@ The Activity Diagram for this use case is documented [here](#creating-account-an
 
 ##### *View Purchased Items: Communication Diagram*
 
-<!-- TODO(#14) -->
+The Communication Diagram for this use case is documented [here](#view-all-auctions-communication-diagram).
