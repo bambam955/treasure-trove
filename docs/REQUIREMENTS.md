@@ -104,7 +104,13 @@ The Following contains the Activity Diagram for a user who is registered and wou
 - User has enough tokens to make a bid larger than the most recent bid
 - User's bid is at least as large as the minimum bid, if there are no prior bids
 
-![activity diagram describing the flow of interactions for viewing and bidding on auctions](./_assets//activity-diagrams/view-and-bid-on-auction.png)
+![activity diagram describing the flow of interactions for viewing and bidding on auctions](./_assets/activity-diagrams/view-and-bid-on-auction.png)
+
+##### *Communication Diagram - View and Bid on Auctions*
+
+The following contains a communication diagram for the interactions between a user and the platform as a user views and bids on an auction item.
+
+![communication diagram describing flow of interactions for viewing and bidding on auctions](./_assets/communication-diagrams/view-and-bid-on-auction.png)
 
 #### View Purchased Items
 
