@@ -3,12 +3,15 @@ import { useAuth } from '../contexts/AuthContext'
 import { jwtDecode } from 'jwt-decode'
 import { User } from './User'
 
+// The backend encodes the user ID in the JWT token.
 interface JwtPayload {
   sub: string
 }
 
 export function Header() {
   const [token, setToken] = useAuth()
+
+  // If a user is logged in then display their username and a Logout button.
   if (token) {
     const { sub } = jwtDecode<JwtPayload>(token)
     return (
@@ -19,6 +22,8 @@ export function Header() {
       </div>
     )
   }
+
+  // Otherwise, show signup and login buttons.
   return (
     <div>
       <Link to='/login'>Login</Link> | <Link to='/signup'>Sign Up</Link>

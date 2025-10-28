@@ -1,19 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
-import { getUserInfo } from '../api/users'
+import UserApi, { UserInfo } from '../api/users'
 
 interface UserProps {
   id: string
 }
 
-interface UserInfo {
-  username?: string
-}
-
 export function User({ id }: UserProps) {
   const userInfoQuery = useQuery<UserInfo>({
     queryKey: ['users', id],
-    queryFn: () => getUserInfo(id),
+    queryFn: () => UserApi.getUserInfo(id),
   })
-  const userInfo = userInfoQuery.data ?? {}
-  return <strong>{userInfo?.username ?? id}</strong>
+
+  // If for some reason we couldn't fetch the user info, default to the user ID as the username.
+  const userInfo = userInfoQuery.data ?? { username: id }
+
+  return <strong>{userInfo.username}</strong>
 }

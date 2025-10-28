@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../api/users'
+import UserApi from '../api/users'
 import { useAuth } from '../contexts/AuthContext'
 
 export function Login() {
@@ -10,13 +10,16 @@ export function Login() {
   const navigate = useNavigate()
   const [, setToken] = useAuth()
 
+  // When a user clicks the "Signup" button then we will send an API request
+  // to attempt to register the new account.
   const loginMutation = useMutation({
-    mutationFn: () => login({ username, password }),
-    onSuccess: (data) => {
+    mutationFn: () => UserApi.login({ username, password }),
+    onSuccess: (data: { token: string }) => {
       setToken(data.token)
       navigate('/')
     },
-    onError: () => alert('failed to log in!'),
+    // make it very obvious something went wrong by showing a browser alert.
+    onError: () => alert('Failed to log in!'),
   })
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

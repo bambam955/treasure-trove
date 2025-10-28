@@ -5,6 +5,7 @@ import { Signup } from './pages/Signup'
 import { AuthContextProvider } from './contexts/AuthContext'
 import { Login } from './pages/Login'
 
+// Define the routes to different pages of the application.
 const router = createBrowserRouter([
   {
     path: '/',
