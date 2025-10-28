@@ -3,7 +3,6 @@ import express, {
   type Response,
   type NextFunction,
 } from 'express';
-import { postsRoutes } from './routes/posts.ts';
 import { userRoutes } from './routes/users.ts';
 import bodyParser from 'body-parser';
 
@@ -22,7 +21,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-postsRoutes(app);
 userRoutes(app);
 
 app.get('/', (_req: Request, res: Response) => {
