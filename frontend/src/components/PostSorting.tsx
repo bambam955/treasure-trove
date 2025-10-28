@@ -1,4 +1,10 @@
-import PropTypes from 'prop-types'
+interface PostSortingProps {
+  fields?: string[]
+  value: string
+  onChange: (value: string) => void
+  orderValue: string
+  onOrderChange: (value: string) => void
+}
 
 export function PostSorting({
   fields = [],
@@ -6,7 +12,7 @@ export function PostSorting({
   onChange,
   orderValue,
   onOrderChange,
-}) {
+}: PostSortingProps) {
   return (
     <div>
       <label htmlFor='sortBy'>Sort By: </label>
@@ -35,12 +41,4 @@ export function PostSorting({
       </select>
     </div>
   )
-}
-
-PostSorting.propTypes = {
-  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  orderValue: PropTypes.string.isRequired,
-  onOrderChange: PropTypes.func.isRequired,
 }

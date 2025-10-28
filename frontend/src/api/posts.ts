@@ -1,4 +1,4 @@
-export const getPosts = async (queryParams) => {
+export const getPosts = async (queryParams: Record<string, string>) => {
   try {
     const url = new URL('posts', import.meta.env.VITE_BACKEND_URL)
 
@@ -13,7 +13,10 @@ export const getPosts = async (queryParams) => {
   }
 }
 
-export const createPost = async (token, post) => {
+export const createPost = async (
+  token: string,
+  post: { title: string; contents: string },
+) => {
   try {
     const url = new URL('posts', import.meta.env.VITE_BACKEND_URL)
     const res = await fetch(url.toString(), {

@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
-import { login } from '../api/users.js'
-import { useAuth } from '../contexts/AuthContext.jsx'
+import { login } from '../api/users'
+import { useAuth } from '../contexts/AuthContext'
 
 export function Login() {
   const [username, setUsername] = useState('')
@@ -19,7 +19,7 @@ export function Login() {
     onError: () => alert('failed to log in!'),
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     loginMutation.mutate()
   }

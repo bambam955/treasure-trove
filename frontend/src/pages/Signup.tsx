@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
-import { signup } from '../api/users.js'
+import { signup } from '../api/users'
 
 export function Signup() {
   const [username, setUsername] = useState('')
@@ -14,7 +14,7 @@ export function Signup() {
     onError: () => alert('failed to sign up!'),
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     signupMutation.mutate()
   }

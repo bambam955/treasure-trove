@@ -1,12 +1,16 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext.jsx'
+import { useAuth } from '../contexts/AuthContext'
 import { jwtDecode } from 'jwt-decode'
-import { User } from './User.jsx'
+import { User } from './User'
+
+interface JwtPayload {
+  sub: string
+}
 
 export function Header() {
   const [token, setToken] = useAuth()
   if (token) {
-    const { sub } = jwtDecode(token)
+    const { sub } = jwtDecode<JwtPayload>(token)
     return (
       <div>
         Logged in as <User id={sub} />

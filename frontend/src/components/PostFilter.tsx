@@ -1,6 +1,10 @@
-import PropTypes from 'prop-types'
+interface PostFilterProps {
+  field: string
+  value: string
+  onChange: (value: string) => void
+}
 
-export function PostFilter({ field, value, onChange }) {
+export function PostFilter({ field, value, onChange }: PostFilterProps) {
   return (
     <div>
       <label htmlFor={`filter-${field}`}>{field}: </label>
@@ -13,10 +17,4 @@ export function PostFilter({ field, value, onChange }) {
       />
     </div>
   )
-}
-
-PostFilter.propTypes = {
-  field: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
 }

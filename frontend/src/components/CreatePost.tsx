@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { createPost } from '../api/posts'
-import { useAuth } from '../contexts/AuthContext.jsx'
+import { useAuth } from '../contexts/AuthContext'
 
 export function CreatePost() {
   const [token] = useAuth()
@@ -9,11 +9,11 @@ export function CreatePost() {
   const [contents, setContents] = useState('')
   const queryClient = useQueryClient()
   const createPostMutation = useMutation({
-    mutationFn: () => createPost(token, { title, contents }),
+    mutationFn: () => createPost(token!, { title, contents }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['posts'] }),
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('Submitting:', { title, contents })
     createPostMutation.mutate()
