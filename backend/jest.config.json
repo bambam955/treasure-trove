@@ -1,4 +1,5 @@
 {
+  "preset": "ts-jest",
   "testEnvironment": "node",
   "globalSetup": "<rootDir>/src/test/globalSetup.js",
   "globalTeardown": "<rootDir>/src/test/globalTeardown.js",

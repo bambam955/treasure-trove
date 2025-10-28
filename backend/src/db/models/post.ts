@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose';
 
 const postSchema = new Schema(
   {
@@ -8,6 +8,6 @@ const postSchema = new Schema(
     tags: [String],
   },
   { timestamps: true },
-)
+);
 
-export const Post = mongoose.model('post', postSchema)
+export const Post = mongoose.model('post', postSchema);
