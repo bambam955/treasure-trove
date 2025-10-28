@@ -1,14 +1,15 @@
 import type { Application, Request, Response } from 'express';
-import { createUser, getUserInfoById, loginUser } from '../services/users.ts';
+import UsersService from '../services/users.ts';
 
-export function userRoutes(app: Application) {
+export function setupUserEndpoints(app: Application) {
   app.get('/api/v1/users/:id', async (req: Request, res: Response) => {
-    const userInfo = await getUserInfoById(req.params.id);
+    const userInfo = await UsersService.getUserInfoById(req.params.id);
     return res.status(200).send(userInfo);
   });
+
   app.post('/api/v1/user/login', async (req: Request, res: Response) => {
     try {
-      const token = await loginUser(req.body);
+      const token = await UsersService.login(req.body);
       return res.status(200).send({ token });
     } catch {
       return res.status(400).send({
@@ -16,9 +17,11 @@ export function userRoutes(app: Application) {
       });
     }
   });
+
+  // Register a new user account.
   app.post('/api/v1/user/signup', async (req: Request, res: Response) => {
     try {
-      const user = await createUser(req.body);
+      const user = await UsersService.register(req.body);
       return res.status(201).json({ username: user.username });
     } catch (err) {
       console.error('error adding user:', err);
