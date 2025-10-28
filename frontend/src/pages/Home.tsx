@@ -1,4 +1,4 @@
-import { Header } from '../components/Header'
+import { Header } from '../components/Header';
 
 // TODO: make it so only authorized users can see this page
 export function Home() {
@@ -10,5 +10,5 @@ export function Home() {
       <br />
       <p>This content can only be accessed by authorized users!!</p>
     </div>
-  )
+  );
 }

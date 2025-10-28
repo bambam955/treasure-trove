@@ -1,31 +1,33 @@
-import { useState, type FormEvent } from 'react'
-import { useMutation } from '@tanstack/react-query'
-import { Link, useNavigate } from 'react-router-dom'
-import UserApi from '../api/users'
-import { useAuth } from '../contexts/AuthContext'
+import { useState, type FormEvent } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useNavigate } from 'react-router-dom';
+import UserApi, { AuthInfo } from '../api/users';
+import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
-  const [, setToken] = useAuth()
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [, setToken] = useAuth();
 
-  // When a user clicks the "Signup" button then we will send an API request
+  // When a user clicks the "Login" button then we will send an API request
   // to attempt to register the new account.
   const loginMutation = useMutation({
     mutationFn: () => UserApi.login({ username, password }),
-    onSuccess: (data: { token: string }) => {
-      setToken(data.token)
-      navigate('/')
+    // If the login succeeds, the JWT token from the backend will be contained in the
+    // response payload, so we can save it for the user to do other things in the app.
+    onSuccess: (data: AuthInfo) => {
+      setToken(data.token);
+      navigate('/');
     },
     // make it very obvious something went wrong by showing a browser alert.
     onError: () => alert('Failed to log in!'),
-  })
+  });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    loginMutation.mutate()
-  }
+    e.preventDefault();
+    loginMutation.mutate();
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -60,5 +62,5 @@ export function Login() {
         disabled={!username || !password || loginMutation.isPending}
       />
     </form>
-  )
+  );
 }

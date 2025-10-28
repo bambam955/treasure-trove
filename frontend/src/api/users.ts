@@ -1,12 +1,17 @@
 // This interface defines the credentials a user should sign up/log in with.
 interface UserCredentials {
-  username: string
-  password: string
+  username: string;
+  password: string;
+}
+
+// This interface defines the information that will be returned from a successful login attempt.
+export interface AuthInfo {
+  token: string;
 }
 
 // This interface defines what information about a user can be retrieved from the backend.
 export interface UserInfo {
-  username: string
+  username: string;
 }
 
 // This class defines frontend API methods for the backend database.
@@ -22,9 +27,9 @@ class UserApi {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
-    })
-    if (!res.ok) throw new Error('failed to sign up')
-    return await res.json()
+    });
+    if (!res.ok) throw new Error('failed to sign up');
+    return await res.json();
   }
 
   // Log in to an existing user account with a username and password.
@@ -32,15 +37,15 @@ class UserApi {
   static async login({
     username,
     password,
-  }: UserCredentials): Promise<{ token: string }> {
+  }: UserCredentials): Promise<AuthInfo> {
     // Send request to log in.
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}user/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
-    })
-    if (!res.ok) throw new Error('failed to log in')
-    return await res.json()
+    });
+    if (!res.ok) throw new Error('failed to log in');
+    return await res.json();
   }
 
   // Retrieve information about a given user.
@@ -49,9 +54,10 @@ class UserApi {
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}users/${id}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-    })
-    return await res.json()
+    });
+    if (!res.ok) throw new Error('failed to fetch user info');
+    return await res.json();
   }
 }
 
-export default UserApi
+export default UserApi;
