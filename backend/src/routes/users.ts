@@ -2,11 +2,7 @@ import type { Application, Request, Response } from 'express';
 import UsersService from '../services/users.ts';
 
 export function setupUserEndpoints(app: Application) {
-  app.get('/api/v1/users/:id', async (req: Request, res: Response) => {
-    const userInfo = await UsersService.getUserInfoById(req.params.id);
-    return res.status(200).send(userInfo);
-  });
-
+  // Endpoint for user login.
   app.post('/api/v1/user/login', async (req: Request, res: Response) => {
     try {
       const token = await UsersService.login(req.body);
@@ -18,10 +14,11 @@ export function setupUserEndpoints(app: Application) {
     }
   });
 
-  // Register a new user account.
+  // Endpoint for registering a new account.
   app.post('/api/v1/user/signup', async (req: Request, res: Response) => {
     try {
-      const user = await UsersService.register(req.body);
+      const user = await UsersService.signup(req.body);
+      // Use 201 when a POST request successfully creates a new resource on the server.
       return res.status(201).json({ username: user.username });
     } catch (err) {
       console.error('error adding user:', err);
@@ -29,5 +26,11 @@ export function setupUserEndpoints(app: Application) {
         error: 'failed to create the user, does the username already exist?',
       });
     }
+  });
+
+  // Endpoint for retrieving user information.
+  app.get('/api/v1/users/:id', async (req: Request, res: Response) => {
+    const userInfo = await UsersService.getUserInfoById(req.params.id);
+    return res.status(200).send(userInfo);
   });
 }
