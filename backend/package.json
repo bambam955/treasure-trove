@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev": "nodemon --watch src --ext ts --exec tsx src/index.ts",
     "start": "node src/index.ts",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
@@ -26,6 +26,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongodb-memory-server": "^1.8.0",
     "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.9.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "eslint": "^8.54.0",
@@ -33,9 +34,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
     "mongodb-memory-server": "^9.1.1",
-    "nodemon": "^3.0.2",
+    "nodemon": "^3.1.10",
     "prettier": "^3.1.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "lint-staged": {

@@ -7,8 +7,10 @@ export function Home() {
   // Show some very basic content just to verify that the login is working.
   // This will be revised in the future.
   return (
+  
     <div style={{ padding: 8 }}>
       <Header />
+
       <br />
       <hr />
       <br />
