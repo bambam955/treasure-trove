@@ -1,4 +1,8 @@
 {
   "watch": ["./src", ".env", "package-lock.json"],
-  "ext": "ts"
+  "ext": "ts",
+  "execMap": {
+    "ts": "tsx"
+  },
+  "script": "./src/index.ts"
 }

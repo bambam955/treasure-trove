@@ -25,37 +25,63 @@ export function Signup() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Link to='/'>Back to main page</Link>
-      <hr />
-      <br />
-      <div>
-        <label htmlFor='create-username'> Username: </label>
+    <div
+      className='d-flex justify-content-center align-items-center vh-100 bg-body-tertiary'
+      data-bs-theme='dark'
+    >
+      <form
+        onSubmit={handleSubmit}
+        className='p-4 rounded shadow bg-dark text-light'
+        style={{ width: '22rem' }}
+      >
+        <div className='text-center mb-3'>
+          <Link to='/' className='text-decoration-none text-primary'>
+            Back to main page
+          </Link>
+        </div>
+        <hr />
+        <br />
+        <div className='mb-3'>
+          <label
+            htmlFor='signup-username'
+            className='form-label fw-semibold text-pink'
+          >
+            Username:
+          </label>
+          <input
+            type='text'
+            name='create-username'
+            id='create-username'
+            className='form-control'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <br />
+        <div className='mb-3'>
+          <label
+            htmlFor='signup-password'
+            className='form-label fw-semibold text-pink'
+          >
+            Password:
+          </label>
+          <input
+            type='text'
+            name='create-password'
+            id='create-password'
+            className='form-control'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <br />
         <input
-          type='text'
-          name='create-username'
-          id='create-username'
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type='submit'
+          value={signupMutation.isPending ? 'Signing up...' : 'Sign up'}
+          disabled={!username || !password || signupMutation.isPending}
+          className='btn btn-primary w-100'
         />
-      </div>
-      <br />
-      <div>
-        <label htmlFor='create-password'> Password: </label>
-        <input
-          type='text'
-          name='create-password'
-          id='create-password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <br />
-      <input
-        type='submit'
-        value={signupMutation.isPending ? 'Signing up...' : 'Sign up'}
-        disabled={!username || !password || signupMutation.isPending}
-      />
-    </form>
+      </form>
+    </div>
   );
 }
