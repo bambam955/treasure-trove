@@ -9,6 +9,7 @@ export function Login() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [, setToken] = useAuth();
+  const [passwordError, setPasswordError] = useState(''); // creating state for password error
 
   // When a user clicks the "Login" button then we will send an API request
   // to attempt to register the new account.
@@ -23,6 +24,24 @@ export function Login() {
     // make it very obvious something went wrong by showing a browser alert.
     onError: () => alert('Failed to log in!'),
   });
+
+  const validatePassword = (value: string): boolean => {
+    const minLength = value.length >= 7; // checks for minimum length of 7
+    const hasNumber = /\d/.test(value); // checks for at least one digit (\d)
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // checks for at least one special character
+    if (!minLength) {
+      setPasswordError('Password must be at least 7 characters long.');
+      return false;
+    } else if (!hasNumber) {
+      setPasswordError('Password must contain at least one number.');
+      return false;
+    } else if (!hasSpecialChar) {
+      setPasswordError('Password must contain at least one special character.');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,13 +90,19 @@ export function Login() {
             Password:
           </label>
           <input
-            type='text'
+            type='password'
             name='login-password'
             id='login-password'
             className='form-control'
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePassword(e.target.value); // validate password on change
+            }}
           />
+          {passwordError && (
+            <p style={{ color: 'red', fontSize: '0.9rem' }}>{passwordError}</p> // display password error message
+          )}
         </div>
         <br />
         <input

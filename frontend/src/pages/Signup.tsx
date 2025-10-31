@@ -7,6 +7,7 @@ export function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [passwordError, setPasswordError] = useState(''); // creating state for password error
 
   // When a user clicks the "Signup" button then we will send an API request
   // to attempt to register the new account.
@@ -19,8 +20,33 @@ export function Signup() {
     onError: () => alert('Failed to sign up!'),
   });
 
+  const validatePassword = (value: string): boolean => {
+    const minLength = value.length >= 7; // checks for minimum length of 7
+    const hasNumber = /\d/.test(value); // checks for at least one digit (\d)
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // checks for at least one special character
+    if (!minLength) {
+      setPasswordError('Password must be at least 7 characters long.');
+      return false;
+    } else if (!hasNumber) {
+      setPasswordError('Password must contain at least one number.');
+      return false;
+    } else if (!hasSpecialChar) {
+      setPasswordError('Password must contain at least one special character.');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validatePassword(password)) {
+      alert(
+        'Password must be at least 7 characters long and contain at least one number and one special character.',
+      );
+      return;
+    }
     signupMutation.mutate();
   };
 
@@ -66,13 +92,19 @@ export function Signup() {
             Password:
           </label>
           <input
-            type='text'
+            type='password'
             name='create-password'
             id='create-password'
             className='form-control'
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePassword(e.target.value); // validate password on change
+            }}
           />
+          {passwordError && (
+            <p style={{ color: 'red', fontSize: '0.9rem' }}>{passwordError}</p> // display password error message
+          )}
         </div>
         <br />
         <input
