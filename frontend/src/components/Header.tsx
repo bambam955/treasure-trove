@@ -16,34 +16,34 @@ export function Header() {
   if (token) {
     const { sub } = jwtDecode<JwtPayload>(token);
     return (
-      <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-        <div className="container-fluid justify-content-end align-items-center">
-          <span className="navbar-text text-light me-3">
+      <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='dark'>
+        <div className='container-fluid justify-content-end align-items-center'>
+          <span className='navbar-text text-light me-3'>
             Logged in as <User id={sub} />
           </span>
           <button
-        className="btn btn-outline-light btn-sm"
-        onClick={() => setToken(null)}
-      >
-        Logout
-      </button>
-    </div>
-  </nav>
-);
-}
+            className='btn btn-outline-light btn-sm'
+            onClick={() => setToken(null)}
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+    );
+  }
 
   // Otherwise, show signup and login buttons.
   return (
-    <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="white">
-      <div className="container-fluid justify-content-end">
-        <ul className="navbar-nav">
-          <li className="nav-item">
-            <Link className="nav-link text-light" to="/login">
+    <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='white'>
+      <div className='container-fluid justify-content-end'>
+        <ul className='navbar-nav'>
+          <li className='nav-item'>
+            <Link className='nav-link text-light' to='/login'>
               Login
             </Link>
           </li>
-          <li className="nav-item">
-            <Link className="nav-link text-light" to="/signup">
+          <li className='nav-item'>
+            <Link className='nav-link text-light' to='/signup'>
               Sign Up
             </Link>
           </li>

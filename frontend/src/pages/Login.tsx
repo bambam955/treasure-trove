@@ -30,54 +30,63 @@ export function Login() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-body-tertiary" data-bs-theme="white" >
+    <div
+      className='d-flex justify-content-center align-items-center vh-100 bg-body-tertiary'
+      data-bs-theme='white'
+    >
       <form
         onSubmit={handleSubmit}
-        className="p-4 rounded shadow bg-dark text-light"
+        className='p-4 rounded shadow bg-dark text-light'
         style={{ width: '22rem' }}
       >
-      <div className="text-center mb-3">
-       <Link to="/" className="text-decoration-none text-primary">
-          Back to main page
-        </Link>
-      </div>
-      <hr />
-      <br />
-      <div className="mb-3">
-          <label htmlFor="login-username" className="form-label fw-semibold text-pink">
+        <div className='text-center mb-3'>
+          <Link to='/' className='text-decoration-none text-primary'>
+            Back to main page
+          </Link>
+        </div>
+        <hr />
+        <br />
+        <div className='mb-3'>
+          <label
+            htmlFor='login-username'
+            className='form-label fw-semibold text-pink'
+          >
             Username:
           </label>
           <input
-            type="text"
-            name="login-username"
-            id="login-username"
-            className="form-control"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </div>
-      <br />
-      <div className="mb-3">
-          <label htmlFor="login-password" className="form-label fw-semibold text-pink">
+            type='text'
+            name='login-username'
+            id='login-username'
+            className='form-control'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <br />
+        <div className='mb-3'>
+          <label
+            htmlFor='login-password'
+            className='form-label fw-semibold text-pink'
+          >
             Password:
           </label>
           <input
-            type="text"
-            name="login-password"
-            id="login-password"
-            className="form-control"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+            type='text'
+            name='login-password'
+            id='login-password'
+            className='form-control'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <br />
+        <input
+          type='submit'
+          value={loginMutation.isPending ? 'Logging in...' : 'Login'}
+          disabled={!username || !password || loginMutation.isPending}
+          className='btn btn-primary w-100'
         />
-      </div>
-      <br />
-      <input
-        type='submit'
-        value={loginMutation.isPending ? 'Logging in...' : 'Login'}
-        disabled={!username || !password || loginMutation.isPending}
-        className="btn btn-primary w-100"
-      />
-    </form>
+      </form>
     </div>
   );
 }
