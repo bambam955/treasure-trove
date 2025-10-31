@@ -27,7 +27,7 @@ export function Signup() {
   return (
     <div
       className='d-flex justify-content-center align-items-center vh-100 bg-body-tertiary'
-      data-bs-theme='white'
+      data-bs-theme='dark'
     >
       <form
         onSubmit={handleSubmit}
