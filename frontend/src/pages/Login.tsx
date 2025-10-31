@@ -45,13 +45,6 @@ export function Login() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!validatePassword(password)) {
-      alert(
-        'Password must be at least 7 characters long and contain at least one number and one special character.',
-      );
-      return;
-    }
     loginMutation.mutate();
   };
 
