@@ -53,7 +53,7 @@ export function Signup() {
   return (
     <div
       className='d-flex justify-content-center align-items-center vh-100 bg-body-tertiary'
-      data-bs-theme='white'
+      data-bs-theme='dark'
     >
       <form
         onSubmit={handleSubmit}
@@ -110,12 +110,7 @@ export function Signup() {
         <input
           type='submit'
           value={signupMutation.isPending ? 'Signing up...' : 'Sign up'}
-          disabled={
-            !!passwordError ||
-            !username ||
-            !password ||
-            signupMutation.isPending
-          }
+          disabled={!username || !password || signupMutation.isPending}
           className='btn btn-primary w-100'
         />
       </form>

@@ -45,13 +45,20 @@ export function Login() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validatePassword(password)) {
+      alert(
+        'Password must be at least 7 characters long and contain at least one number and one special character.',
+      );
+      return;
+    }
     loginMutation.mutate();
   };
 
   return (
     <div
       className='d-flex justify-content-center align-items-center vh-100 bg-body-tertiary'
-      data-bs-theme='white'
+      data-bs-theme='dark'
     >
       <form
         onSubmit={handleSubmit}
@@ -108,9 +115,7 @@ export function Login() {
         <input
           type='submit'
           value={loginMutation.isPending ? 'Logging in...' : 'Login'}
-          disabled={
-            !!passwordError || !username || !password || loginMutation.isPending
-          }
+          disabled={!username || !password || loginMutation.isPending}
           className='btn btn-primary w-100'
         />
       </form>
