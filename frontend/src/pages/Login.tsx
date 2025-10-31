@@ -108,7 +108,9 @@ export function Login() {
         <input
           type='submit'
           value={loginMutation.isPending ? 'Logging in...' : 'Login'}
-          disabled={!username || !password || loginMutation.isPending}
+          disabled={
+            !!passwordError || !username || !password || loginMutation.isPending
+          }
           className='btn btn-primary w-100'
         />
       </form>
