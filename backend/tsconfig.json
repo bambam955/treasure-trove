@@ -14,7 +14,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*.ts": ["../shared/src/*.ts"]
+    }
   },
-  "include": ["src"]
+  "include": ["src", "../shared/src/"]
 }

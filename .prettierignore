@@ -1,0 +1,4 @@
+dist/
+
+# We don't want to format docs files, not right now at least.
+docs/

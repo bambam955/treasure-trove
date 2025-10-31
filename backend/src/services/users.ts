@@ -1,11 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models/user.ts';
-
-interface UserCredentials {
-  username: string;
-  password: string;
-}
+import type { UserCredentials, UserInfo } from 'shared';
 
 class UsersService {
   // Login a user by verifying that the entered username and password
@@ -50,12 +46,12 @@ class UsersService {
     return await user.save();
   }
 
-  // Get user info. If no username is found the default is the user ID.
-  static async getUserInfoById(userId: string) {
+  // Get user info. If no username is found, the default is the user ID.
+  static async getUserInfoById(userId: string): Promise<UserInfo> {
     try {
       const user = await User.findById(userId);
       if (!user) return { username: userId };
-      return { username: user.username };
+      return { username: user.username, tokens: user.tokens };
     } catch {
       return { username: userId };
     }

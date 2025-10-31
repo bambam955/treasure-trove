@@ -1,8 +1,4 @@
-// This interface defines the credentials a user should sign up/log in with.
-interface UserCredentials {
-  username: string;
-  password: string;
-}
+import type { UserCredentials } from 'shared';
 
 // This interface defines the information that will be returned from a successful login attempt.
 export interface AuthInfo {
