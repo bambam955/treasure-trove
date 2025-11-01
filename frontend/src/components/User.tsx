@@ -1,18 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import UserApi from '../api/users';
 import { UserInfo } from '@shared/users.ts';
+import { useAuth } from '../contexts/AuthContext';
 
 interface UserProps {
   id: string;
 }
 
 export function User({ id }: UserProps) {
+  const [token] = useAuth();
+
   const userInfoQuery = useQuery<UserInfo>({
     // The fetched info will be cached by user ID.
     queryKey: ['users', id],
     // Fetch the user info from the API.
-    queryFn: () => UserApi.getUserInfo(id),
+    queryFn: () => UserApi.getUserInfo(id, token!),
   });
+
+  const addTokens = () => {};
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
   // It won't look great, but it's better than nothing.
@@ -25,7 +30,9 @@ export function User({ id }: UserProps) {
       <strong className='ms-2 fs-5'>
         💰 <em>{userInfo.tokens}</em>
       </strong>
-      <button className='btn ms-2 py-0 btn-sm bg-info fs-5'>+</button>
+      <button className='btn ms-2 py-0 btn-sm bg-info fs-5' onClick={addTokens}>
+        +
+      </button>
     </div>
   );
 }

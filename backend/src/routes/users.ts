@@ -1,5 +1,6 @@
 import type { Application, Request, Response } from 'express';
 import UsersService from '../services/users.ts';
+import { requireAuth } from '../middleware/jwt.ts';
 
 export function setupUserEndpoints(app: Application) {
   // Endpoint for user login.
@@ -28,9 +29,13 @@ export function setupUserEndpoints(app: Application) {
     }
   });
 
-  // Endpoint for retrieving user information.
-  app.get('/api/v1/users/:id', async (req: Request, res: Response) => {
-    const userInfo = await UsersService.getUserInfoById(req.params.id);
-    return res.status(200).send(userInfo);
-  });
+  // Endpoint for retrieving user information. Requires JWT authentication.
+  app.get(
+    '/api/v1/users/:id',
+    requireAuth,
+    async (req: Request, res: Response) => {
+      const userInfo = await UsersService.getUserInfoById(req.params.id);
+      return res.status(200).send(userInfo);
+    },
+  );
 }
