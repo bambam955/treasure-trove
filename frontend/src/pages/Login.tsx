@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import UserApi, { AuthInfo } from '../api/users';
+import UserApi from '../api/users';
+import { AuthInfo } from '@shared/users.ts';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
@@ -19,7 +20,7 @@ export function Login() {
     // response payload, so we can save it for the user to do other things in the app.
     onSuccess: (data: AuthInfo) => {
       setToken(data.token);
-      navigate('/');
+      navigate('/home');
     },
     // make it very obvious something went wrong by showing a browser alert.
     onError: () => alert('Failed to log in!'),

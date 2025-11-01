@@ -5,10 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "start": "node src/index.ts",
-    "lint": "eslint src",
-    "lint:fix": "eslint --fix src",
-    "format": "prettier --write src"
+    "start": "node src/index.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -18,7 +15,8 @@
     "express-jwt": "^8.4.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.3.0",
-    "mongoose": "^8.0.2"
+    "mongoose": "^8.0.2",
+    "ts-migrate-mongoose": "^4.1.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -27,23 +25,10 @@
     "@types/mongodb-memory-server": "^1.8.0",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.9.2",
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@typescript-eslint/parser": "^8.46.2",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.4",
     "mongodb-memory-server": "^9.1.1",
     "nodemon": "^3.1.10",
-    "prettier": "^3.1.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "npx prettier --write",
-      "npx eslint --fix"
-    ]
   }
 }

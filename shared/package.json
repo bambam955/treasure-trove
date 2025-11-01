@@ -1,0 +1,7 @@
+{
+  "name": "treasure-trove-shared",
+  "version": "1.0.0",
+  "main": "src/users.ts",
+  "types": "src/users.ts",
+  "type": "module"
+}
