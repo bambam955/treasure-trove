@@ -19,7 +19,7 @@ export function Header() {
       <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='dark'>
         <div className='container-fluid justify-content-end align-items-center'>
           <span className='navbar-text text-light me-3'>
-            Logged in as <User id={sub} />
+            <User id={sub} />
           </span>
           <button
             className='btn btn-outline-light btn-sm'
