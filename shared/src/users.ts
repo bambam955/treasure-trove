@@ -9,3 +9,8 @@ export interface UserInfo {
   username: string;
   tokens?: number;
 }
+
+// This interface defines the information that will be returned from a successful login attempt.
+export interface AuthInfo {
+  token: string;
+}

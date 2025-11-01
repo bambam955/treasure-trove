@@ -1,16 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { UserCredentials } from 'treasure-trove-shared';
-
-// This interface defines the information that will be returned from a successful login attempt.
-export interface AuthInfo {
-  token: string;
-}
-
-// This interface defines what information about a user can be retrieved from the backend.
-export interface UserInfo {
-  username: string;
-}
+import type { UserCredentials, UserInfo, AuthInfo } from '@shared/users.ts';
 
 // This class defines frontend API methods for the backend database.
 class UserApi {

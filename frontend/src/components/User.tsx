@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import UserApi, { UserInfo } from '../api/users';
+import UserApi from '../api/users';
+import { UserInfo } from '@shared/users.ts';
 
 interface UserProps {
   id: string;
