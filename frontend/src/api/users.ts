@@ -1,4 +1,6 @@
-import type { UserCredentials } from 'shared';
+/// <reference types="vite/client" />
+
+import type { UserCredentials } from 'treasure-trove-shared';
 
 // This interface defines the information that will be returned from a successful login attempt.
 export interface AuthInfo {
