@@ -38,15 +38,32 @@ class UserApi {
 
   // Retrieve information about a given user.
   // A user's ID is a unique identifier assigned by the backend, which we parse from the JWT token.
-  static async getUserInfo(id: string, token: string): Promise<UserInfo> {
+  static async getUserInfo(id: string, auth: string): Promise<UserInfo> {
     const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}users/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${auth}`,
       },
     });
     if (!res.ok) throw new Error('failed to fetch user info');
+    return await res.json();
+  }
+
+  static async addUserTokens(
+    id: string,
+    newTokensAmount: number,
+    auth: string,
+  ): Promise<UserInfo> {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}users/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${auth}`,
+      },
+      body: JSON.stringify({ tokens: newTokensAmount }),
+    });
+    if (!res.ok) throw new Error('failed to update user tokens');
     return await res.json();
   }
 }

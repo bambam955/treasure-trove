@@ -38,4 +38,25 @@ export function setupUserEndpoints(app: Application) {
       return res.status(200).send(userInfo);
     },
   );
+
+  app.post(
+    '/api/v1/users/:id',
+    requireAuth,
+    async (req: Request, res: Response) => {
+      try {
+        const userInfo = await UsersService.updateUserTokens(
+          req.params.id,
+          req.body.tokens,
+        );
+        return res.status(200).send(userInfo);
+      } catch (err) {
+        console.error('error updating token amount:', err);
+        // Use 400 when there is a bad request for some reason.
+        return res.status(400).json({
+          error:
+            'failed to update user tokens amount, did you specify the amount to update to?',
+        });
+      }
+    },
+  );
 }

@@ -61,6 +61,21 @@ class UsersService {
       return { username: userId };
     }
   }
+
+  static async updateUserTokens(
+    userId: string,
+    newTokensAmount: number,
+  ): Promise<UserInfo> {
+    try {
+      const user = await User.findById(userId);
+      if (!user) return { username: userId };
+      user.tokens = newTokensAmount;
+      await user.save();
+      return { username: user.username, tokens: user.tokens };
+    } catch {
+      return { username: userId };
+    }
+  }
 }
 
 export default UsersService;
