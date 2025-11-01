@@ -19,11 +19,13 @@ export function User({ id }: UserProps) {
   const userInfo: UserInfo = userInfoQuery.data ?? { username: id, tokens: 0 };
 
   return (
-    <div className='border rounded py-1 px-2 d-flex align-items-center justify-content-between bg-secondary'>
-      <strong className='pe-2'>{userInfo.username}</strong>
-      <strong>
+    <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>
+      <strong className='me-3'>{userInfo.username}</strong>
+      <div className='vr' style={{ width: '3px' }} />
+      <strong className='ms-2 fs-5'>
         💰 <em>{userInfo.tokens}</em>
       </strong>
+      <button className='btn ms-2 py-0 btn-sm bg-info fs-5'>+</button>
     </div>
   );
 }
