@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models/user.ts';
-import type { UserCredentials, UserInfo } from 'shared';
+import type { UserCredentials, UserInfo } from 'treasure-trove-shared';
 
 class UsersService {
   // Login a user by verifying that the entered username and password
