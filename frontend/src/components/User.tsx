@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import UserApi from '../api/users';
 import { UserInfo } from '@shared/users.ts';
-// import { Tokens } from './Tokens';
 
 interface UserProps {
   id: string;
@@ -16,14 +15,11 @@ export function User({ id }: UserProps) {
   });
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
-  // This won't look great but it's better than nothing.
+  // It won't look great, but it's better than nothing.
   const userInfo: UserInfo = userInfoQuery.data ?? { username: id, tokens: 0 };
 
   return (
-    <div
-      className='border rounded py-1 px-2 d-flex align-items-center justify-content-between bg-secondary'
-      data-bs-theme='dark'
-    >
+    <div className='border rounded py-1 px-2 d-flex align-items-center justify-content-between bg-secondary'>
       <strong className='pe-2'>{userInfo.username}</strong>
       <strong>
         💰 <em>{userInfo.tokens}</em>
