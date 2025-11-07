@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Signup } from './pages/Signup';
 import { AuthContextProvider } from './contexts/AuthContext';
 import { Login } from './pages/Login';
+import { Admin } from './pages/Admin.tsx';
 
 // Define the routes to different pages of the application.
 const router = createBrowserRouter([
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     path: '/login',
     element: <Login />,
   },
+  {
+    path: '/admin',
+    element: <Admin />,
+  }
 ]);
 
 // The QueryClient is what allows for async fetches from a backend server to work

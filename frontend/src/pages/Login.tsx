@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import UserApi, { AuthInfo } from '../api/users';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
@@ -14,15 +13,49 @@ export function Login() {
   // When a user clicks the "Login" button then we will send an API request
   // to attempt to register the new account.
   const loginMutation = useMutation({
-    mutationFn: () => UserApi.login({ username, password }),
-    // If the login succeeds, the JWT token from the backend will be contained in the
-    // response payload, so we can save it for the user to do other things in the app.
-    onSuccess: (data: AuthInfo) => {
-      setToken(data.token);
-      navigate('/');
+    mutationFn: async () => {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Pass the backend error to onError
+        throw new Error(data.error || 'Login failed.');
+      }
+
+      return data;
     },
-    // make it very obvious something went wrong by showing a browser alert.
-    onError: () => alert('Failed to log in!'),
+
+    onSuccess: (data) => {
+      setToken(data.token);
+
+        try {
+          const payload = JSON.parse(atob(data.token.split('.')[1]));
+          if (payload.role === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
+        } catch (err) {
+          console.error('Failed to decode token:', err);
+          navigate('/');
+          }
+      },
+   
+    onError: (error) => {
+      // Use the exact backend error if available
+      const message = error instanceof Error ? error.message : String(error);
+
+      if (message.includes('locked')) {
+       alert('This account has been locked. Please contact an administrator.');
+      } else {
+        alert(message || 'Login failed - please check your credentials and try again.');
+      }
+    },
   });
 
   const validatePassword = (value: string): boolean => {

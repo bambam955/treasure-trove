@@ -16,7 +16,10 @@ class UsersService {
     if (!user) {
       throw new Error('invalid username!');
     }
-
+    // locked users cannot log in.
+    if (user.locked) {
+      throw new Error('This account has been locked. Please contact an administrator.');
+    }
     // See if the password given matches the users's real encrypted password.
     // If not, then throw an error.
     const isPasswordCorrect = await bcrypt.compare(
@@ -30,7 +33,7 @@ class UsersService {
     // If the passwords match, the create a new JWT token and return it.
     // The token contains the user ID from the database (which is unique to all users)
     // and uses the static JWT secret for the private key. It expires in 24 hours.
-    const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ sub: user._id, role: user.role }, process.env.JWT_SECRET!, {
       expiresIn: '24h',
     });
     return token;
@@ -46,6 +49,7 @@ class UsersService {
     const user = new User({
       username: auth.username,
       password: hashedPassword,
+      role: 'user', // default role is 'user'
     });
     return await user.save();
   }
@@ -55,7 +59,7 @@ class UsersService {
     try {
       const user = await User.findById(userId);
       if (!user) return { username: userId };
-      return { username: user.username };
+      return { username: user.username, role: user.role };
     } catch {
       return { username: userId };
     }
