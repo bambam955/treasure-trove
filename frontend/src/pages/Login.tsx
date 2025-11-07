@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
+//import UserApi from '../api/users';
+//import { AuthInfo } from '@shared/users.ts';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
@@ -29,33 +31,35 @@ export function Login() {
 
       return data;
     },
+    
+   onError: (error: Error) => {
+      alert(error.message);
+    }, 
+   onSuccess: (data) => {
+  // Defensive check: token must exist and be a string
+  if (!data.token || typeof data.token !== 'string') {
+    alert('Invalid or missing token from server.');
+    return;
+  }
 
-    onSuccess: (data) => {
-      setToken(data.token);
+  setToken(data.token);
 
-        try {
-          const payload = JSON.parse(atob(data.token.split('.')[1]));
-          if (payload.role === 'admin') {
-            navigate('/admin');
-          } else {
-            navigate('/');
-          }
-        } catch (err) {
-          console.error('Failed to decode token:', err);
-          navigate('/');
-          }
-      },
-   
-    onError: (error) => {
-      // Use the exact backend error if available
-      const message = error instanceof Error ? error.message : String(error);
+  try {
+    // Decode the JWT payload (middle part of the token)
+    const payload = JSON.parse(atob(data.token.split('.')[1]));
 
-      if (message.includes('locked')) {
-       alert('This account has been locked. Please contact an administrator.');
-      } else {
-        alert(message || 'Login failed - please check your credentials and try again.');
-      }
-    },
+    // Redirect admins to their dashboard
+    if (payload.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/home');
+    }
+  } catch (err) {
+    console.error('Failed to decode token:', err);
+    navigate('/home');
+  }
+},
+
   });
 
   const validatePassword = (value: string): boolean => {

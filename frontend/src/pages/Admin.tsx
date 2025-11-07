@@ -74,7 +74,7 @@ export function Admin() {
   return (
     <div style={{ padding: 16 }}>
       <h2>Admin Dashboard</h2>
-      <button onClick={() => navigate('/')}>Go back</button>
+      <button onClick={() => navigate('/')}>Auction Site</button>
 
       <table border={1} cellPadding={8} style={{ marginTop: 12 }}>
         <thead>

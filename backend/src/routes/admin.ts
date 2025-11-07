@@ -1,4 +1,5 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import type { Request, Response } from 'express';
 import { getAllUsers, lockUser, unlockUser } from '../services/admin.ts';
 import { isAdmin } from '../middleware/isAdmin.ts';
 
