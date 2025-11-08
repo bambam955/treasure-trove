@@ -6,12 +6,10 @@ import { initDatabase } from '../db/init.ts';
 
 async function createAdmin() {
   try {
-    // Connect to MongoDB
     await initDatabase();
 
-    // Define your admin credentials here:
-    const username = 'admin'; // You can change this
-    const password = 'Admin$123'; // Change this to your own strong password
+    const username = 'admin'; 
+    const password = 'Team13Admin!'; 
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ username });
@@ -27,8 +25,9 @@ async function createAdmin() {
     const adminUser = new User({
       username,
       password: hashedPassword,
-      role: 'admin', // Make sure your user schema supports this field
+      role: 'admin', 
       locked: false,
+      canBelocked: false,
     });
 
     await adminUser.save();
@@ -39,5 +38,4 @@ async function createAdmin() {
     await mongoose.disconnect();
   }
 }
-
 createAdmin();

@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { getAllUsers, lockUser, unlockUser } from '../services/admin.ts';
+import AdminService from '../services/admin.ts';
 import { isAdmin } from '../middleware/isAdmin.ts';
 
 const router = express.Router();
@@ -8,7 +8,7 @@ const router = express.Router();
 //  GET all users (admin only)
 router.get('/users', isAdmin, async (_req: Request, res: Response) => {
   try {
-    const users = await getAllUsers();
+    const users = await AdminService.getAllUsers();
     res.status(200).json(users);
   } catch (err) {
     console.error('Error fetching users:', err);
@@ -17,9 +17,9 @@ router.get('/users', isAdmin, async (_req: Request, res: Response) => {
 });
 
 //  POST lock user by ID
-router.post('/lock/:id', isAdmin, async (req: Request, res: Response) => {
+router.post('/users/lock/:id', isAdmin, async (req: Request, res: Response) => {
   try {
-    await lockUser(req.params.id);
+    await AdminService.lockUser(req.params.id);
     res.status(200).json({ message: 'User locked' });
   } catch (err) {
     console.error('Error locking user:', err);
@@ -28,9 +28,9 @@ router.post('/lock/:id', isAdmin, async (req: Request, res: Response) => {
 });
 
 //  POST unlock user by ID
-router.post('/unlock/:id', isAdmin, async (req: Request, res: Response) => {
+router.post('/users/unlock/:id', isAdmin, async (req: Request, res: Response) => {
   try {
-    await unlockUser(req.params.id);
+    await AdminService.unlockUser(req.params.id);
     res.status(200).json({ message: 'User unlocked' });
   } catch (err) {
     console.error('Error unlocking user:', err);

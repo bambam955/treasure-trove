@@ -1,13 +1,28 @@
 import { User } from '../db/models/user.ts';
 
-export async function getAllUsers() {
-  return await User.find({}, 'username role locked');
-}
+class AdminService {
+  
+  static async getAllUsers() {
+    return await User.find({}, 'username role locked');
+  }
 
-export async function lockUser(id: string) {
-  return await User.findByIdAndUpdate(id, { locked: true });
-}
+  static async lockUser(id: string) {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User not found');
+    if (user.role === 'admin' || user.canBeLocked === false) {
+      throw new Error('Cannot lock admin or protected accounts');
+    }
+    user.locked = true;
+    await user.save();
+    return user;
+  }
 
-export async function unlockUser(id: string) {
-  return await User.findByIdAndUpdate(id, { locked: false });
+  static async unlockUser(id: string) {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User not found');
+    user.locked = false;
+    await user.save();
+    return user;
+  }
 }
+export default AdminService;

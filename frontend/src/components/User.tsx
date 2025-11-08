@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 interface UserProps {
   id: string;
-}
+ }
 
 export function User({ id }: UserProps) {
   const [token] = useAuth();
