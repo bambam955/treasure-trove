@@ -16,7 +16,9 @@ class UsersService {
     }
     // locked users cannot log in.
     if (user.locked) {
-      throw new Error('This account has been locked. Please contact an administrator.');
+      throw new Error(
+        'This account has been locked. Please contact an administrator.',
+      );
     }
     // See if the password given matches the users's real encrypted password.
     // If not, then throw an error.
@@ -31,9 +33,13 @@ class UsersService {
     // If the passwords match, the create a new JWT token and return it.
     // The token contains the user ID from the database (which is unique to all users)
     // and uses the static JWT secret for the private key. It expires in 24 hours.
-    const token = jwt.sign({ sub: user._id, role: user.role }, process.env.JWT_SECRET!, {
-      expiresIn: '24h',
-    });
+    const token = jwt.sign(
+      { sub: user._id, role: user.role },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: '24h',
+      },
+    );
     return { token };
   }
 
@@ -52,7 +58,7 @@ class UsersService {
     });
     await user.save();
     return user;
-    }
+  }
 
   // Get user info. If no username is found, the default is the user ID.
   static async getUserInfoById(userId: string): Promise<UserInfo> {

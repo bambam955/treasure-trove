@@ -27,7 +27,7 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Admin />,
-  }
+  },
 ]);
 
 // The QueryClient is what allows for async fetches from a backend server to work

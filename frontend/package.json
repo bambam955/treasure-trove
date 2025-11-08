@@ -25,11 +25,5 @@
     "globals": "^16.4.0",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "npx prettier --write",
-      "npx eslint --fix"
-    ]
   }
 }

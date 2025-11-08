@@ -1,8 +1,6 @@
 import { expressjwt } from 'express-jwt';
 import type { Request, Response, NextFunction } from 'express';
 
-
-
 // Define a type that includes the optional auth object
 interface AuthPayload {
   sub?: string;

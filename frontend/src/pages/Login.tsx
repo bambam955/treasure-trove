@@ -31,35 +31,34 @@ export function Login() {
 
       return data;
     },
-    
-   onError: (error: Error) => {
+
+    onError: (error: Error) => {
       alert(error.message);
-    }, 
-   onSuccess: (data) => {
-  // Defensive check: token must exist and be a string
-  if (!data.token || typeof data.token !== 'string') {
-    alert('Invalid or missing token from server.');
-    return;
-  }
+    },
+    onSuccess: (data) => {
+      // Defensive check: token must exist and be a string
+      if (!data.token || typeof data.token !== 'string') {
+        alert('Invalid or missing token from server.');
+        return;
+      }
 
-  setToken(data.token);
+      setToken(data.token);
 
-  try {
-    // Decode the JWT payload (middle part of the token)
-    const payload = JSON.parse(atob(data.token.split('.')[1]));
+      try {
+        // Decode the JWT payload (middle part of the token)
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
 
-    // Redirect admins to their dashboard
-    if (payload.role === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/home');
-    }
-  } catch (err) {
-    console.error('Failed to decode token:', err);
-    navigate('/home');
-  }
-},
-
+        // Redirect admins to their dashboard
+        if (payload.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/home');
+        }
+      } catch (err) {
+        console.error('Failed to decode token:', err);
+        navigate('/home');
+      }
+    },
   });
 
   const validatePassword = (value: string): boolean => {

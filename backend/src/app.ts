@@ -37,7 +37,7 @@ app.use('/api/v1/admin', adminRouter);
 
 // Add a default response for the root of the API.
 app.get('/', (_req: Request, res: Response) => {
-res.json({
+  res.json({
     PORT: process.env.PORT,
     DATABASE_URL: process.env.DATABASE_URL ? 'Loaded' : 'Missing',
     JWT_SECRET: process.env.JWT_SECRET ? 'Loaded' : 'Missing',

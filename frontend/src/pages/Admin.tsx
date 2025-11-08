@@ -66,7 +66,7 @@ export function Admin() {
 
   // --- Conditional Rendering ---
   if (isAdmin === null) return <p>Checking credentials...</p>;
-  if (isAdmin === false) return <Navigate to="/" replace />;
+  if (isAdmin === false) return <Navigate to='/' replace />;
 
   if (usersQuery.isLoading) return <p>Loading users...</p>;
   if (usersQuery.isError) return <p>Failed to load users.</p>;

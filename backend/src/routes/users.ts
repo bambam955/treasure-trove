@@ -11,11 +11,13 @@ export function setupUserEndpoints(app: Application) {
     } catch (error) {
       console.error('Login error:', error);
 
-      const message = error instanceof Error ? error.message : 'Unkown logiin error';
+      const message =
+        error instanceof Error ? error.message : 'Unkown logiin error';
 
       if (message.toLowerCase().includes('locked')) {
         return res.status(403).json({
-          error: 'This account has been locked. Please contact an administrator.',
+          error:
+            'This account has been locked. Please contact an administrator.',
         });
       }
 
