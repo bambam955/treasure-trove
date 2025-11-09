@@ -8,10 +8,9 @@ export default defineConfig({
   server: {
     historyApiFallback: true,
   },
-   resolve: {
+  resolve: {
     alias: {
       '@shared': path.resolve(__dirname, '../shared/src'),
     },
   },
-})
-
+});

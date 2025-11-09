@@ -28,14 +28,18 @@ router.post('/users/lock/:id', isAdmin, async (req: Request, res: Response) => {
 });
 
 //  POST unlock user by ID
-router.post('/users/unlock/:id', isAdmin, async (req: Request, res: Response) => {
-  try {
-    await AdminService.unlockUser(req.params.id);
-    res.status(200).json({ message: 'User unlocked' });
-  } catch (err) {
-    console.error('Error unlocking user:', err);
-    res.status(500).json({ error: 'Failed to unlock user' });
-  }
-});
+router.post(
+  '/users/unlock/:id',
+  isAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      await AdminService.unlockUser(req.params.id);
+      res.status(200).json({ message: 'User unlocked' });
+    } catch (err) {
+      console.error('Error unlocking user:', err);
+      res.status(500).json({ error: 'Failed to unlock user' });
+    }
+  },
+);
 
 export default router;

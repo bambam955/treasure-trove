@@ -1,9 +1,16 @@
 import { User } from '../db/models/user.ts';
+import type { UserInfo } from '@shared/users.ts';
 
 class AdminService {
-  
-  static async getAllUsers() {
-    return await User.find({}, 'username role locked');
+  static async getAllUsers(): Promise<UserInfo[]> {
+    const users = await User.find({}, 'username role locked');
+    return users.map((u) => ({
+      id: u._id.toString(),
+      username: u.username,
+      tokens: u.tokens,
+      role: u.role,
+      locked: u.locked,
+    }));
   }
 
   static async lockUser(id: string) {

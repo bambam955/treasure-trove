@@ -57,17 +57,27 @@ class UsersService {
       tokens: SIGNUP_TOKEN_BONUS, // Give new users a sign-up bonus!!
     });
     await user.save();
-    return user;
+    return {
+      id: user._id.toString(),
+      username: user.username,
+      tokens: user.tokens,
+      role: user.role,
+    };
   }
 
   // Get user info. If no username is found, the default is the user ID.
   static async getUserInfoById(userId: string): Promise<UserInfo> {
     try {
       const user = await User.findById(userId);
-      if (!user) return { username: userId };
-      return { username: user.username, tokens: user.tokens };
+      if (!user) return { id: userId };
+      return {
+        id: userId,
+        username: user.username,
+        tokens: user.tokens,
+        role: user.role,
+      };
     } catch {
-      return { username: userId };
+      return { id: userId };
     }
   }
 
@@ -77,12 +87,17 @@ class UsersService {
   ): Promise<UserInfo> {
     try {
       const user = await User.findById(userId);
-      if (!user) return { username: userId };
+      if (!user) return { id: userId };
       user.tokens = newTokensAmount;
       await user.save();
-      return { username: user.username, tokens: user.tokens };
+      return {
+        id: userId,
+        username: user.username,
+        tokens: user.tokens,
+        role: user.role,
+      };
     } catch {
-      return { username: userId };
+      return { id: userId };
     }
   }
 }

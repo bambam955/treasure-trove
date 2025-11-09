@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 interface UserProps {
   id: string;
- }
+}
 
 export function User({ id }: UserProps) {
   const [token] = useAuth();
@@ -27,7 +27,7 @@ export function User({ id }: UserProps) {
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
   // It won't look great, but it's better than nothing.
-  const userInfo: UserInfo = userInfoQuery.data ?? { username: id };
+  const userInfo: UserInfo = userInfoQuery.data ?? { id, username: id };
 
   return (
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>

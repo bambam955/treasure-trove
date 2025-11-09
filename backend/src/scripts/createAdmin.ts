@@ -8,8 +8,8 @@ async function createAdmin() {
   try {
     await initDatabase();
 
-    const username = 'admin'; 
-    const password = 'Team13Admin!'; 
+    const username = 'admin';
+    const password = 'Team13Admin!';
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ username });
@@ -25,7 +25,7 @@ async function createAdmin() {
     const adminUser = new User({
       username,
       password: hashedPassword,
-      role: 'admin', 
+      role: 'admin',
       locked: false,
       canBelocked: false,
     });
