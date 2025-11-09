@@ -1,5 +1,5 @@
-import app from './app.ts';
 import 'dotenv/config';
+import app from './app.ts';
 import { initDatabase } from './db/init.ts';
 
 async function main() {

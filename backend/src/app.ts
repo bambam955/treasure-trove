@@ -5,6 +5,7 @@ import express, {
 } from 'express';
 import { setupUserEndpoints } from './routes/users.ts';
 import bodyParser from 'body-parser';
+import adminRouter from './routes/admin.ts';
 
 // Create the Express app.
 const app = express();
@@ -32,9 +33,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // Set up the endpoints for user management.
 setupUserEndpoints(app);
 
+app.use('/api/v1/admin', adminRouter);
+
 // Add a default response for the root of the API.
 app.get('/', (_req: Request, res: Response) => {
-  res.send('Hello from Express!');
+  res.json({
+    PORT: process.env.PORT,
+    DATABASE_URL: process.env.DATABASE_URL ? 'Loaded' : 'Missing',
+    JWT_SECRET: process.env.JWT_SECRET ? 'Loaded' : 'Missing',
+    NODE_ENV: process.env.NODE_ENV || 'development',
+  });
 });
 
 export default app;

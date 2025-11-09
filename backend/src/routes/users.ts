@@ -6,11 +6,31 @@ export function setupUserEndpoints(app: Application) {
   // Endpoint for user login.
   app.post('/api/v1/user/login', async (req: Request, res: Response) => {
     try {
-      const authInfo = await UsersService.login(req.body);
-      return res.status(200).send(authInfo);
-    } catch {
-      return res.status(400).send({
-        error: 'login failed, did you enter the correct username/password?',
+      const { token } = await UsersService.login(req.body);
+      return res.status(200).send({ token });
+    } catch (error) {
+      console.error('Login error:', error);
+
+      const message =
+        error instanceof Error ? error.message : 'Unkown logiin error';
+
+      if (message.toLowerCase().includes('locked')) {
+        return res.status(403).json({
+          error:
+            'This account has been locked. Please contact an administrator.',
+        });
+      }
+
+      if (message.toLowerCase().includes('username')) {
+        return res.status(400).json({ error: 'Invalid username.' });
+      }
+
+      if (message.toLowerCase().includes('password')) {
+        return res.status(400).json({ error: 'Invalid password.' });
+      }
+
+      return res.status(400).json({
+        error: 'Login failed, did you enter the correct username/password?',
       });
     }
   });

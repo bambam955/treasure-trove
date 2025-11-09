@@ -14,7 +14,12 @@ class UsersService {
     if (!user) {
       throw new Error('invalid username!');
     }
-
+    // locked users cannot log in.
+    if (user.locked) {
+      throw new Error(
+        'This account has been locked. Please contact an administrator.',
+      );
+    }
     // See if the password given matches the users's real encrypted password.
     // If not, then throw an error.
     const isPasswordCorrect = await bcrypt.compare(
@@ -28,9 +33,13 @@ class UsersService {
     // If the passwords match, the create a new JWT token and return it.
     // The token contains the user ID from the database (which is unique to all users)
     // and uses the static JWT secret for the private key. It expires in 24 hours.
-    const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET!, {
-      expiresIn: '24h',
-    });
+    const token = jwt.sign(
+      { sub: user._id, role: user.role },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: '24h',
+      },
+    );
     return { token };
   }
 
@@ -44,21 +53,31 @@ class UsersService {
     const user = new User({
       username: auth.username,
       password: hashedPassword,
-      // Give new users a sign-up bonus!!
-      tokens: SIGNUP_TOKEN_BONUS,
+      role: 'user', // default role is 'user'
+      tokens: SIGNUP_TOKEN_BONUS, // Give new users a sign-up bonus!!
     });
     await user.save();
-    return user;
+    return {
+      id: user._id.toString(),
+      username: user.username,
+      tokens: user.tokens,
+      role: user.role,
+    };
   }
 
   // Get user info. If no username is found, the default is the user ID.
   static async getUserInfoById(userId: string): Promise<UserInfo> {
     try {
       const user = await User.findById(userId);
-      if (!user) return { username: userId };
-      return { username: user.username, tokens: user.tokens };
+      if (!user) return { id: userId };
+      return {
+        id: userId,
+        username: user.username,
+        tokens: user.tokens,
+        role: user.role,
+      };
     } catch {
-      return { username: userId };
+      return { id: userId };
     }
   }
 
@@ -68,12 +87,17 @@ class UsersService {
   ): Promise<UserInfo> {
     try {
       const user = await User.findById(userId);
-      if (!user) return { username: userId };
+      if (!user) return { id: userId };
       user.tokens = newTokensAmount;
       await user.save();
-      return { username: user.username, tokens: user.tokens };
+      return {
+        id: userId,
+        username: user.username,
+        tokens: user.tokens,
+        role: user.role,
+      };
     } catch {
-      return { username: userId };
+      return { id: userId };
     }
   }
 }

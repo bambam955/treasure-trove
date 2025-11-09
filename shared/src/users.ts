@@ -6,8 +6,11 @@ export interface UserCredentials {
 
 // This interface defines the information about users that can be fetched from the database.
 export interface UserInfo {
-  username: string;
+  id: string;
+  username?: string;
   tokens?: number;
+  role?: 'admin' | 'user';
+  locked?: boolean;
 }
 
 // This interface defines the information that will be returned from a successful login attempt.

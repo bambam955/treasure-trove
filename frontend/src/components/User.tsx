@@ -27,7 +27,7 @@ export function User({ id }: UserProps) {
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
   // It won't look great, but it's better than nothing.
-  const userInfo: UserInfo = userInfoQuery.data ?? { username: id };
+  const userInfo: UserInfo = userInfoQuery.data ?? { id, username: id };
 
   return (
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>
@@ -38,7 +38,7 @@ export function User({ id }: UserProps) {
       </strong>
       <button
         // Don't allow tokens to be added if we had trouble fetching the initial amount.
-        disabled={!userInfo.tokens || tokensMutation.isPending}
+        disabled={tokensMutation.isPending}
         className='btn ms-2 py-0 btn-sm bg-info fs-5'
         // Currently, pressing the button is hardcoded to add 100 tokens.
         // We will need to revise this eventually...

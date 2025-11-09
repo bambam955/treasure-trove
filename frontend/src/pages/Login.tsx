@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-import UserApi from '../api/users';
-import { AuthInfo } from '@shared/users.ts';
+//import UserApi from '../api/users';
+//import { AuthInfo } from '@shared/users.ts';
 import { useAuth } from '../contexts/AuthContext';
 
 export function Login() {
@@ -15,15 +15,50 @@ export function Login() {
   // When a user clicks the "Login" button then we will send an API request
   // to attempt to register the new account.
   const loginMutation = useMutation({
-    mutationFn: () => UserApi.login({ username, password }),
-    // If the login succeeds, the JWT token from the backend will be contained in the
-    // response payload, so we can save it for the user to do other things in the app.
-    onSuccess: (data: AuthInfo) => {
-      setToken(data.token);
-      navigate('/home');
+    mutationFn: async () => {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Pass the backend error to onError
+        throw new Error(data.error || 'Login failed.');
+      }
+
+      return data;
     },
-    // make it very obvious something went wrong by showing a browser alert.
-    onError: () => alert('Failed to log in!'),
+
+    onError: (error: Error) => {
+      alert(error.message);
+    },
+    onSuccess: (data) => {
+      // Defensive check: token must exist and be a string
+      if (!data.token || typeof data.token !== 'string') {
+        alert('Invalid or missing token from server.');
+        return;
+      }
+
+      setToken(data.token);
+
+      try {
+        // Decode the JWT payload (middle part of the token)
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+
+        // Redirect admins to their dashboard
+        if (payload.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/home');
+        }
+      } catch (err) {
+        console.error('Failed to decode token:', err);
+        navigate('/home');
+      }
+    },
   });
 
   const validatePassword = (value: string): boolean => {
