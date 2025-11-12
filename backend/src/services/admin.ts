@@ -1,13 +1,10 @@
-import { User } from '../db/models/user.ts';
+import { parseUserInfo, User } from '../db/models/user.ts';
 import type { UserInfo } from '@shared/users.ts';
 
 class AdminService {
   static async getAllUsers(): Promise<UserInfo[]> {
     const users = await User.find({}, 'username role locked');
-    return users.map((u) => ({
-      id: u._id.toString(),
-      ...u,
-    }));
+    return users.map((u) => parseUserInfo(u._id.toString(), u));
   }
 
   static async lockUser(userId: string): Promise<UserInfo> {
@@ -19,10 +16,8 @@ class AdminService {
 
     user.locked = true;
     await user.save();
-    return {
-      id: userId,
-      ...user,
-    };
+
+    return parseUserInfo(userId, user);
   }
 
   static async unlockUser(userId: string): Promise<UserInfo> {
@@ -30,10 +25,7 @@ class AdminService {
     if (!user) throw new Error('User not found');
     user.locked = false;
     await user.save();
-    return {
-      id: userId,
-      ...user,
-    };
+    return parseUserInfo(userId, user);
   }
 }
 export default AdminService;

@@ -21,7 +21,7 @@ export function User({ id }: UserProps) {
   // We can use this mutation to add tokens to the user's account.
   const tokensMutation = useMutation({
     mutationFn: (newTokens: number) =>
-      UserApi.addUserTokens(id, newTokens, token!),
+      UserApi.updateUser(id, { id, tokens: newTokens }, token!),
     onSuccess: () => userInfoQuery.refetch(),
   });
 

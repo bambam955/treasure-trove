@@ -1,9 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
-//import UserApi from '../api/users';
-//import { AuthInfo } from '@shared/users.ts';
 import { useAuth } from '../contexts/AuthContext';
+import UserApi from '../api/users.ts';
 
 export function Login() {
   const [username, setUsername] = useState('');
@@ -15,22 +14,7 @@ export function Login() {
   // When a user clicks the "Login" button then we will send an API request
   // to attempt to register the new account.
   const loginMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}user/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        // Pass the backend error to onError
-        throw new Error(data.error || 'Login failed.');
-      }
-
-      return data;
-    },
+    mutationFn: async () => UserApi.login({ username, password }),
 
     onError: (error: Error) => {
       alert(error.message);

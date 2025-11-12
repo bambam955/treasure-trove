@@ -12,6 +12,8 @@ const userInfoSchema = yup.object({
   id: yup.string().required(),
   username: yup.string(),
   role: yup.string().oneOf(['admin', 'user']),
+  locked: yup.boolean(),
+  canBeLocked: yup.boolean(),
   tokens: yup.number().min(0),
 });
 export type UserInfo = yup.InferType<typeof userInfoSchema>;

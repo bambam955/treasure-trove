@@ -1,12 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User } from '../db/models/user.ts';
-import type { UserType } from '../db/models/user.ts';
-import {
-  type UserCredentials,
-  type UserInfo,
-  type AuthInfo,
-} from 'treasure-trove-shared';
+import { parseUserInfo, User } from '../db/models/user.ts';
+import type { UserCredentials, UserInfo, AuthInfo } from '@shared/users.ts';
 
 const SIGNUP_TOKEN_BONUS = 1000;
 
@@ -79,14 +74,14 @@ class UsersService {
       tokens: SIGNUP_TOKEN_BONUS, // Give new users a sign-up bonus!!
     });
     await user.save();
-    return this.parseUser(user._id.toString(), user);
+    return parseUserInfo(user._id.toString(), user);
   }
 
   // Get user info. If no username is found, the default is the user ID.
   static async getUserInfoById(userId: string): Promise<UserInfo> {
     const user = await User.findById(userId);
     if (!user) throw new Error('could not find user!');
-    return this.parseUser(userId, user);
+    return parseUserInfo(userId, user);
   }
 
   static async updateUser(
@@ -98,16 +93,7 @@ class UsersService {
     user.set(newUser);
     await user.save();
 
-    return this.parseUser(userId, user);
-  }
-
-  private static parseUser(userId: string, user: UserType): UserInfo {
-    return {
-      id: userId,
-      username: user.username,
-      role: user.role,
-      tokens: user.tokens,
-    };
+    return parseUserInfo(userId, user);
   }
 }
 

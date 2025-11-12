@@ -35,7 +35,7 @@ usersRouter.post('/login', async (req: Request, res: Response) => {
 
     if (message.toLowerCase().includes('locked')) {
       return res.status(403).json({
-        error: 'This account has been locked. Please contact an administrator.',
+        error: message,
       });
     }
 
@@ -44,7 +44,7 @@ usersRouter.post('/login', async (req: Request, res: Response) => {
 });
 
 // Endpoint for retrieving user information. Requires JWT authentication.
-usersRouter.get(':id', requireAuth, async (req: Request, res: Response) => {
+usersRouter.get('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const userInfo = await UsersService.getUserInfoById(req.params.id);
     return res.status(200).json(userInfo);
@@ -54,7 +54,7 @@ usersRouter.get(':id', requireAuth, async (req: Request, res: Response) => {
   }
 });
 
-usersRouter.put(':id', requireAuth, async (req: Request, res: Response) => {
+usersRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const validatedBody = userInfoSchema.validateSync(req.body);
     const userInfo = await UsersService.updateUser(

@@ -1,10 +1,6 @@
 /// <reference types="vite/client" />
 
-import type {
-  UserCredentials,
-  UserInfo,
-  AuthInfo,
-} from 'treasure-trove-shared';
+import type { UserCredentials, UserInfo, AuthInfo } from '@shared/users.ts';
 import { apiRoute, jwtHeaders } from './utils';
 
 // This class defines frontend API methods for the backend database.
