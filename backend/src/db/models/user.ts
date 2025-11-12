@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { InferSchemaType, Schema } from 'mongoose';
 
 // Create the DB schema for users.
 const userSchema = new Schema({
@@ -16,3 +16,4 @@ const userSchema = new Schema({
 });
 
 export const User = mongoose.model('user', userSchema);
+export type UserType = InferSchemaType<typeof userSchema>;

@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "src/users.ts",
   "types": "src/users.ts",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "yup": "^1.7.1"
+  }
 }

@@ -3,8 +3,8 @@ import express, {
   type Response,
   type NextFunction,
 } from 'express';
-import { setupUserEndpoints } from './routes/users.ts';
 import bodyParser from 'body-parser';
+import usersRouter from './routes/users.ts';
 import adminRouter from './routes/admin.ts';
 
 // Create the Express app.
@@ -31,8 +31,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Set up the endpoints for user management.
-setupUserEndpoints(app);
-
+app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/admin', adminRouter);
 
 // Add a default response for the root of the API.
