@@ -8,6 +8,6 @@
     "yup": "^1.7.1"
   },
   "exports": {
-    ".": "./src/users.ts"
+    ".": "./src/index.ts"
   }
 }

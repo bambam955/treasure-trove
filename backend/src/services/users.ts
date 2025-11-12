@@ -1,7 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { parseUserInfo, User } from '../db/models/user.ts';
-import type { UserCredentials, UserInfo, AuthInfo } from '@shared/users.ts';
+import { User, type UserDataType } from '../db/models/user.ts';
+import type {
+  UserCredentials,
+  AuthInfo,
+  FullUserInfo,
+  RegularUserInfo,
+} from '@shared/users.ts';
 
 const SIGNUP_TOKEN_BONUS = 1000;
 
@@ -55,7 +60,7 @@ class UsersService {
   }
 
   // Register a new user account.
-  static async signup(auth: UserCredentials): Promise<UserInfo> {
+  static async signup(auth: UserCredentials): Promise<FullUserInfo> {
     // Validate the password in the backend too.
     // This is an extra layer of security in case someone tries to get around the frontend restrictions.
     if (!this.validatePassword(auth.password)) {
@@ -74,26 +79,48 @@ class UsersService {
       tokens: SIGNUP_TOKEN_BONUS, // Give new users a sign-up bonus!!
     });
     await user.save();
-    return parseUserInfo(user._id.toString(), user);
+    return this.parseFullUserInfo(user._id.toString(), user);
   }
 
   // Get user info. If no username is found, the default is the user ID.
-  static async getUserInfoById(userId: string): Promise<UserInfo> {
+  static async getUserInfoById(userId: string): Promise<FullUserInfo> {
     const user = await User.findById(userId);
     if (!user) throw new Error('could not find user!');
-    return parseUserInfo(userId, user);
+    return this.parseFullUserInfo(userId, user);
   }
 
   static async updateUser(
     userId: string,
-    newUser: Partial<UserInfo>,
-  ): Promise<UserInfo> {
+    newUser: Partial<FullUserInfo>,
+  ): Promise<FullUserInfo> {
     const user = await User.findById(userId);
     if (!user) throw new Error('could not update user!');
     user.set(newUser);
     await user.save();
 
-    return parseUserInfo(userId, user);
+    return this.parseFullUserInfo(userId, user);
+  }
+
+  static parseRegularUserInfo(
+    userId: string,
+    user: UserDataType,
+  ): RegularUserInfo {
+    return {
+      id: userId,
+      username: user.username,
+      role: user.role,
+      tokens: user.tokens,
+    };
+  }
+  static parseFullUserInfo(userId: string, user: UserDataType): FullUserInfo {
+    return {
+      id: userId,
+      username: user.username,
+      role: user.role,
+      locked: user.locked,
+      canBeLocked: user.canBeLocked,
+      tokens: user.tokens,
+    };
   }
 }
 

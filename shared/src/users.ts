@@ -8,19 +8,25 @@ const userCredentialsSchema = yup.object({
 export type UserCredentials = yup.InferType<typeof userCredentialsSchema>;
 
 // This interface defines the information about users that can be fetched from the database.
-const userInfoSchema = yup.object({
+// Regular user info can be fetched by anyone; full user info can only be fetched by admins.
+const regularUserInfoSchema = yup.object({
   id: yup.string().required(),
   username: yup.string(),
   role: yup.string().oneOf(['admin', 'user']),
-  locked: yup.boolean(),
-  canBeLocked: yup.boolean(),
   tokens: yup.number().min(0),
 });
-export type UserInfo = yup.InferType<typeof userInfoSchema>;
+const fullUserInfoSchema = regularUserInfoSchema.concat(
+  yup.object({
+    locked: yup.boolean(),
+    canBeLocked: yup.boolean(),
+  }),
+);
+export type RegularUserInfo = yup.InferType<typeof regularUserInfoSchema>;
+export type FullUserInfo = yup.InferType<typeof fullUserInfoSchema>;
 
 // This interface defines the information that will be returned from a successful login attempt.
 export interface AuthInfo {
   token: string;
 }
 
-export { userCredentialsSchema, userInfoSchema };
+export { userCredentialsSchema, regularUserInfoSchema, fullUserInfoSchema };

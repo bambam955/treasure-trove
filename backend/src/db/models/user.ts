@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import type { InferSchemaType } from 'mongoose';
-import type { UserInfo } from '@shared/users.ts';
 
 // Create the DB schema for users.
 const userSchema = new Schema({
@@ -19,15 +18,4 @@ const userSchema = new Schema({
 });
 
 export const User = mongoose.model('user', userSchema);
-type UserType = InferSchemaType<typeof userSchema>;
-
-export function parseUserInfo(userId: string, user: UserType): UserInfo {
-  return {
-    id: userId,
-    username: user.username,
-    role: user.role,
-    locked: user.locked,
-    canBeLocked: user.canBeLocked,
-    tokens: user.tokens,
-  };
-}
+export type UserDataType = InferSchemaType<typeof userSchema>;

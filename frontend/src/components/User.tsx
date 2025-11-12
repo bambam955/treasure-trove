@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import UserApi from '../api/users';
-import { UserInfo } from '@shared/users.ts';
 import { useAuth } from '../contexts/AuthContext';
+import { FullUserInfo, RegularUserInfo } from '@shared/users.ts';
 
 interface UserProps {
   id: string;
@@ -11,7 +11,7 @@ export function User({ id }: UserProps) {
   const [token] = useAuth();
 
   // This is the query used to fetch the user info.
-  const userInfoQuery = useQuery<UserInfo>({
+  const userInfoQuery = useQuery<RegularUserInfo | FullUserInfo>({
     // The fetched info will be cached by user ID.
     queryKey: ['users', id],
     // Fetch the user info from the API.
@@ -27,7 +27,10 @@ export function User({ id }: UserProps) {
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
   // It won't look great, but it's better than nothing.
-  const userInfo: UserInfo = userInfoQuery.data ?? { id, username: id };
+  const userInfo: RegularUserInfo | FullUserInfo = userInfoQuery.data ?? {
+    id,
+    username: id,
+  };
 
   return (
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>

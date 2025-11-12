@@ -1,9 +1,9 @@
 /// <reference types="vite/client" />
-import type { UserInfo } from '@shared/users.ts';
+import type { FullUserInfo } from '@shared/users.ts';
 import { apiRoute, jwtHeaders } from './utils';
 
 class AdminApi {
-  static async getAllUsers(token: string): Promise<UserInfo[]> {
+  static async getAllUsers(token: string): Promise<FullUserInfo[]> {
     const res = await fetch(apiRoute('admin/users'), {
       method: 'GET',
       headers: {
