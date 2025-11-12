@@ -1,9 +1,8 @@
 import { User } from '../db/models/user.ts';
 
 class AdminService {
-  
   static async getAllUsers() {
-    return await User.find({}, 'username role locked');
+    return await User.find({}, 'username role locked tokens');
   }
 
   static async lockUser(id: string) {

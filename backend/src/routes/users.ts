@@ -1,6 +1,7 @@
 import type { Application, Request, Response } from 'express';
 import UsersService from '../services/users.ts';
 import { requireAuth } from '../middleware/jwt.ts';
+import { isAdmin } from '../middleware/isAdmin.ts';
 
 export function setupUserEndpoints(app: Application) {
   // Endpoint for user login.
@@ -62,6 +63,7 @@ export function setupUserEndpoints(app: Application) {
   app.post(
     '/api/v1/users/:id',
     requireAuth,
+    isAdmin,
     async (req: Request, res: Response) => {
       try {
         const userInfo = await UsersService.updateUserTokens(
