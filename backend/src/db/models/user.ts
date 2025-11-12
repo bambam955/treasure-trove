@@ -1,4 +1,5 @@
-import mongoose, { InferSchemaType, Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import type { InferSchemaType } from 'mongoose';
 
 // Create the DB schema for users.
 const userSchema = new Schema({

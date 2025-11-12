@@ -12,18 +12,18 @@ adminRouter.get('/users', isAdmin, async (_req: Request, res: Response) => {
     res.status(200).json(users);
   } catch (err) {
     console.error('Error fetching users:', err);
-    res.status(500).json({ error: 'Failed to fetch users' });
+    res.status(400).json({ error: 'Failed to fetch users' });
   }
 });
 
 //  POST lock user by ID
 adminRouter.post(
-  '/users/lock/:id',
+  '/users/:id/lock',
   isAdmin,
   async (req: Request, res: Response) => {
     try {
-      await AdminService.lockUser(req.params.id);
-      res.status(200).json({ message: 'User locked' });
+      const userInfo = await AdminService.lockUser(req.params.id);
+      res.status(200).json(userInfo);
     } catch (err) {
       console.error('Error locking user:', err);
       res.status(500).json({ error: 'Failed to lock user' });
@@ -33,12 +33,12 @@ adminRouter.post(
 
 // POST unlock user by ID
 adminRouter.post(
-  '/users/unlock/:id',
+  '/users/:id/unlock',
   isAdmin,
   async (req: Request, res: Response) => {
     try {
-      await AdminService.unlockUser(req.params.id);
-      res.status(200).json({ message: 'User unlocked' });
+      const userInfo = await AdminService.unlockUser(req.params.id);
+      res.status(200).json(userInfo);
     } catch (err) {
       console.error('Error unlocking user:', err);
       res.status(500).json({ error: 'Failed to unlock user' });

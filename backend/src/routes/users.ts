@@ -2,7 +2,7 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import UsersService from '../services/users.ts';
 import { requireAuth } from '../middleware/jwt.ts';
-import { userCredentialsSchema, userInfoSchema } from '@shared/users.ts';
+import { userCredentialsSchema, userInfoSchema } from 'treasure-trove-shared';
 
 const usersRouter = express.Router();
 

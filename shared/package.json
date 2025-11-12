@@ -6,5 +6,8 @@
   "type": "module",
   "dependencies": {
     "yup": "^1.7.1"
+  },
+  "exports": {
+    ".": "./src/users.ts"
   }
 }

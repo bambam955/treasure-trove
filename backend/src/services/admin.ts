@@ -6,30 +6,34 @@ class AdminService {
     const users = await User.find({}, 'username role locked');
     return users.map((u) => ({
       id: u._id.toString(),
-      username: u.username,
-      tokens: u.tokens,
-      role: u.role,
-      locked: u.locked,
+      ...u,
     }));
   }
 
-  static async lockUser(id: string) {
-    const user = await User.findById(id);
+  static async lockUser(userId: string): Promise<UserInfo> {
+    const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
-    if (user.role === 'admin' || user.canBeLocked === false) {
-      throw new Error('Cannot lock admin or protected accounts');
-    }
+    if (user.role === 'admin') throw new Error('cannot lock an admin account');
+    if (user.canBeLocked === false)
+      throw new Error('cannot lock protected account');
+
     user.locked = true;
     await user.save();
-    return user;
+    return {
+      id: userId,
+      ...user,
+    };
   }
 
-  static async unlockUser(id: string) {
-    const user = await User.findById(id);
+  static async unlockUser(userId: string): Promise<UserInfo> {
+    const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
     user.locked = false;
     await user.save();
-    return user;
+    return {
+      id: userId,
+      ...user,
+    };
   }
 }
 export default AdminService;

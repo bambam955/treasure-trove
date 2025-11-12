@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User, UserType } from '../db/models/user.ts';
+import { User } from '../db/models/user.ts';
+import type { UserType } from '../db/models/user.ts';
 import {
   type UserCredentials,
   type UserInfo,
   type AuthInfo,
-} from '@shared/users.ts';
+} from 'treasure-trove-shared';
 
 const SIGNUP_TOKEN_BONUS = 1000;
 
@@ -103,7 +104,9 @@ class UsersService {
   private static parseUser(userId: string, user: UserType): UserInfo {
     return {
       id: userId,
-      ...user,
+      username: user.username,
+      role: user.role,
+      tokens: user.tokens,
     };
   }
 }
