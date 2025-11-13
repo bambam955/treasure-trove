@@ -3,9 +3,11 @@ import type { Request, Response } from 'express';
 import AdminService from '../services/admin.ts';
 import { isAdmin } from '../middleware/isAdmin.ts';
 
+// All endpoints defined for this router require admin authentication.
+// Normal users do not have access to any of these.
 const adminRouter = express.Router();
 
-//  GET all users (admin only)
+// GET full information about all users.
 adminRouter.get('/users', isAdmin, async (_req: Request, res: Response) => {
   try {
     const users = await AdminService.getAllUsers();
@@ -16,7 +18,7 @@ adminRouter.get('/users', isAdmin, async (_req: Request, res: Response) => {
   }
 });
 
-//  POST lock user by ID
+// POST lock user by ID
 adminRouter.post(
   '/users/:id/lock',
   isAdmin,
