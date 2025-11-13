@@ -71,7 +71,9 @@ usersRouter.get(
       if (isAdmin) {
         return res.status(200).json(userInfo);
       } else {
-        const data = regularUserInfoSchema.cast(userInfo);
+        const data = regularUserInfoSchema.validateSync(userInfo, {
+          stripUnknown: true,
+        });
         return res.status(200).json(data);
       }
     } catch (error) {
