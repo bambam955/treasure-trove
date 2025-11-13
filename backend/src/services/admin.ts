@@ -1,35 +1,38 @@
+import { type FullUserInfo } from 'treasure-trove-shared';
 import { User } from '../db/models/user.ts';
-import type { UserInfo } from '@shared/users.ts';
+import UsersService from './users.ts';
 
 class AdminService {
-  static async getAllUsers(): Promise<UserInfo[]> {
+  // Fetch all data about all users in the database.
+  static async getAllUsers(): Promise<FullUserInfo[]> {
     const users = await User.find({}, 'username role locked');
-    return users.map((u) => ({
-      id: u._id.toString(),
-      username: u.username,
-      tokens: u.tokens,
-      role: u.role,
-      locked: u.locked,
-    }));
+    return users.map((u) =>
+      UsersService.parseFullUserInfo(u._id.toString(), u),
+    );
   }
 
-  static async lockUser(id: string) {
-    const user = await User.findById(id);
+  // Lock a particular user's account.
+  static async lockUser(userId: string): Promise<FullUserInfo> {
+    const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
-    if (user.role === 'admin' || user.canBeLocked === false) {
-      throw new Error('Cannot lock admin or protected accounts');
-    }
+    if (user.role === 'admin') throw new Error('cannot lock an admin account');
+    // Use === to ensure that the value isn't just null.
+    if (user.canBeLocked === false)
+      throw new Error('cannot lock protected account');
+
     user.locked = true;
     await user.save();
-    return user;
+
+    return UsersService.parseFullUserInfo(userId, user);
   }
 
-  static async unlockUser(id: string) {
-    const user = await User.findById(id);
+  // Unlock a particular user's account.
+  static async unlockUser(userId: string): Promise<FullUserInfo> {
+    const user = await User.findById(userId);
     if (!user) throw new Error('User not found');
     user.locked = false;
     await user.save();
-    return user;
+    return UsersService.parseFullUserInfo(userId, user);
   }
 }
 export default AdminService;

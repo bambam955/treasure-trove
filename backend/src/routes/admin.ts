@@ -3,10 +3,12 @@ import type { Request, Response } from 'express';
 import AdminService from '../services/admin.ts';
 import { isAdmin } from '../middleware/isAdmin.ts';
 
-const router = express.Router();
+// All endpoints defined for this router require admin authentication.
+// Normal users do not have access to any of these.
+const adminRouter = express.Router();
 
-//  GET all users (admin only)
-router.get('/users', isAdmin, async (_req: Request, res: Response) => {
+// GET full information about all users.
+adminRouter.get('/users', isAdmin, async (_req: Request, res: Response) => {
   try {
     const users = await AdminService.getAllUsers();
     res.status(200).json(users);
@@ -16,25 +18,29 @@ router.get('/users', isAdmin, async (_req: Request, res: Response) => {
   }
 });
 
-//  POST lock user by ID
-router.post('/users/lock/:id', isAdmin, async (req: Request, res: Response) => {
-  try {
-    await AdminService.lockUser(req.params.id);
-    res.status(200).json({ message: 'User locked' });
-  } catch (err) {
-    console.error('Error locking user:', err);
-    res.status(500).json({ error: 'Failed to lock user' });
-  }
-});
-
-//  POST unlock user by ID
-router.post(
-  '/users/unlock/:id',
+// POST lock user by ID
+adminRouter.post(
+  '/users/:id/lock',
   isAdmin,
   async (req: Request, res: Response) => {
     try {
-      await AdminService.unlockUser(req.params.id);
-      res.status(200).json({ message: 'User unlocked' });
+      const userInfo = await AdminService.lockUser(req.params.id);
+      res.status(200).json(userInfo);
+    } catch (err) {
+      console.error('Error locking user:', err);
+      res.status(500).json({ error: 'Failed to lock user' });
+    }
+  },
+);
+
+// POST unlock user by ID
+adminRouter.post(
+  '/users/:id/unlock',
+  isAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const userInfo = await AdminService.unlockUser(req.params.id);
+      res.status(200).json(userInfo);
     } catch (err) {
       console.error('Error unlocking user:', err);
       res.status(500).json({ error: 'Failed to unlock user' });
@@ -42,4 +48,4 @@ router.post(
   },
 );
 
-export default router;
+export default adminRouter;
