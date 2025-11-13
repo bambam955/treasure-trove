@@ -14,7 +14,7 @@ adminRouter.get('/users', isAdmin, async (_req: Request, res: Response) => {
     res.status(200).json(users);
   } catch (err) {
     console.error('Error fetching users:', err);
-    res.status(400).json({ error: 'Failed to fetch users' });
+    res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
 
