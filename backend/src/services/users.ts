@@ -83,12 +83,14 @@ class UsersService {
   }
 
   // Get user info. If no username is found, the default is the user ID.
+  // Always returns the full information about the user.
   static async getUserInfoById(userId: string): Promise<FullUserInfo> {
     const user = await User.findById(userId);
     if (!user) throw new Error('could not find user!');
     return this.parseFullUserInfo(userId, user);
   }
 
+  // Update a user's information.
   static async updateUser(
     userId: string,
     newUser: Partial<FullUserInfo>,
@@ -101,6 +103,8 @@ class UsersService {
     return this.parseFullUserInfo(userId, user);
   }
 
+  // These functions are used for taking a user DB document and turning it into
+  // a usable interface.
   static parseRegularUserInfo(
     userId: string,
     user: UserDataType,
