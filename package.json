@@ -11,7 +11,8 @@
     "prepare": "husky install",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
