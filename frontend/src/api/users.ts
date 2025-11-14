@@ -8,12 +8,10 @@ import type {
 } from '@shared/users.ts';
 import { apiRoute, jwtHeaders } from './utils';
 
-// This class defines frontend API methods for the backend database.
 class UserApi {
   // Register a new user account, which requires just a username and password.
   // If successful, the new user's info will be returned.
   static async signup(auth: UserCredentials): Promise<RegularUserInfo> {
-    // Send request to create account.
     const res = await fetch(apiRoute('users/signup'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -29,7 +27,6 @@ class UserApi {
   // Log in to an existing user account with a username and password.
   // If successful, the authentication info from the backend will be returned.
   static async login(auth: UserCredentials): Promise<AuthInfo> {
-    // Send request to log in.
     const res = await fetch(apiRoute('users/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -59,6 +56,7 @@ class UserApi {
     return await res.json();
   }
 
+  // Update information about an existing user.
   static async updateUser(
     id: string,
     user: Partial<FullUserInfo>,

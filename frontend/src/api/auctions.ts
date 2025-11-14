@@ -4,7 +4,7 @@ import { apiRoute, jwtHeaders } from './utils';
 import { AuctionInfo } from '@shared/auctions.ts';
 
 class AuctionsApi {
-  // TODO: get all auctions, get one auction
+  // Retrieve information about all auctions.
   static async getAllAuctions(token: string): Promise<AuctionInfo[]> {
     const res = await fetch(apiRoute('auctions'), {
       method: 'GET',
@@ -17,6 +17,7 @@ class AuctionsApi {
     return await res.json();
   }
 
+  // Retrieve information about a specific auction.
   static async getAuctionInfo(id: string, token: string): Promise<AuctionInfo> {
     const res = await fetch(apiRoute(`auctions/${id}`), {
       method: 'GET',
@@ -29,6 +30,8 @@ class AuctionsApi {
     return await res.json();
   }
 
+  // Create a new auction.
+  // If successful, the information about the new auction will be returned.
   static async createAuction(
     auctionInfo: AuctionInfo,
     token: string,
@@ -42,6 +45,8 @@ class AuctionsApi {
     return await res.json();
   }
 
+  // Update information about an existing auction.
+  // If successful, the auction's updated information will be returned.
   static async updateAuction(
     id: string,
     auction: Partial<AuctionInfo>,
