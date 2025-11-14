@@ -2,10 +2,11 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import { requireAuth } from '../middleware/jwt.ts';
 import AuctionsService from 'src/services/auctions.ts';
-import { auctionInfoSchema } from '@shared/auctions.ts';
+import { createAuctionSchema, updateAuctionSchema } from '@shared/auctions.ts';
 
 const auctionsRouter = express.Router();
 
+// GET information about all auctions.
 auctionsRouter.get('/', requireAuth, async (_req: Request, res: Response) => {
   try {
     const auctions = await AuctionsService.getAllAuctions();
@@ -16,6 +17,7 @@ auctionsRouter.get('/', requireAuth, async (_req: Request, res: Response) => {
   }
 });
 
+// GET information about the auction with the given ID.
 auctionsRouter.get('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
     const auctionInfo = await AuctionsService.getAuctionById(req.params.id);
@@ -26,9 +28,10 @@ auctionsRouter.get('/:id', requireAuth, async (req: Request, res: Response) => {
   }
 });
 
+// POST endpoint to create a new auction.
 auctionsRouter.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
-    const validatedBody = auctionInfoSchema.validateSync(req.body);
+    const validatedBody = createAuctionSchema.validateSync(req.body);
     const auction = AuctionsService.createAuction(validatedBody);
     // Use 201 when a POST request successfully creates a new resource on the server.
     return res.status(201).json(auction);
@@ -40,9 +43,10 @@ auctionsRouter.post('/', requireAuth, async (req: Request, res: Response) => {
   }
 });
 
+// PUT endpoint to update information about an existing auction.
 auctionsRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
-    const validatedBody = auctionInfoSchema.validateSync(req.body);
+    const validatedBody = updateAuctionSchema.validateSync(req.body);
     const auctionInfo = await AuctionsService.updateAuction(
       req.params.id,
       validatedBody,

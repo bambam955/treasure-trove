@@ -1,7 +1,11 @@
 /// <reference types="vite/client" />
 
 import { apiRoute, jwtHeaders } from './utils';
-import { AuctionInfo } from '@shared/auctions.ts';
+import {
+  AuctionInfo,
+  CreateAuctionInfo,
+  UpdateAuctionInfo,
+} from '@shared/auctions.ts';
 
 class AuctionsApi {
   // Retrieve information about all auctions.
@@ -33,13 +37,13 @@ class AuctionsApi {
   // Create a new auction.
   // If successful, the information about the new auction will be returned.
   static async createAuction(
-    auctionInfo: AuctionInfo,
+    createAuctionInfo: CreateAuctionInfo,
     token: string,
   ): Promise<AuctionInfo> {
     const res = await fetch(apiRoute('auctions'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...jwtHeaders(token) },
-      body: JSON.stringify(auctionInfo),
+      body: JSON.stringify(createAuctionInfo),
     });
     if (!res.ok) throw new Error('failed to create auction');
     return await res.json();
@@ -49,7 +53,7 @@ class AuctionsApi {
   // If successful, the auction's updated information will be returned.
   static async updateAuction(
     id: string,
-    auction: Partial<AuctionInfo>,
+    auctionInfo: Partial<UpdateAuctionInfo>,
     token: string,
   ): Promise<AuctionInfo> {
     const res = await fetch(apiRoute(`auctions/${id}`), {
@@ -58,7 +62,7 @@ class AuctionsApi {
         'Content-Type': 'application/json',
         ...jwtHeaders(token),
       },
-      body: JSON.stringify(auction),
+      body: JSON.stringify(auctionInfo),
     });
     if (!res.ok) throw new Error('failed to update auction');
     return await res.json();

@@ -1,4 +1,8 @@
-import { AuctionInfo } from '@shared/auctions.ts';
+import {
+  AuctionInfo,
+  CreateAuctionInfo,
+  UpdateAuctionInfo,
+} from '@shared/auctions.ts';
 import { Auction, AuctionDataType } from '../db/models/auction.ts';
 
 class AuctionsService {
@@ -15,7 +19,9 @@ class AuctionsService {
     return this.parseAuctionInfo(auctionId, auction);
   }
 
-  static async createAuction(auctionInfo: AuctionInfo): Promise<AuctionInfo> {
+  static async createAuction(
+    auctionInfo: CreateAuctionInfo,
+  ): Promise<AuctionInfo> {
     const auction = new Auction({
       title: auctionInfo.title,
       description: auctionInfo.description,
@@ -30,7 +36,7 @@ class AuctionsService {
 
   static async updateAuction(
     auctionId: string,
-    newAuction: Partial<AuctionInfo>,
+    newAuction: Partial<UpdateAuctionInfo>,
   ): Promise<AuctionInfo> {
     const auction = await Auction.findById(auctionId);
     if (!auction) throw new Error('could not update auction!');
