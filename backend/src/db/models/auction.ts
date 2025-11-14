@@ -9,12 +9,12 @@ const auctionSchema = new Schema(
     // All of this should be set when the auction is created.
     title: { type: String, required: true },
     description: { type: String, required: true },
-    seller: { type: ObjectId, ref: 'user', required: true },
+    sellerId: { type: ObjectId, ref: 'user', required: true },
     minimumBid: { type: Number, required: true, default: 0 },
-    auctionEndDate: { type: Date, required: true, default: Date.now() },
+    endDate: { type: Date, required: true, default: Date.now() },
 
     // This won't be filled in until the auction finishes.
-    buyer: { type: ObjectId, ref: 'user' },
+    buyerId: { type: ObjectId, ref: 'user' },
 
     // These fields are used for the feedback system.
     expectedValue: { type: Number, default: 0 },
