@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import type { InferSchemaType } from 'mongoose';
 
 // Create the DB schema for users.
 const userSchema = new Schema({
@@ -11,8 +12,10 @@ const userSchema = new Schema({
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
   locked: { type: Boolean, default: false },
   canBeLocked: { type: Boolean, default: true }, // Certain accounts cannot be locked
+
   // "Tokens" are fake money in the platform.
   tokens: { type: Number, required: true, default: 0 },
 });
 
 export const User = mongoose.model('user', userSchema);
+export type UserDataType = InferSchemaType<typeof userSchema>;
