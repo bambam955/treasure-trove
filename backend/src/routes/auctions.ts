@@ -1,8 +1,11 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import { requireAuth } from '../middleware/jwt.ts';
-import AuctionsService from 'src/services/auctions.ts';
-import { createAuctionSchema, updateAuctionSchema } from '@shared/auctions.ts';
+import AuctionsService from '../services/auctions.ts';
+import {
+  createAuctionSchema,
+  updateAuctionSchema,
+} from 'treasure-trove-shared';
 
 const auctionsRouter = express.Router();
 

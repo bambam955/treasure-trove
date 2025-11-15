@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import mongoose, { Schema } from 'mongoose';
 import type { InferSchemaType } from 'mongoose';
 
@@ -9,12 +8,12 @@ const auctionSchema = new Schema(
     // All of this should be set when the auction is created.
     title: { type: String, required: true },
     description: { type: String, required: true },
-    sellerId: { type: ObjectId, ref: 'user', required: true },
+    sellerId: { type: Schema.Types.ObjectId, ref: 'user', required: true },
     minimumBid: { type: Number, required: true, default: 0 },
-    endDate: { type: Date, required: true, default: Date.now() },
+    endDate: { type: Date, required: true, default: new Date() },
 
     // This won't be filled in until the auction finishes.
-    buyerId: { type: ObjectId, ref: 'user' },
+    buyerId: { type: Schema.Types.ObjectId, ref: 'user' },
 
     // These fields are used for the feedback system.
     expectedValue: { type: Number, default: 0 },

@@ -3,6 +3,7 @@
 import { apiRoute, jwtHeaders } from './utils';
 import {
   AuctionInfo,
+  auctionInfoSchema,
   CreateAuctionInfo,
   UpdateAuctionInfo,
 } from '@shared/auctions.ts';
@@ -17,8 +18,14 @@ class AuctionsApi {
         ...jwtHeaders(token),
       },
     });
+
     if (!res.ok) throw new Error('failed to fetch auctions');
-    return await res.json();
+
+    // Use the defined schema to validate the response.
+    // This also takes care of converting the date strings to Date objects.
+    const rawBody: AuctionInfo[] = await res.json();
+    const body = rawBody.map((a) => auctionInfoSchema.validateSync(a));
+    return body;
   }
 
   // Retrieve information about a specific auction.
@@ -30,8 +37,14 @@ class AuctionsApi {
         ...jwtHeaders(token),
       },
     });
+
     if (!res.ok) throw new Error('failed to fetch auction');
-    return await res.json();
+
+    // Use the defined schema to validate the response.
+    // This also takes care of converting the date strings to a Date.
+    const rawBody = await res.json();
+    const body = auctionInfoSchema.validateSync(rawBody);
+    return body;
   }
 
   // Create a new auction.

@@ -1,9 +1,9 @@
-import {
+import type {
   AuctionInfo,
   CreateAuctionInfo,
   UpdateAuctionInfo,
 } from '@shared/auctions.ts';
-import { Auction, AuctionDataType } from '../db/models/auction.ts';
+import { Auction, type AuctionDataType } from '../db/models/auction.ts';
 
 class AuctionsService {
   static async getAllAuctions(): Promise<AuctionInfo[]> {
@@ -54,10 +54,10 @@ class AuctionsService {
       id: auctionId,
       title: auction.title,
       description: auction.description,
-      sellerId: auction.sellerId.prototype!.toString(),
+      sellerId: auction.sellerId.toString(),
       minimumBid: auction.minimumBid,
       endDate: auction.endDate,
-      buyerId: auction.sellerId.prototype!.toString(),
+      buyerId: auction.buyerId?.toString(),
       expectedValue: auction.expectedValue,
     };
   }
