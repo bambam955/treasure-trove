@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import UserApi from '../api/users';
 import { useAuth } from '../contexts/AuthContext';
 import { FullUserInfo, RegularUserInfo } from '@shared/users.ts';
@@ -31,7 +31,6 @@ export function User({ id }: UserProps) {
     id,
     username: id,
   };
-
   return (
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>
       <strong className='me-3'>{userInfo.username}</strong>
