@@ -4,8 +4,10 @@ import { requireAuth } from '../middleware/jwt.ts';
 import AuctionsService from '../services/auctions.ts';
 import {
   createAuctionSchema,
+  createBidSchema,
   updateAuctionSchema,
 } from 'treasure-trove-shared';
+import BidsService from '../services/bids.ts';
 
 const auctionsRouter = express.Router();
 
@@ -61,5 +63,39 @@ auctionsRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'failed to update auction ' });
   }
 });
+
+// GET all the bids associated with a given auction.
+auctionsRouter.get(
+  '/:id/bids',
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const bidsInfo = await BidsService.getAuctionBids(req.params.id);
+      return res.status(200).json(bidsInfo);
+    } catch (error) {
+      console.error('Error fetching auction bids:', error);
+      return res.status(404).json({ error: "Auction's bids not found" });
+    }
+  },
+);
+
+// POST endpoint to create a new bid for the given auction.
+auctionsRouter.post(
+  '/:id/bids',
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const validatedBody = createBidSchema.validateSync(req.body);
+      const bid = await BidsService.createBid(validatedBody);
+      // Use 201 when a POST request successfully creates a new resource on the server.
+      return res.status(201).json(bid);
+    } catch (error) {
+      console.error('Auction creation error:', error);
+      return res.status(400).json({
+        error: 'Failed to create auction',
+      });
+    }
+  },
+);
 
 export default auctionsRouter;

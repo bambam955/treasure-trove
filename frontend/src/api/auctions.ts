@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import { BidInfo, bidInfoSchema, CreateBidInfo } from '@shared/bids.ts';
 import { apiRoute, jwtHeaders } from './utils';
 import {
   AuctionInfo,
@@ -82,6 +83,41 @@ class AuctionsApi {
     if (!res.ok) throw new Error('failed to update auction');
     const rawBody = await res.json();
     const body = auctionInfoSchema.validateSync(rawBody);
+    return body;
+  }
+
+  // Get the bidding history for the given auction.
+  static async getAuctionBids(id: string, token: string): Promise<BidInfo[]> {
+    const res = await fetch(apiRoute(`auctions/${id}/bids`), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...jwtHeaders(token),
+      },
+    });
+    if (!res.ok) throw new Error('failed to fetch auction bids');
+    const rawBody: BidInfo[] = await res.json();
+    const body = rawBody.map((a) => bidInfoSchema.validateSync(a));
+    return body;
+  }
+
+  // Make a bid on an auction.
+  static async makeBid(
+    auctionId: string,
+    newBid: CreateBidInfo,
+    token: string,
+  ): Promise<BidInfo[]> {
+    const res = await fetch(apiRoute(`auctions/${auctionId}/bids`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...jwtHeaders(token),
+      },
+      body: JSON.stringify(newBid),
+    });
+    if (!res.ok) throw new Error('failed to make bid');
+    const rawBody: BidInfo[] = await res.json();
+    const body = rawBody.map((a) => bidInfoSchema.validateSync(a));
     return body;
   }
 }

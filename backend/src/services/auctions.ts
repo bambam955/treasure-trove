@@ -9,9 +9,7 @@ class AuctionsService {
   // Fetch information about all auctions in the database.
   static async getAllAuctions(): Promise<AuctionInfo[]> {
     const auctions = await Auction.find({});
-    return auctions.map((a) =>
-      AuctionsService.parseAuctionInfo(a._id.toString(), a),
-    );
+    return auctions.map((a) => this.parseAuctionInfo(a._id.toString(), a));
   }
 
   // Fetch information about a particular auction.
