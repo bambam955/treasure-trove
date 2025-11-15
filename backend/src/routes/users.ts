@@ -2,9 +2,6 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import UsersService from '../services/users.ts';
 import { requireAuth } from '../middleware/jwt.ts';
-<<<<<<< HEAD
-import { isAdmin } from '../middleware/isAdmin.ts';
-=======
 import {
   fullUserInfoSchema,
   regularUserInfoSchema,
@@ -14,7 +11,6 @@ import {
   type AuthenticatedRequest,
   checkAdmin,
 } from '../middleware/isAdmin.ts';
->>>>>>> develop
 
 const usersRouter = express.Router();
 
@@ -70,25 +66,6 @@ usersRouter.get(
       const isAdmin = (await checkAdmin(req.auth)) === 200;
       const userInfo = await UsersService.getUserInfoById(req.params.id);
 
-<<<<<<< HEAD
-  app.post(
-    '/api/v1/users/:id',
-    requireAuth,
-    isAdmin,
-    async (req: Request, res: Response) => {
-      try {
-        const userInfo = await UsersService.updateUserTokens(
-          req.params.id,
-          req.body.tokens,
-        );
-        return res.status(200).send(userInfo);
-      } catch (err) {
-        console.error('error updating token amount:', err);
-        // Use 400 when there is a bad request for some reason.
-        return res.status(400).json({
-          error:
-            'failed to update user tokens amount, did you specify the amount to update to?',
-=======
       // The service gives us all the info. If the requester is admin, return everything.
       // Otherwise, take out the admin-only fields and return the rest.
       if (isAdmin) {
@@ -96,7 +73,6 @@ usersRouter.get(
       } else {
         const data = regularUserInfoSchema.validateSync(userInfo, {
           stripUnknown: true,
->>>>>>> develop
         });
         return res.status(200).json(data);
       }

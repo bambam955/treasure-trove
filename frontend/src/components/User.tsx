@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import UserApi from '../api/users';
 import { useAuth } from '../contexts/AuthContext';
 import { FullUserInfo, RegularUserInfo } from '@shared/users.ts';
@@ -31,7 +31,6 @@ export function User({ id }: UserProps) {
     id,
     username: id,
   };
-
   return (
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>
       <strong className='me-3'>{userInfo.username}</strong>
@@ -39,6 +38,16 @@ export function User({ id }: UserProps) {
       <strong className='ms-2 fs-5'>
         💰 <em>{userInfo.tokens ?? 0}</em>
       </strong>
+      <button
+        // Don't allow tokens to be added if we had trouble fetching the initial amount.
+        disabled={tokensMutation.isPending}
+        className='btn ms-2 py-0 btn-sm bg-info fs-5'
+        // Currently, pressing the button is hardcoded to add 100 tokens.
+        // We will need to revise this eventually...
+        onClick={() => tokensMutation.mutate(userInfo.tokens! + 100)}
+      >
+        +
+        </button>
     </div>
   );
 }

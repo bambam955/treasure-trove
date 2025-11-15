@@ -50,14 +50,22 @@ class AdminApi {
     }
   }
 
-  static async updateUserTokens(id: string, tokens: number, auth: string) {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}users/${id}`, {
-      method: 'POST',
+  static async updateUserTokens(id: string, tokens: number, user: FullUserInfo, auth: string) {
+    // const body = {
+    // id: user.id,
+    // username: user.username,
+    // role: user.role,
+    // tokens,
+    // locked: user.locked,
+    // canBeLocked: user.canBeLocked,
+    // };
+    const res = await fetch(apiRoute(`users/${id}`), {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${auth}`,
+        ...jwtHeaders(auth),
       },
-      body: JSON.stringify({ tokens }),
+      body: JSON.stringify({...user, tokens}),
     });
 
     if (!res.ok) throw new Error('Failed to update tokens');
