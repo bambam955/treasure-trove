@@ -59,7 +59,9 @@ class AuctionsApi {
       body: JSON.stringify(createAuctionInfo),
     });
     if (!res.ok) throw new Error('failed to create auction');
-    return await res.json();
+    const rawBody = await res.json();
+    const body = auctionInfoSchema.validateSync(rawBody);
+    return body;
   }
 
   // Update information about an existing auction.
@@ -78,7 +80,9 @@ class AuctionsApi {
       body: JSON.stringify(auctionInfo),
     });
     if (!res.ok) throw new Error('failed to update auction');
-    return await res.json();
+    const rawBody = await res.json();
+    const body = auctionInfoSchema.validateSync(rawBody);
+    return body;
   }
 }
 
