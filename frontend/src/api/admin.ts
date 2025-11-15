@@ -3,6 +3,7 @@ import type { FullUserInfo } from '@shared/users.ts';
 import { apiRoute, jwtHeaders } from './utils';
 
 class AdminApi {
+  // Retrieve information about all users.
   static async getAllUsers(token: string): Promise<FullUserInfo[]> {
     const res = await fetch(apiRoute('admin/users'), {
       method: 'GET',
@@ -20,6 +21,8 @@ class AdminApi {
     return await res.json();
   }
 
+  // Lock out a user's account.
+  // Locked users will not be able to log in.
   static async lockUser(id: string, token: string): Promise<void> {
     const res = await fetch(apiRoute(`admin/users/${id}/lock`), {
       method: 'POST',
@@ -35,6 +38,7 @@ class AdminApi {
     }
   }
 
+  // Unlock a user's account.
   static async unlockUser(id: string, token: string): Promise<void> {
     const res = await fetch(apiRoute(`admin/users/${id}/unlock`), {
       method: 'POST',
