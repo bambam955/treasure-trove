@@ -1,5 +1,6 @@
 import type { BidInfo, CreateBidInfo } from '@shared/bids.ts';
 import { Bid, type BidDataType } from '../db/models/bid.ts';
+import AuctionsService from './auctions.ts';
 
 class BidsService {
   // Get all the bids that have been made on a given auction.
@@ -10,6 +11,22 @@ class BidsService {
 
   // Make a new bid on an auction.
   static async createBid(bidInfo: CreateBidInfo): Promise<BidInfo> {
+    const auction = await AuctionsService.getAuctionById(bidInfo.auctionId);
+
+    // Make sure the bid is at least as high as the minimum bid.
+    // We can make this preliminary check before going through all of the other bids
+    // for a slight performance boost.
+    if (bidInfo.amount < auction.minimumBid) {
+      throw new Error('bid amount must be at least the minimum bid');
+    }
+    // If the bid as at least as high as the minimum bid, then make sure it is higher
+    // than all other bids that have been made.
+    const currHighBid = await this.getCurrentHighestBid(bidInfo.auctionId);
+    if (currHighBid && currHighBid.amount >= bidInfo.amount) {
+      throw new Error('bid amount must be higher than the previous bid');
+    }
+
+    // If the bid amount is valid, then create the new bid.
     const bid = new Bid({
       userId: bidInfo.userId,
       amount: bidInfo.amount,
@@ -17,6 +34,23 @@ class BidsService {
     });
     await bid.save();
     return this.parseBidInfo(bid._id.toString(), bid);
+  }
+
+  // Figure out what the current highest bid is on the given auction.
+  private static async getCurrentHighestBid(
+    auctionId: string,
+  ): Promise<BidInfo | undefined> {
+    const bids = await this.getAuctionBids(auctionId);
+    if (bids.length === 0) return undefined;
+
+    let maxBid = bids[0];
+    for (let i = 1; i < bids.length; i++) {
+      if (bids[i].amount > maxBid.amount) {
+        maxBid = bids[i];
+      }
+    }
+
+    return maxBid;
   }
 
   // This function is used for taking an auction DB document and converting it to
