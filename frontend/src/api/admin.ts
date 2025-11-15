@@ -50,7 +50,12 @@ class AdminApi {
     }
   }
 
-  static async updateUserTokens(id: string, tokens: number, user: FullUserInfo, auth: string) {
+  static async updateUserTokens(
+    id: string,
+    tokens: number,
+    user: FullUserInfo,
+    auth: string,
+  ) {
     // const body = {
     // id: user.id,
     // username: user.username,
@@ -65,7 +70,7 @@ class AdminApi {
         'Content-Type': 'application/json',
         ...jwtHeaders(auth),
       },
-      body: JSON.stringify({...user, tokens}),
+      body: JSON.stringify({ ...user, tokens }),
     });
 
     if (!res.ok) throw new Error('Failed to update tokens');

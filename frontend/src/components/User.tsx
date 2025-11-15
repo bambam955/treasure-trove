@@ -47,7 +47,7 @@ export function User({ id }: UserProps) {
         onClick={() => tokensMutation.mutate(userInfo.tokens! + 100)}
       >
         +
-        </button>
+      </button>
     </div>
   );
 }
