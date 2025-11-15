@@ -7,7 +7,7 @@ import {
   createBidSchema,
   updateAuctionSchema,
 } from 'treasure-trove-shared';
-import BidsService from 'src/services/bids.ts';
+import BidsService from '../services/bids.ts';
 
 const auctionsRouter = express.Router();
 

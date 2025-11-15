@@ -1,12 +1,14 @@
-import { BidInfo, CreateBidInfo } from '@shared/bids.ts';
-import { Bid, BidDataType } from 'src/db/models/bid';
+import type { BidInfo, CreateBidInfo } from '@shared/bids.ts';
+import { Bid, type BidDataType } from '../db/models/bid.ts';
 
 class BidsService {
+  // Get all the bids that have been made on a given auction.
   static async getAuctionBids(auctionId: string): Promise<BidInfo[]> {
     const bids = await Bid.find({ auctionId });
     return bids.map((b) => this.parseBidInfo(b._id.toString(), b));
   }
 
+  // Make a new bid on an auction.
   static async createBid(bidInfo: CreateBidInfo): Promise<BidInfo> {
     const bid = new Bid({
       userId: bidInfo.userId,
