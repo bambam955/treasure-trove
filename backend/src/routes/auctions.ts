@@ -27,7 +27,7 @@ auctionsRouter.get('/:id', requireAuth, async (req: Request, res: Response) => {
     return res.status(200).json(auctionInfo);
   } catch (error) {
     console.error('Error fetching auction info:', error);
-    return res.status(404).json({ error: 'Auction not found ' });
+    return res.status(404).json({ error: 'Auction not found' });
   }
 });
 

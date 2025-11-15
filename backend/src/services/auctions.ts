@@ -65,6 +65,7 @@ class AuctionsService {
       endDate: auction.endDate,
       buyerId: auction.buyerId?.toString(),
       expectedValue: auction.expectedValue,
+      createdDate: auction.createdAt,
     };
   }
 }
