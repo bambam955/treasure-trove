@@ -6,6 +6,7 @@ import type {
 import { Auction, type AuctionDataType } from '../db/models/auction.ts';
 
 class AuctionsService {
+  // Fetch information about all auctions in the database.
   static async getAllAuctions(): Promise<AuctionInfo[]> {
     const auctions = await Auction.find({});
     return auctions.map((a) =>
@@ -13,12 +14,14 @@ class AuctionsService {
     );
   }
 
+  // Fetch information about a particular auction.
   static async getAuctionById(auctionId: string): Promise<AuctionInfo> {
     const auction = await Auction.findById(auctionId);
     if (!auction) throw new Error('could not find auction!');
     return this.parseAuctionInfo(auctionId, auction);
   }
 
+  // Create a new auction.
   static async createAuction(
     auctionInfo: CreateAuctionInfo,
   ): Promise<AuctionInfo> {
@@ -34,6 +37,7 @@ class AuctionsService {
     return this.parseAuctionInfo(auction._id.toString(), auction);
   }
 
+  // Update information about an existing auction.
   static async updateAuction(
     auctionId: string,
     newAuction: Partial<UpdateAuctionInfo>,
@@ -46,6 +50,8 @@ class AuctionsService {
     return this.parseAuctionInfo(auctionId, auction);
   }
 
+  // This function is used for taking an auction DB document and converting it to
+  // a usable interface.
   static parseAuctionInfo(
     auctionId: string,
     auction: AuctionDataType,
