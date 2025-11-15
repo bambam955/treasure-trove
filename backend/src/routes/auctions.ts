@@ -70,7 +70,7 @@ auctionsRouter.get(
   requireAuth,
   async (req: Request, res: Response) => {
     try {
-      const bidsInfo = BidsService.getAuctionBids(req.params.id);
+      const bidsInfo = await BidsService.getAuctionBids(req.params.id);
       return res.status(200).json(bidsInfo);
     } catch (error) {
       console.error('Error fetching auction bids:', error);
@@ -86,7 +86,7 @@ auctionsRouter.post(
   async (req: Request, res: Response) => {
     try {
       const validatedBody = createBidSchema.validateSync(req.body);
-      const bid = BidsService.createBid(validatedBody);
+      const bid = await BidsService.createBid(validatedBody);
       // Use 201 when a POST request successfully creates a new resource on the server.
       return res.status(201).json(bid);
     } catch (error) {
