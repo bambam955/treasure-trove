@@ -5,6 +5,7 @@ import express, {
 } from 'express';
 import bodyParser from 'body-parser';
 import usersRouter from './routes/users.ts';
+import auctionsRouter from './routes/auctions.ts';
 import adminRouter from './routes/admin.ts';
 
 // Create the Express app.
@@ -32,6 +33,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Set up the endpoints for user management.
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/auctions', auctionsRouter);
 app.use('/api/v1/admin', adminRouter);
 
 // Add a default response for the root of the API.
