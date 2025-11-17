@@ -1,13 +1,15 @@
 /// <reference types="vite/client" />
-import type { UserInfo } from '@shared/users.ts';
+import type { FullUserInfo } from '@shared/users.ts';
+import { apiRoute, jwtHeaders } from './utils';
 
 class AdminApi {
-  static async getAllUsers(auth: string): Promise<UserInfo[]> {
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}admin/users`, {
+  // Retrieve information about all users.
+  static async getAllUsers(token: string): Promise<FullUserInfo[]> {
+    const res = await fetch(apiRoute('admin/users'), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${auth}`,
+        ...jwtHeaders(token),
       },
     });
 
@@ -19,17 +21,16 @@ class AdminApi {
     return await res.json();
   }
 
-  static async lockUser(id: string, auth: string): Promise<void> {
-    const res = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}admin/users/lock/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${auth}`,
-        },
+  // Lock out a user's account.
+  // Locked users will not be able to log in.
+  static async lockUser(id: string, token: string): Promise<void> {
+    const res = await fetch(apiRoute(`admin/users/${id}/lock`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...jwtHeaders(token),
       },
-    );
+    });
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({}));
@@ -37,17 +38,15 @@ class AdminApi {
     }
   }
 
-  static async unlockUser(id: string, auth: string): Promise<void> {
-    const res = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}admin/users/unlock/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${auth}`,
-        },
+  // Unlock a user's account.
+  static async unlockUser(id: string, token: string): Promise<void> {
+    const res = await fetch(apiRoute(`admin/users/${id}/unlock`), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...jwtHeaders(token),
       },
-    );
+    });
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({}));

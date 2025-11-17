@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { UserInfo } from '@shared/users.ts';
+import { FullUserInfo } from '@shared/users.ts';
 import AdminApi from '../api/admin';
 import { Header } from '../components/Header.tsx';
 
@@ -9,13 +9,13 @@ export function Admin() {
   const [token] = useAuth();
   const navigate = useNavigate();
 
-  const usersQuery = useQuery<UserInfo[]>({
+  const usersQuery = useQuery<FullUserInfo[]>({
     queryKey: ['users'],
     queryFn: () => AdminApi.getAllUsers(token!),
   });
 
   const toggleLockMutation = useMutation({
-    mutationFn: async (user: UserInfo) => {
+    mutationFn: async (user: FullUserInfo) => {
       if (user.locked) {
         await AdminApi.unlockUser(user.id!, token!);
       } else {
