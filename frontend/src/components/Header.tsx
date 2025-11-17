@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { jwtDecode } from 'jwt-decode';
 import { User } from './User';
@@ -8,8 +8,17 @@ interface JwtPayload {
   sub: string;
 }
 
-export function Header() {
+interface HeaderProps {
+  showAddAuctionButton?: boolean;
+  showMyAuctionButton?: boolean;
+}
+
+export function Header({
+  showAddAuctionButton = true,
+  showMyAuctionButton = true,
+}: HeaderProps) {
   const [token, setToken] = useAuth();
+  const navigate = useNavigate();
 
   // If a user is logged in, then display their username and a Logout button.
   // If the user clicks Logout then the JWT token will be cleared.
@@ -21,6 +30,22 @@ export function Header() {
           <span className='navbar-text text-light me-3'>
             <User id={sub} />
           </span>
+          {showMyAuctionButton && (
+            <button
+              className='btn btn-outline-light btn-sm me-2'
+              onClick={() => navigate('/MyAuctions')}
+            >
+              My Auctions
+            </button>
+          )}
+          {showAddAuctionButton && (
+            <button
+              className='btn btn-outline-light btn-sm me-2'
+              onClick={() => navigate('/Auctions')}
+            >
+              Add Auction Item
+            </button>
+          )}
           <button
             className='btn btn-outline-light btn-sm'
             onClick={() => setToken(null)}
