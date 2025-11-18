@@ -5,6 +5,7 @@ import { FullUserInfo } from '@shared/users.ts';
 import AdminApi from '../api/admin';
 import { UnauthorizedPage } from './Unauthorized.tsx';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
+import UserApi from '../api/users.ts';
 
 export function Admin() {
   const [token] = useAuth();
@@ -17,6 +18,7 @@ export function Admin() {
   const usersQuery = useQuery<FullUserInfo[]>({
     queryKey: ['users'],
     queryFn: () => AdminApi.getAllUsers(token!),
+    enabled: !!token,
   });
 
   const toggleLockMutation = useMutation({
@@ -26,6 +28,23 @@ export function Admin() {
       } else {
         await AdminApi.lockUser(user.id!, token!);
       }
+    },
+    onSuccess: () => usersQuery.refetch(),
+  });
+
+  const updateTokensMutation = useMutation({
+    mutationFn: async ({
+      user,
+      newTokens,
+    }: {
+      user: FullUserInfo;
+      newTokens: number;
+    }) => {
+      await UserApi.updateUser(
+        user.id,
+        { id: user.id, tokens: newTokens },
+        token!,
+      );
     },
     onSuccess: () => usersQuery.refetch(),
   });
@@ -42,30 +61,79 @@ export function Admin() {
               <th>Username</th>
               <th>Role</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Tokens</th>
+              <th>Lock / Unlock</th>
+              <th>Token Controls</th>
             </tr>
           </thead>
           <tbody>
-            {usersQuery.data?.map((u) => (
-              <tr key={u.id}>
-                <td>{u.username}</td>
-                <td>{u.role}</td>
-                <td>{u.locked ? 'Locked' : 'Active'}</td>
-                <td>
-                  {u.role !== 'admin' ? (
-                    <button
-                      onClick={() => toggleLockMutation.mutate(u)}
-                      disabled={toggleLockMutation.isPending}
-                      className={`btn btn-sm ${u.locked ? 'btn-success' : 'btn-danger'}`}
-                    >
-                      {u.locked ? 'Unlock' : 'Lock'}
-                    </button>
-                  ) : (
-                    <em style={{ color: 'gray' }}>N/A</em>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {usersQuery.data?.map((u) => {
+              const currentTokens = u.tokens ?? 0;
+              return (
+                <tr key={u.id}>
+                  <td>{u.username}</td>
+                  <td>{u.role}</td>
+                  <td>{u.locked ? 'Locked' : 'Active'}</td>
+                  <td>{currentTokens}</td>
+                  <td>
+                    {u.role !== 'admin' ? (
+                      <button
+                        onClick={() => toggleLockMutation.mutate(u)}
+                        disabled={toggleLockMutation.isPending}
+                        className={`btn btn-sm ${u.locked ? 'btn-success' : 'btn-danger'}`}
+                      >
+                        {u.locked ? 'Unlock' : 'Lock'}
+                      </button>
+                    ) : (
+                      <em style={{ color: 'gray' }}>N/A</em>
+                    )}
+                  </td>
+                  <td>
+                    {u.role !== 'admin' ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 6,
+                        }}
+                      >
+                        <div style={{ fontWeight: 'bold' }}>Add Tokens</div>
+                        <button
+                          className='btn btn-sm btn-success'
+                          disabled={updateTokensMutation.isPending}
+                          onClick={() =>
+                            updateTokensMutation.mutate({
+                              user: u,
+                              newTokens: currentTokens + 100,
+                            })
+                          }
+                        >
+                          +100
+                        </button>
+
+                        <div style={{ fontWeight: 'bold', marginTop: 6 }}>
+                          Remove Tokens
+                        </div>
+                        <button
+                          className='btn btn-sm btn-warning'
+                          disabled={updateTokensMutation.isPending}
+                          onClick={() =>
+                            updateTokensMutation.mutate({
+                              user: u,
+                              newTokens: Math.max(0, currentTokens - 100),
+                            })
+                          }
+                        >
+                          -100
+                        </button>
+                      </div>
+                    ) : (
+                      <em style={{ color: 'gray' }}>N/A</em>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
