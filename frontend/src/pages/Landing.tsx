@@ -1,12 +1,11 @@
-import { Header } from '../components/Header';
+import { BaseLayout } from '../layouts/BaseLayout.tsx';
 
 export function Landing() {
   return (
-    <div className='vh-100 d-flex flex-column' style={{ padding: 8 }}>
-      <Header />
+    <BaseLayout checkAuth={false}>
       <div className='flex-grow-1 d-flex align-items-center justify-content-center'>
         <div>Landing page content coming soon!</div>
       </div>
-    </div>
+    </BaseLayout>
   );
 }

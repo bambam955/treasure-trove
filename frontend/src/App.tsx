@@ -6,6 +6,7 @@ import { AuthContextProvider } from './contexts/AuthContext';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { Admin } from './pages/Admin.tsx';
+import { AuctionView } from './pages/AuctionView.tsx';
 // Define the routes to different pages of the application.
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Admin />,
+  },
+  {
+    path: '/auctions/:id',
+    element: <AuctionView />,
   },
 ]);
 
