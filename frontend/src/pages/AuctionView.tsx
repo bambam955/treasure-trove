@@ -5,6 +5,8 @@ import AuctionsApi from '../api/auctions.ts';
 import { useParams } from 'react-router-dom';
 import { UnauthorizedPage } from './Unauthorized.tsx';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
+import { RegularUserInfo } from '@shared/users.ts';
+import UserApi from '../api/users.ts';
 
 export function AuctionView() {
   const [token] = useAuth();
@@ -22,10 +24,53 @@ export function AuctionView() {
     // Fetched info will be cached by auction ID.
     queryKey: ['auctions', auctionId],
     // Fetch the auction info via the API.
-    queryFn: () => AuctionsApi.getAuctionInfo(auctionId!, token!),
+    queryFn: () => AuctionsApi.getAuctionInfo(auctionId!, token),
   });
 
   const auctionInfo: AuctionInfo | undefined = auctionInfoQuery.data;
 
-  return <BaseLayout>{JSON.stringify(auctionInfo)}</BaseLayout>;
+  if (!auctionInfo) {
+    return <BaseLayout>could not find auction.</BaseLayout>;
+  }
+
+  const sellerInfoQuery = useQuery<RegularUserInfo>({
+    queryKey: ['users', auctionInfo.sellerId],
+    queryFn: () => UserApi.getUserInfo(auctionInfo.sellerId, token),
+  });
+  const sellerInfo: RegularUserInfo | undefined = sellerInfoQuery.data;
+  if (!sellerInfo) return <BaseLayout>Could not find user.</BaseLayout>;
+
+  return (
+    <BaseLayout>
+      <div className='container mt-4'>
+        <div className='card'>
+          <div className='card-body'>
+            <h1 className='card-title'>{auctionInfo.title}</h1>
+            <em className='card-text lead'>{auctionInfo.description}</em>
+            <hr />
+            <div className='row'>
+              <div className='col-md-6'>
+                <p>
+                  <strong>Seller:</strong> {sellerInfo.username}
+                </p>
+                <p>
+                  <strong>Created:</strong>{' '}
+                  {auctionInfo.createdDate.toLocaleDateString()}
+                </p>
+              </div>
+              <div className='col-md-6'>
+                <p>
+                  <strong>Minimum Bid:</strong> {auctionInfo.minimumBid} tokens
+                </p>
+                <p>
+                  <strong>Ends:</strong>{' '}
+                  {auctionInfo.endDate.toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </BaseLayout>
+  );
 }
