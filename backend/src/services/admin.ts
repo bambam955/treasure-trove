@@ -5,10 +5,7 @@ import UsersService from './users.ts';
 class AdminService {
   // Fetch all data about all users in the database.
   static async getAllUsers(): Promise<FullUserInfo[]> {
-    const users = await User.find(
-      {},
-      'username role locked tokens canBeLocked',
-    );
+    const users = await User.find({});
     return users.map((u) =>
       UsersService.parseFullUserInfo(u._id.toString(), u),
     );

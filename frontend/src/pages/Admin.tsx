@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FullUserInfo } from '@shared/users.ts';
 import AdminApi from '../api/admin';
 import { Header } from '../components/Header.tsx';
+import UserApi from '../api/users.ts';
 
 export function Admin() {
   const [token] = useAuth();
@@ -34,7 +35,11 @@ export function Admin() {
       user: FullUserInfo;
       newTokens: number;
     }) => {
-      await AdminApi.updateUserTokens(user.id, newTokens, user, token!);
+      await UserApi.updateUser(
+        user.id,
+        { id: user.id, tokens: newTokens },
+        token!,
+      );
     },
     onSuccess: () => usersQuery.refetch(),
   });
