@@ -26,18 +26,20 @@ export function AuctionView() {
     // Fetch the auction info via the API.
     queryFn: () => AuctionsApi.getAuctionInfo(auctionId!, token),
   });
-
   const auctionInfo: AuctionInfo | undefined = auctionInfoQuery.data;
 
-  if (!auctionInfo) {
-    return <BaseLayout>could not find auction.</BaseLayout>;
-  }
-
+  // This query is used to fetch information about the seller.
+  // Note that the query only works if the auction info comes back OK,
+  // which is why we set the "enabled" property.
   const sellerInfoQuery = useQuery<RegularUserInfo>({
-    queryKey: ['users', auctionInfo.sellerId],
-    queryFn: () => UserApi.getUserInfo(auctionInfo.sellerId, token),
+    queryKey: ['users', auctionInfo?.sellerId],
+    queryFn: () => UserApi.getUserInfo(auctionInfo!.sellerId, token),
+    enabled: !!auctionInfo,
   });
   const sellerInfo: RegularUserInfo | undefined = sellerInfoQuery.data;
+
+  // Show basic error UI if a query fails.
+  if (!auctionInfo) return <BaseLayout>could not find auction.</BaseLayout>;
   if (!sellerInfo) return <BaseLayout>Could not find user.</BaseLayout>;
 
   return (
