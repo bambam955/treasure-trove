@@ -11,11 +11,13 @@ interface JwtPayload {
 interface HeaderProps {
   showAddAuctionButton?: boolean;
   showMyAuctionButton?: boolean;
+  showHomeButton?: boolean;
 }
 
 export function Header({
   showAddAuctionButton = true,
   showMyAuctionButton = true,
+  showHomeButton = true,
 }: HeaderProps) {
   const [token, setToken] = useAuth();
   const navigate = useNavigate();
@@ -30,10 +32,18 @@ export function Header({
           <span className='navbar-text text-light me-3'>
             <User id={sub} />
           </span>
+          {showHomeButton && (
+            <button
+              className='btn btn-outline-light btn-sm me-2'
+              onClick={() => navigate('/home')}
+            >
+              Home
+            </button>
+          )}
           {showMyAuctionButton && (
             <button
               className='btn btn-outline-light btn-sm me-2'
-              onClick={() => navigate('/MyAuctions')}
+              onClick={() => navigate('/my-auctions')}
             >
               My Auctions
             </button>
@@ -41,7 +51,7 @@ export function Header({
           {showAddAuctionButton && (
             <button
               className='btn btn-outline-light btn-sm me-2'
-              onClick={() => navigate('/Auctions')}
+              onClick={() => navigate('/auctions/add')}
             >
               Add Auction Item
             </button>

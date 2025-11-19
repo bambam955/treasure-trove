@@ -37,7 +37,7 @@ auctionsRouter.get('/:id', requireAuth, async (req: Request, res: Response) => {
 auctionsRouter.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const validatedBody = createAuctionSchema.validateSync(req.body);
-    const auction = AuctionsService.createAuction(validatedBody);
+    const auction = await AuctionsService.createAuction(validatedBody);
     // Use 201 when a POST request successfully creates a new resource on the server.
     return res.status(201).json(auction);
   } catch (error) {
@@ -94,6 +94,22 @@ auctionsRouter.post(
       return res.status(400).json({
         error: 'Failed to create auction',
       });
+    }
+  },
+);
+
+// DELETE an auction.
+auctionsRouter.delete(
+  '/:id',
+  requireAuth,
+  async (req: Request, res: Response) => {
+    try {
+      await AuctionsService.deleteAuction(req.params.id);
+      // 204 = success, no content
+      return res.status(204).send();
+    } catch (error) {
+      console.error('Error deleting auction:', error);
+      return res.status(400).json({ error: 'failed to delete auction' });
     }
   },
 );

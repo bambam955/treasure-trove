@@ -1,9 +1,14 @@
 import { Header } from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuctionsApi from '../api/auctions';
+import { jwtDecode } from 'jwt-decode';
+import type { TokenPayload } from '@shared/auth.ts';
 
-export function Auctions() {
+export function AddAuction() {
   const [token] = useAuth();
+  const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -30,7 +35,7 @@ export function Auctions() {
     minBid.trim() !== '' &&
     expectedValue.trim() !== '';
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!isFormValid) {
@@ -40,21 +45,34 @@ export function Auctions() {
 
     setShowError(false);
 
-    // replace this with a call to backend
-    console.log('New auction item:', {
-      title,
-      description,
-      endDate,
-      minBid: Number(minBid),
-      expectedValue: Number(expectedValue),
-    });
+    try {
+      const { sub } = jwtDecode<TokenPayload>(token);
 
-    //clear form after submit
-    setTitle('');
-    setDescription('');
-    setEndDate('');
-    setMinBid('');
-    setExpectedValue('');
+      await AuctionsApi.createAuction(
+        {
+          title: title.trim(),
+          description: description.trim(),
+          sellerId: sub,
+          minimumBid: Number(minBid),
+          endDate: new Date(endDate),
+          expectedValue: Number(expectedValue),
+        },
+        token,
+      );
+
+      //clear form after submit
+      setTitle('');
+      setDescription('');
+      setEndDate('');
+      setMinBid('');
+      setExpectedValue('');
+
+      // go to MyAuctions page after successful creation
+      navigate('/my-auctions');
+    } catch (error) {
+      console.error('Error creating auction:', error);
+      setShowError(true);
+    }
   };
 
   return (
