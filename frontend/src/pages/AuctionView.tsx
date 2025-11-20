@@ -5,6 +5,7 @@ import AuctionsApi from '../api/auctions.ts';
 import { useParams } from 'react-router-dom';
 import { UnauthorizedPage } from './Unauthorized.tsx';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
+import { Countdown } from '../components/Countdown.tsx';
 import { RegularUserInfo } from '@shared/users.ts';
 import UserApi from '../api/users.ts';
 
@@ -44,30 +45,25 @@ export function AuctionView() {
 
   return (
     <BaseLayout>
-      <div className='container mt-4'>
-        <div className='card'>
+      <div className='container mt-4 mx-6'>
+        <div className='card p-2'>
           <div className='card-body'>
-            <h1 className='card-title'>{auctionInfo.title}</h1>
+            <div className='mb-4'>
+              <h1 className='card-title'>{auctionInfo.title}</h1>
+            </div>
             <em className='card-text lead'>{auctionInfo.description}</em>
             <hr />
-            <div className='row'>
-              <div className='col-md-6'>
-                <p>
-                  <strong>Seller:</strong> {sellerInfo.username}
-                </p>
-                <p>
-                  <strong>Created:</strong>{' '}
+            <div className='col'>
+              <div className='py-2'>
+                Posted by
+                <strong className='mx-2'>{sellerInfo.username}</strong>
+                on
+                <strong className='mx-2'>
                   {auctionInfo.createdDate.toLocaleDateString()}
-                </p>
+                </strong>
               </div>
-              <div className='col-md-6'>
-                <p>
-                  <strong>Minimum Bid:</strong> {auctionInfo.minimumBid} tokens
-                </p>
-                <p>
-                  <strong>Ends:</strong>{' '}
-                  {auctionInfo.endDate.toLocaleDateString()}
-                </p>
+              <div className='col-md-4 '>
+                <Countdown endDate={auctionInfo.endDate} />
               </div>
             </div>
           </div>
