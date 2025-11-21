@@ -8,17 +8,9 @@ interface JwtPayload {
   sub: string;
 }
 
-interface HeaderProps {
-  showAddAuctionButton?: boolean;
-  showMyAuctionButton?: boolean;
-  showHomeButton?: boolean;
-}
-
-export function Header({
-  showAddAuctionButton = true,
-  showMyAuctionButton = true,
-  showHomeButton = true,
-}: HeaderProps) {
+// If a user is logged in, then display their username and a Logout button.
+// If the user clicks Logout then the JWT token will be cleared.
+export function Header({}) {
   const [token, setToken] = useAuth();
   const navigate = useNavigate();
 
@@ -28,46 +20,43 @@ export function Header({
     const { sub } = jwtDecode<JwtPayload>(token);
     return (
       <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='dark'>
-        <div className='container-fluid justify-content-end align-items-center'>
-          <span className='navbar-text text-light me-3'>
-            <User id={sub} />
-          </span>
-          {showHomeButton && (
+        <div className='container-fluid align-items-center'>
+          <div className='d-flex align-items-center'>
             <button
               className='btn btn-outline-light btn-sm me-2'
               onClick={() => navigate('/home')}
             >
               Home
             </button>
-          )}
-          {showMyAuctionButton && (
             <button
               className='btn btn-outline-light btn-sm me-2'
               onClick={() => navigate('/my-auctions')}
             >
               My Auctions
             </button>
-          )}
-          {showAddAuctionButton && (
             <button
               className='btn btn-outline-light btn-sm me-2'
               onClick={() => navigate('/auctions/add')}
             >
               Add Auction Item
             </button>
-          )}
-          <button
-            className='btn btn-outline-light btn-sm'
-            onClick={() => setToken(null)}
-          >
-            Logout
-          </button>
+          </div>
+          <div className='d-flex align-items-center ms-auto'>
+            <span className='navbar-text text-light me-3'>
+              <User id={sub} />
+            </span>
+            <button
+              className='btn btn-outline-light btn-sm'
+              onClick={() => setToken(null)}
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </nav>
     );
   }
 
-  // Otherwise, show signup and login buttons.
   return (
     <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='white'>
       <div className='container-fluid justify-content-end'>

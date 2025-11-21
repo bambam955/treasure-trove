@@ -77,7 +77,7 @@ export function AddAuction() {
 
   return (
     <div className='vh-100 d-flex flex-column p-2'>
-      <Header showAddAuctionButton={false} />
+      <Header />
       <div className='flex-grow-1 d-flex align-items-start justify-content-center mt-4'>
         <div className='card w-100' style={{ maxWidth: '600px' }}>
           <div className='card-body'>
