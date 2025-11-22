@@ -48,6 +48,11 @@ class AuctionsService {
     return this.parseAuctionInfo(auctionId, auction);
   }
 
+  // Delete an auction by ID.
+  static async deleteAuction(auctionId: string): Promise<void> {
+    await Auction.findByIdAndDelete(auctionId);
+  }
+
   // This function is used for taking an auction DB document and converting it to
   // a usable interface.
   static parseAuctionInfo(

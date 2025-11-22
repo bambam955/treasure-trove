@@ -1,14 +1,14 @@
 import { useAuth } from '../contexts/AuthContext';
-import { useEffect, useState } from 'react';
 import AuctionsApi from '../api/auctions';
 import { jwtDecode } from 'jwt-decode';
 import type { TokenPayload } from '@shared/auth.ts';
 import type { AuctionInfo } from '@shared/auctions.ts';
+import { useEffect, useState } from 'react';
 import { AuctionsList } from '../components/AuctionList';
-import { UnauthorizedPage } from './Unauthorized.tsx';
+import { UnauthorizedPage } from './Unauthorized';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
 
-export function Home() {
+export function MyAuctions() {
   const [token] = useAuth();
   const [auctions, setAuctions] = useState<AuctionInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,9 +18,7 @@ export function Home() {
     let cancelled = false;
 
     async function loadAuctions() {
-      if (!token) {
-        return;
-      }
+      if (!token) return;
       let sub: string;
       try {
         const decoded = jwtDecode<TokenPayload>(token);
@@ -41,11 +39,10 @@ export function Home() {
         const allAuctions = await AuctionsApi.getAllAuctions(token);
 
         if (!cancelled) {
-          // Show only other users' auctions on the Home page
-          const others = allAuctions.filter(
-            (auction) => auction.sellerId !== sub,
+          const mine = allAuctions.filter(
+            (auction) => auction.sellerId === sub,
           );
-          setAuctions(others);
+          setAuctions(mine);
         }
       } catch (err) {
         console.error('Error loading auctions:', err);
@@ -66,25 +63,36 @@ export function Home() {
     };
   }, [token]);
 
+  async function handleDelete(id: string) {
+    if (!token) return;
+
+    try {
+      await AuctionsApi.deleteAuction(id, token);
+      setAuctions((prev) => prev.filter((a) => a.id !== id));
+    } catch (err) {
+      console.error('Error deleting auction:', err);
+      setHasError(true);
+    }
+  }
+
   if (!token) {
     return <UnauthorizedPage />;
   }
 
-  // Show some very basic content just to verify that the login is working.
-  // This will be revised in the future.
   return (
     <BaseLayout>
       <div className='flex-grow-1 d-flex align-items-start justify-content-center mt-4'>
         <div className='w-100' style={{ maxWidth: '900px' }}>
-          <h5 className='mb-3'>Available Auctions</h5>
+          <h5 className='mb-3'>My Auctions</h5>
 
           <AuctionsList
             auctions={auctions}
             isLoading={isLoading}
             hasError={hasError}
-            emptyMessage='There are currently no auctions from other users.'
-            showExpectedValue={false}
-            showDelete={false}
+            emptyMessage="You haven't created any auctions yet."
+            showExpectedValue={true}
+            showDelete={true}
+            onDelete={handleDelete}
           />
         </div>
       </div>
