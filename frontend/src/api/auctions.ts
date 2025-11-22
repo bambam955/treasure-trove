@@ -86,6 +86,21 @@ class AuctionsApi {
     return body;
   }
 
+  // Delete an existing auction.
+  static async deleteAuction(id: string, token: string): Promise<void> {
+    const res = await fetch(apiRoute(`auctions/${id}`), {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...jwtHeaders(token),
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error('failed to delete auction');
+    }
+  }
+
   // Get the bidding history for the given auction.
   static async getAuctionBids(id: string, token: string): Promise<BidInfo[]> {
     const res = await fetch(apiRoute(`auctions/${id}/bids`), {
