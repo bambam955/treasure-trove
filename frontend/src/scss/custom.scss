@@ -1,0 +1,28 @@
+// Everything in this file needs to be imported in a certain order.
+// Be VERY CAREFUL about changing things.
+
+// Import required Bootstrap functions.
+@import 'bootstrap/scss/functions';
+// Import Bootswatch Darkly theme variables.
+@import 'bootswatch/dist/darkly/variables';
+// Import Boostrap variables (uses Bootswatch overrides where set)
+@import 'bootstrap/scss/variables';
+
+// Define custom variables.
+
+// Additional options for spacers (margin/padding)
+$custom-spacers: (
+  6: (
+    $spacer * 4,
+  ),
+  7: (
+    $spacer * 5,
+  ),
+);
+$spacers: map-merge($spacers, $custom-spacers);
+
+@import 'bootstrap/scss/mixins';
+// Import Bootswatch Darkly theme styles.
+@import 'bootswatch/dist/darkly/bootswatch';
+// Import the rest of Bootstrap.
+@import 'bootstrap/scss/bootstrap';
