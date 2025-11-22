@@ -1,4 +1,5 @@
 import type { AuctionInfo } from '@shared/auctions.ts';
+import { Link } from 'react-router-dom';
 
 interface AuctionsListProps {
   auctions: AuctionInfo[];
@@ -65,15 +66,25 @@ export function AuctionsList({
                 {new Date(auction.endDate).toLocaleString()}
               </p>
 
-              {showDelete && onDelete && (
-                <button
-                  type='button'
-                  className='btn btn-sm btn-outline-danger align-self-end mt-2'
-                  onClick={() => onDelete(auction.id)}
-                >
-                  Delete Auction
-                </button>
-              )}
+              <div className='container'>
+                <div className='row justify-content-between mt-2'>
+                  <Link
+                    className='btn btn-md btn-primary col-md-4'
+                    to={'/auctions/' + auction.id}
+                  >
+                    View Auction
+                  </Link>
+                  {showDelete && onDelete && (
+                    <button
+                      type='button'
+                      className='btn btn-md btn-outline-danger col-md-3'
+                      onClick={() => onDelete(auction.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
