@@ -1,4 +1,3 @@
-import { Header } from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
 import AuctionsApi from '../api/auctions';
 import { jwtDecode } from 'jwt-decode';
@@ -6,6 +5,8 @@ import type { TokenPayload } from '@shared/auth.ts';
 import type { AuctionInfo } from '@shared/auctions.ts';
 import { useEffect, useState } from 'react';
 import { AuctionsList } from '../components/AuctionList';
+import { UnauthorizedPage } from './Unauthorized';
+import { BaseLayout } from '../layouts/BaseLayout.tsx';
 
 export function MyAuctions() {
   const [token] = useAuth();
@@ -75,19 +76,11 @@ export function MyAuctions() {
   }
 
   if (!token) {
-    return (
-      <div className='vh-100 d-flex flex-column p-2'>
-        <Header />
-        <div className='flex-grow-1 d-flex align-items-center justify-content-center'>
-          <div>Please log in to use the Treasure Trove platform.</div>
-        </div>
-      </div>
-    );
+    return <UnauthorizedPage />;
   }
 
   return (
-    <div className='vh-100 d-flex flex-column p-2'>
-      <Header />
+    <BaseLayout>
       <div className='flex-grow-1 d-flex align-items-start justify-content-center mt-4'>
         <div className='w-100' style={{ maxWidth: '900px' }}>
           <h5 className='mb-3'>My Auctions</h5>
@@ -103,6 +96,6 @@ export function MyAuctions() {
           />
         </div>
       </div>
-    </div>
+    </BaseLayout>
   );
 }

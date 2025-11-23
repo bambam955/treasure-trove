@@ -6,6 +6,7 @@ import { AuthContextProvider } from './contexts/AuthContext';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { Admin } from './pages/Admin.tsx';
+import { AuctionView } from './pages/AuctionView.tsx';
 import { AddAuction } from './pages/AddAuction.tsx';
 import { MyAuctions } from './pages/MyAuctions.tsx';
 
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <Admin />,
+  },
+  {
+    path: '/auctions/:id',
+    element: <AuctionView />,
   },
   {
     path: '/auctions/add',

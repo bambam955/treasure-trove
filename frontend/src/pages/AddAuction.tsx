@@ -1,10 +1,11 @@
-import { Header } from '../components/Header';
 import { useAuth } from '../contexts/AuthContext';
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuctionsApi from '../api/auctions';
 import { jwtDecode } from 'jwt-decode';
 import type { TokenPayload } from '@shared/auth.ts';
+import { UnauthorizedPage } from './Unauthorized.tsx';
+import { BaseLayout } from '../layouts/BaseLayout.tsx';
 
 export function AddAuction() {
   const [token] = useAuth();
@@ -17,15 +18,9 @@ export function AddAuction() {
   const [expectedValue, setExpectedValue] = useState('');
   const [showError, setShowError] = useState(false);
 
+  // If the user goes to this page without being logged in then show an error message.
   if (!token) {
-    return (
-      <div className='vh-100 d-flex flex-column p-2'>
-        <Header />
-        <div className='flex-grow-1 d-flex align-items-center justify-content-center'>
-          <div>Please log in to use the Treasure Trove platform.</div>
-        </div>
-      </div>
-    );
+    return <UnauthorizedPage />;
   }
 
   const isFormValid =
@@ -76,8 +71,7 @@ export function AddAuction() {
   };
 
   return (
-    <div className='vh-100 d-flex flex-column p-2'>
-      <Header />
+    <BaseLayout>
       <div className='flex-grow-1 d-flex align-items-start justify-content-center mt-4'>
         <div className='card w-100' style={{ maxWidth: '600px' }}>
           <div className='card-body'>
@@ -175,6 +169,6 @@ export function AddAuction() {
           </div>
         </div>
       </div>
-    </div>
+    </BaseLayout>
   );
 }
