@@ -1,16 +1,14 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import UsersService from '../services/users.ts';
-import { requireAuth } from '../middleware/jwt.ts';
 import {
   fullUserInfoSchema,
   regularUserInfoSchema,
   userCredentialsSchema,
 } from 'treasure-trove-shared';
-import {
-  type AuthenticatedRequest,
-  checkAdmin,
-} from '../middleware/isAdmin.ts';
+import { checkAdmin } from '../middleware/isAdmin.ts';
+import { userFullAuth } from '../middleware/userAuth.ts';
+import { type AuthenticatedRequest } from '../middleware/types.ts';
 
 const usersRouter = express.Router();
 
@@ -59,7 +57,7 @@ usersRouter.post('/signup', async (req: Request, res: Response) => {
 // Admin-only fields like lock status will only be returned with admin authentication.
 usersRouter.get(
   '/:id',
-  requireAuth,
+  userFullAuth,
   async (req: AuthenticatedRequest, res: Response) => {
     try {
       // Check if the user's token has admin privileges.
@@ -88,7 +86,7 @@ usersRouter.get(
 // Changing fields like lock status requires admin authentication.
 usersRouter.put(
   '/:id',
-  requireAuth,
+  userFullAuth,
   async (req: AuthenticatedRequest, res: Response) => {
     try {
       // Check if the user's token has admin privileges.
