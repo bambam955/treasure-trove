@@ -19,7 +19,10 @@ export function Header({}) {
   if (token) {
     const { sub } = jwtDecode<JwtPayload>(token);
     return (
-      <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='dark'>
+      <nav
+        className='navbar navbar-expand-lg bg-primary p-2'
+        data-bs-theme='dark'
+      >
         <div className='container-fluid align-items-center'>
           <div className='d-flex align-items-center'>
             <button

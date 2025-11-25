@@ -45,25 +45,34 @@ export function AuctionView() {
 
   return (
     <BaseLayout>
-      <div className='container mt-4 mx-6'>
-        <div className='card p-2'>
+      <div className='container mt-4'>
+        <div className='card p-4 mx-4'>
           <div className='card-body'>
             <div className='mb-4'>
               <h1 className='card-title'>{auctionInfo.title}</h1>
             </div>
             <em className='card-text lead'>{auctionInfo.description}</em>
             <hr />
-            <div className='col'>
-              <div className='py-2'>
-                Posted by
-                <strong className='mx-2'>{sellerInfo.username}</strong>
-                on
-                <strong className='mx-2'>
-                  {auctionInfo.createdDate.toLocaleDateString()}
-                </strong>
+            <div className='row justify-content-between pt-2'>
+              <div className='col-md-5'>
+                <div className='pb-2'>
+                  Posted by
+                  <strong className='mx-2'>{sellerInfo.username}</strong>
+                  on
+                  <strong className='mx-2'>
+                    {auctionInfo.createdDate.toLocaleDateString()}
+                  </strong>
+                </div>
+                <div className='mt-3'>
+                  <Countdown endDate={auctionInfo.endDate} />
+                </div>
               </div>
-              <div className='col-md-4 '>
-                <Countdown endDate={auctionInfo.endDate} />
+              <div className='col-md-6'>
+                <div className='w-100 me-6'>
+                  <button className='btn btn-success btn-lg w-100 text-uppercase'>
+                    <strong>Make Bid</strong>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
