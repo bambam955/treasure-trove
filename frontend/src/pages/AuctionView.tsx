@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AuctionInfo } from '@shared/auctions.ts';
 import AuctionsApi from '../api/auctions.ts';
@@ -11,6 +12,7 @@ import UserApi from '../api/users.ts';
 
 export function AuctionView() {
   const [token] = useAuth();
+  const [showModal, setShowModal] = useState(false);
 
   const auctionId = useParams()['id'];
 
@@ -69,7 +71,10 @@ export function AuctionView() {
               </div>
               <div className='col-md-6'>
                 <div className='w-100 me-6'>
-                  <button className='btn btn-success btn-lg w-100 text-uppercase'>
+                  <button
+                    className='btn btn-success btn-lg w-100 text-uppercase'
+                    onClick={() => setShowModal(true)}
+                  >
                     <strong>Make Bid</strong>
                   </button>
                 </div>
@@ -78,6 +83,102 @@ export function AuctionView() {
           </div>
         </div>
       </div>
+
+      <MakeBidModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        auctionInfo={auctionInfo}
+      />
     </BaseLayout>
+  );
+}
+
+interface MakeBidModalProps {
+  show: boolean;
+  onHide: () => void;
+  auctionInfo: AuctionInfo;
+}
+
+function MakeBidModal({ show, onHide, auctionInfo }: MakeBidModalProps) {
+  const [bidAmount, setBidAmount] = useState('');
+  return (
+    <>
+      <div
+        className={`modal fade ${show ? 'show' : ''}`}
+        style={{ display: show ? 'block' : 'none' }}
+        tabIndex={-1}
+        role='dialog'
+        aria-labelledby='bidModalLabel'
+        aria-hidden={!show}
+      >
+        <div className='modal-dialog modal-dialog-centered' role='document'>
+          <div className='modal-content'>
+            <div className='modal-header'>
+              <h5 className='modal-title' id='bidModalLabel'>
+                Place Your Bid
+              </h5>
+              <button
+                type='button'
+                className='btn-close'
+                onClick={onHide}
+                aria-label='Close'
+              ></button>
+            </div>
+            <div className='modal-body'>
+              <div className='mb-3'>
+                <label htmlFor='currentBid' className='form-label'>
+                  Current Minimum Bid
+                </label>
+                <div className='form-control-plaintext'>
+                  ${auctionInfo.minimumBid.toFixed(2)}
+                </div>
+              </div>
+              <div className='mb-3'>
+                <label htmlFor='bidAmount' className='form-label'>
+                  Your Bid Amount
+                </label>
+                <input
+                  type='number'
+                  className='form-control'
+                  id='bidAmount'
+                  value={bidAmount}
+                  onChange={(e) => setBidAmount(e.target.value)}
+                  placeholder='Enter your bid amount'
+                  min={auctionInfo.minimumBid}
+                  step='0.01'
+                />
+              </div>
+            </div>
+            <div className='modal-footer'>
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={onHide}
+              >
+                Cancel
+              </button>
+              <button type='button' className='btn btn-success'>
+                Submit Bid
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal backdrop */}
+      {show && (
+        <div
+          className='modal-backdrop fade show'
+          onClick={onHide}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              onHide();
+            }
+          }}
+          role='button'
+          tabIndex={0}
+          aria-label='Close modal'
+        ></div>
+      )}
+    </>
   );
 }
