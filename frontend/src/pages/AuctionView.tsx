@@ -9,6 +9,7 @@ import { BaseLayout } from '../layouts/BaseLayout.tsx';
 import { Countdown } from '../components/Countdown.tsx';
 import { RegularUserInfo } from '@shared/users.ts';
 import UserApi from '../api/users.ts';
+import { BidInfo, CreateBidInfo, findHighestBid } from '@shared/bids.ts';
 
 export function AuctionView() {
   const [token] = useAuth();
@@ -36,14 +37,26 @@ export function AuctionView() {
   });
   const sellerInfo: RegularUserInfo | undefined = sellerInfoQuery.data;
 
+  // This query is used to fetch the current bidding history.
+  const bidHistoryQuery = useQuery<BidInfo[]>({
+    queryKey: ['auctions', auctionId, 'bids'],
+    queryFn: () => AuctionsApi.getAuctionBids(auctionId!, token!),
+    enabled: !!auctionInfo && !!sellerInfo,
+  });
+  const bidHistory: BidInfo[] | undefined = bidHistoryQuery.data;
+
   // If the user goes to this page without being logged in then show an error message.
   if (!token) {
     return <UnauthorizedPage />;
   }
 
   // Show basic error UI if a query fails.
-  if (!auctionInfo) return <BaseLayout>could not find auction.</BaseLayout>;
-  if (!sellerInfo) return <BaseLayout>Could not find user.</BaseLayout>;
+  if (!auctionInfo || !sellerInfo || !bidHistory) {
+    return <BaseLayout>error loading auction information.</BaseLayout>;
+  }
+
+  const currHighestBid = findHighestBid(bidHistory);
+  const minNextBid = Math.max(currHighestBid.amount, auctionInfo.minimumBid);
 
   return (
     <BaseLayout>
@@ -86,7 +99,13 @@ export function AuctionView() {
 
       <MakeBidModal
         show={showModal}
-        onHide={() => setShowModal(false)}
+        onHide={() => {
+          setShowModal(false);
+          bidHistoryQuery.refetch().then(() => {
+            console.log('bid refetch completed');
+          });
+        }}
+        minNextBid={minNextBid}
         auctionInfo={auctionInfo}
       />
     </BaseLayout>
@@ -96,11 +115,39 @@ export function AuctionView() {
 interface MakeBidModalProps {
   show: boolean;
   onHide: () => void;
+  minNextBid: number;
   auctionInfo: AuctionInfo;
 }
 
-function MakeBidModal({ show, onHide, auctionInfo }: MakeBidModalProps) {
+function MakeBidModal({
+  show,
+  onHide,
+  minNextBid,
+  auctionInfo,
+}: MakeBidModalProps) {
+  const [token, tokenPayload] = useAuth();
   const [bidAmount, setBidAmount] = useState('');
+
+  const handleSubmit = async () => {
+    if (bidAmount.trim() === '') {
+      return;
+    }
+
+    const bid: CreateBidInfo = {
+      userId: tokenPayload!.sub,
+      amount: Number(bidAmount),
+      auctionId: auctionInfo.id,
+    };
+
+    try {
+      await AuctionsApi.makeBid(bid.auctionId, bid, token!);
+      onHide();
+    } catch (error) {
+      // TODO: show errors in UI
+      console.error('Bid failed:', error);
+    }
+  };
+
   return (
     <>
       <div
@@ -130,7 +177,7 @@ function MakeBidModal({ show, onHide, auctionInfo }: MakeBidModalProps) {
                   Current Minimum Bid
                 </label>
                 <div className='form-control-plaintext'>
-                  ${auctionInfo.minimumBid.toFixed(2)}
+                  ${minNextBid.toFixed(2)}
                 </div>
               </div>
               <div className='mb-3'>
@@ -144,7 +191,7 @@ function MakeBidModal({ show, onHide, auctionInfo }: MakeBidModalProps) {
                   value={bidAmount}
                   onChange={(e) => setBidAmount(e.target.value)}
                   placeholder='Enter your bid amount'
-                  min={auctionInfo.minimumBid}
+                  min={minNextBid}
                   step='0.01'
                 />
               </div>
@@ -157,7 +204,11 @@ function MakeBidModal({ show, onHide, auctionInfo }: MakeBidModalProps) {
               >
                 Cancel
               </button>
-              <button type='button' className='btn btn-success'>
+              <button
+                type='button'
+                className='btn btn-success'
+                onClick={handleSubmit}
+              >
                 Submit Bid
               </button>
             </div>

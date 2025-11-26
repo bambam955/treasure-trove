@@ -1,4 +1,8 @@
-import type { BidInfo, CreateBidInfo } from '@shared/bids.ts';
+import {
+  findHighestBid,
+  type BidInfo,
+  type CreateBidInfo,
+} from '@shared/bids.ts';
 import { Bid, type BidDataType } from '../db/models/bid.ts';
 import AuctionsService from './auctions.ts';
 
@@ -43,14 +47,7 @@ class BidsService {
     const bids = await this.getAuctionBids(auctionId);
     if (bids.length === 0) return undefined;
 
-    let maxBid = bids[0];
-    for (let i = 1; i < bids.length; i++) {
-      if (bids[i].amount > maxBid.amount) {
-        maxBid = bids[i];
-      }
-    }
-
-    return maxBid;
+    return findHighestBid(bids);
   }
 
   // This function is used for taking an auction DB document and converting it to
