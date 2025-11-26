@@ -17,7 +17,11 @@ class BidsService {
   // Make a new bid on an auction.
   static async createBid(bidInfo: CreateBidInfo): Promise<BidInfo> {
     const auction = await AuctionsService.getAuctionById(bidInfo.auctionId);
-    const user = await UsersService.getUserInfoById(bidInfo.userId);
+
+    // Do not allow users to make bids on their own auctions.
+    if (bidInfo.userId === auction.sellerId) {
+      throw new Error('users cannot bid on their own auctions');
+    }
 
     // Make sure the bid is at least as high as the minimum bid.
     // We can make this preliminary check before going through all of the other bids
@@ -25,10 +29,13 @@ class BidsService {
     if (bidInfo.amount < auction.minimumBid) {
       throw new Error('bid amount must be at least the minimum bid');
     }
+
     // Make sure the user has enough tokens to cover the bid.
+    const user = await UsersService.getUserInfoById(bidInfo.userId);
     if (!user.tokens || user.tokens < bidInfo.amount) {
       throw new Error('user does not have enough tokens to make the bid');
     }
+
     // If the bid as at least as high as the minimum bid, then make sure it is higher
     // than all other bids that have been made.
     const currHighBid = await this.getCurrentHighestBid(bidInfo.auctionId);

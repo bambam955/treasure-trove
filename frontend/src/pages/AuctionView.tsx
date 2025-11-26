@@ -74,6 +74,9 @@ export function AuctionView() {
     bidHistory.length > 0 ? findHighestBid(bidHistory).amount : 0;
   const minNextBid = Math.max(currHighestBid, auctionInfo.minimumBid);
 
+  // We do not want users to be able to make bids on their own auctions.
+  const isUsersAuction = sellerInfo.id === userInfo.id;
+
   return (
     <BaseLayout>
       <div className='container mt-4'>
@@ -99,15 +102,17 @@ export function AuctionView() {
                 </div>
               </div>
               <div className='col-md-6'>
-                <div className='w-100 me-6'>
-                  <button
-                    className='btn btn-success btn-lg w-100 text-uppercase'
-                    onClick={() => setShowModal(true)}
-                    disabled={userInfo.tokens! <= minNextBid}
-                  >
-                    <strong>Make Bid</strong>
-                  </button>
-                </div>
+                {!isUsersAuction && (
+                  <div className='w-100'>
+                    <button
+                      className='btn btn-success btn-lg w-100 text-uppercase'
+                      onClick={() => setShowModal(true)}
+                      disabled={userInfo.tokens! <= minNextBid}
+                    >
+                      <strong>Make Bid</strong>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
