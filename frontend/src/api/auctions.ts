@@ -121,7 +121,7 @@ class AuctionsApi {
     auctionId: string,
     newBid: CreateBidInfo,
     token: string,
-  ): Promise<BidInfo[]> {
+  ): Promise<BidInfo> {
     const res = await fetch(apiRoute(`auctions/${auctionId}/bids`), {
       method: 'POST',
       headers: {
@@ -130,9 +130,13 @@ class AuctionsApi {
       },
       body: JSON.stringify(newBid),
     });
-    if (!res.ok) throw new Error('failed to make bid');
-    const rawBody: BidInfo[] = await res.json();
-    const body = rawBody.map((a) => bidInfoSchema.validateSync(a));
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || 'failed to make bid');
+    }
+
+    const rawBody: BidInfo = await res.json();
+    const body = bidInfoSchema.validateSync(rawBody);
     return body;
   }
 }
