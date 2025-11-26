@@ -1,7 +1,5 @@
 import { useAuth } from '../contexts/AuthContext';
 import AuctionsApi from '../api/auctions';
-import { jwtDecode } from 'jwt-decode';
-import type { TokenPayload } from '@shared/auth.ts';
 import type { AuctionInfo } from '@shared/auctions.ts';
 import { useEffect, useState } from 'react';
 import { AuctionsList } from '../components/AuctionList';
@@ -9,7 +7,7 @@ import { UnauthorizedPage } from './Unauthorized';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
 
 export function MyAuctions() {
-  const [token] = useAuth();
+  const [token, tokenPayload] = useAuth();
   const [auctions, setAuctions] = useState<AuctionInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -18,25 +16,12 @@ export function MyAuctions() {
     let cancelled = false;
 
     async function loadAuctions() {
-      if (!token) return;
-      let sub: string;
       try {
-        const decoded = jwtDecode<TokenPayload>(token);
-        sub = decoded.sub;
-      } catch (err) {
-        console.error('Error decoding token:', err);
-        if (!cancelled) {
-          setHasError(true);
-          setIsLoading(false);
-        }
-        return;
-      }
-
-      try {
+        const sub = tokenPayload!.sub;
         setIsLoading(true);
         setHasError(false);
 
-        const allAuctions = await AuctionsApi.getAllAuctions(token);
+        const allAuctions = await AuctionsApi.getAllAuctions(token!);
 
         if (!cancelled) {
           const mine = allAuctions.filter(

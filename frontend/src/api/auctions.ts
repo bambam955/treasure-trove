@@ -130,11 +130,7 @@ class AuctionsApi {
       },
       body: JSON.stringify(newBid),
     });
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || 'failed to make bid');
-    }
-
+    if (!res.ok) throw new Error('failed to make bid');
     const rawBody: BidInfo = await res.json();
     const body = bidInfoSchema.validateSync(rawBody);
     return body;

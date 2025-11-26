@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AuctionInfo } from '@shared/auctions.ts';
 import AuctionsApi from '../api/auctions.ts';
@@ -7,15 +7,13 @@ import { useParams } from 'react-router-dom';
 import { UnauthorizedPage } from './Unauthorized.tsx';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
 import { Countdown } from '../components/Countdown.tsx';
-import { RegularUserInfo } from '@shared/users.ts';
+import { FullUserInfo, RegularUserInfo } from '@shared/users.ts';
 import UserApi from '../api/users.ts';
-import { BidInfo, CreateBidInfo } from '@shared/bids.ts';
+import { BidInfo, CreateBidInfo, findHighestBid } from '@shared/bids.ts';
 
 export function AuctionView() {
-  const [token] = useAuth();
-  const queryClient = useQueryClient();
-  const [bidAmount, setBidAmount] = useState<number | ''>(''); // input state
-  const [bidError, setBidError] = useState<string | null>(null);
+  const [token, tokenPayload] = useAuth();
+  const [showModal, setShowModal] = useState(false);
 
   const auctionId = useParams()['id'];
 
@@ -39,101 +37,20 @@ export function AuctionView() {
   });
   const sellerInfo: RegularUserInfo | undefined = sellerInfoQuery.data;
 
-  let currentUserId: string | null = null;
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      currentUserId = payload.sub as string;
-    } catch (err) {
-      console.error('Failed to decode token in AuctionView:', err);
-      currentUserId = null;
-    }
-  }
-
-  const bidsQuery = useQuery<BidInfo[]>({
+  // This query is used to fetch the current bidding history.
+  const bidHistoryQuery = useQuery<BidInfo[]>({
     queryKey: ['auctions', auctionId, 'bids'],
     queryFn: () => AuctionsApi.getAuctionBids(auctionId!, token!),
-    enabled: !!auctionId && !!token,
+    enabled: !!auctionInfo && !!sellerInfo,
   });
+  const bidHistory: BidInfo[] | undefined = bidHistoryQuery.data;
 
-  const bids = bidsQuery.data ?? [];
-
-  const lastBid: BidInfo | undefined =
-    bids.length > 0
-      ? bids.reduce(
-          (latest, b) =>
-            new Date(b.createdDate).getTime() >
-            new Date(latest.createdDate).getTime()
-              ? b
-              : latest,
-          bids[0],
-        )
-      : undefined;
-
-  const userIsLastBidder =
-    !!currentUserId && !!lastBid && lastBid.userId === currentUserId;
-
-  const highestBidderQuery = useQuery<RegularUserInfo>({
-    queryKey: ['users', lastBid?.userId],
-    queryFn: () => UserApi.getUserInfo(lastBid!.userId, token!),
-    enabled: !!lastBid && !!token,
+  const userInfoQuery = useQuery<RegularUserInfo | FullUserInfo>({
+    queryKey: ['users', tokenPayload!.sub],
+    queryFn: () => UserApi.getUserInfo(tokenPayload!.sub, token!),
+    enabled: !!auctionInfo && !!sellerInfo && !!bidHistory,
   });
-  const highestBidder = highestBidderQuery.data;
-
-  const userIsSeller =
-    !!currentUserId && !!auctionInfo && currentUserId === auctionInfo.sellerId;
-  const auctionEnded =
-    auctionInfo && new Date(auctionInfo.endDate).getTime() <= Date.now();
-
-  const baseMin = auctionInfo?.minimumBid ?? 0;
-  const clientMinBid =
-    lastBid && lastBid.amount >= baseMin ? lastBid.amount + 1 : baseMin;
-
-  const placeBidMutation = useMutation({
-    mutationFn: async (amount: number) => {
-      if (!token || !auctionId) {
-        throw new Error('Not authenticated or missing auction id');
-      }
-
-      const payload: CreateBidInfo = {
-        auctionId,
-        amount,
-        userId: currentUserId!, // shared type usually includes this
-      };
-
-      return AuctionsApi.makeBid(auctionId, payload, token);
-    },
-    onSuccess: () => {
-      setBidError(null);
-      setBidAmount('');
-      // Refresh bids & auction info so UI updates
-      queryClient.invalidateQueries({
-        queryKey: ['auctions', auctionId, 'bids'],
-      });
-      queryClient.invalidateQueries({ queryKey: ['auctions', auctionId] });
-    },
-    onError: (err: unknown) => {
-      const msg =
-        err instanceof Error ? err.message : 'Failed to place bid. Try again.';
-      setBidError(msg);
-    },
-  });
-
-  const handlePlaceBid = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (bidAmount === '') return;
-
-    // simple client-side validation
-    if (bidAmount < clientMinBid) {
-      setBidError(
-        `Bid must be at least ${clientMinBid} tokens (current required minimum).`,
-      );
-      return;
-    }
-
-    setBidError(null);
-    placeBidMutation.mutate(bidAmount);
-  };
+  const userInfo = userInfoQuery.data;
 
   // If the user goes to this page without being logged in then show an error message.
   if (!token) {
@@ -141,30 +58,61 @@ export function AuctionView() {
   }
 
   // Show basic error UI if a query fails.
-  if (!auctionInfo) return <BaseLayout>could not find auction.</BaseLayout>;
-  if (!sellerInfo) return <BaseLayout>Could not find user.</BaseLayout>;
+  if (!auctionInfo || !sellerInfo || !bidHistory || !userInfo) {
+    return (
+      <BaseLayout>
+        <div className='alert alert-danger'>
+          There was a problem loading the auction. Please try again.
+        </div>
+      </BaseLayout>
+    );
+  }
+
+  // If no bids have been made then this just gets set to 0.
+  // The minimum bid for the auction will be saved as minNextBid.
+  const currHighestBid =
+    bidHistory.length > 0 ? findHighestBid(bidHistory).amount : 0;
+  const minNextBid = Math.max(currHighestBid, auctionInfo.minimumBid);
+
+  // We do not want users to be able to make bids on their own auctions.
+  const isUsersAuction = sellerInfo.id === userInfo.id;
 
   return (
     <BaseLayout>
-      <div className='container mt-4 mx-6'>
-        <div className='card p-2'>
+      <div className='container mt-4'>
+        <div className='card p-4 mx-4'>
           <div className='card-body'>
             <div className='mb-4'>
               <h1 className='card-title'>{auctionInfo.title}</h1>
             </div>
             <em className='card-text lead'>{auctionInfo.description}</em>
             <hr />
-            <div className='col mb-3'>
-              <div className='py-2'>
-                Posted by
-                <strong className='mx-2'>{sellerInfo.username}</strong>
-                on
-                <strong className='mx-2'>
-                  {new Date(auctionInfo.createdDate).toLocaleDateString()}
-                </strong>
+            <div className='row justify-content-between pt-2'>
+              <div className='col-md-5'>
+                <div className='pb-2'>
+                  Posted by
+                  <strong className='mx-2'>{sellerInfo.username}</strong>
+                  on
+                  <strong className='mx-2'>
+                    {auctionInfo.createdDate.toLocaleDateString()}
+                  </strong>
+                </div>
+                <div className='mt-3'>
+                  <Countdown endDate={auctionInfo.endDate} />
+                </div>
               </div>
-              <div className='col-md-4 '>
-                <Countdown endDate={auctionInfo.endDate} />
+              <div className='col-md-6'>
+                {!isUsersAuction && (
+                  <div className='w-100'>
+                    <button
+                      className='btn btn-success btn-lg w-100 text-uppercase'
+                      onClick={() => setShowModal(true)}
+                      disabled={userInfo.tokens! <= minNextBid}
+                    >
+                      <strong>Make Bid</strong>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -260,6 +208,151 @@ export function AuctionView() {
           </div>
         </div>
       </div>
+
+      <MakeBidModal
+        show={showModal}
+        onHide={() => {
+          setShowModal(false);
+          bidHistoryQuery.refetch();
+        }}
+        minNextBid={minNextBid}
+        auctionInfo={auctionInfo}
+      />
     </BaseLayout>
+  );
+}
+
+interface MakeBidModalProps {
+  show: boolean;
+  onHide: () => void;
+  minNextBid: number;
+  auctionInfo: AuctionInfo;
+}
+
+function MakeBidModal({
+  show,
+  onHide,
+  minNextBid,
+  auctionInfo,
+}: MakeBidModalProps) {
+  const [token, tokenPayload] = useAuth();
+  const [bidAmount, setBidAmount] = useState('');
+
+  // Used to disable the button until the bid amount is valid.
+  const isBidValid = bidAmount.trim() !== '' && Number(bidAmount) >= minNextBid;
+
+  // Clear bid amount when modal opens.
+  // Without this, you can enter a value, close the modal,
+  // then open it again, and the previous value will still be there.
+  useEffect(() => {
+    if (show) {
+      setBidAmount('');
+    }
+  }, [show]);
+
+  const handleSubmit = async () => {
+    if (bidAmount.trim() === '') {
+      return;
+    }
+
+    const bid: CreateBidInfo = {
+      userId: tokenPayload!.sub,
+      amount: Number(bidAmount),
+      auctionId: auctionInfo.id,
+    };
+
+    try {
+      await AuctionsApi.makeBid(bid.auctionId, bid, token!);
+      onHide();
+    } catch (error) {
+      // TODO: show errors in UI
+      console.error('Bid failed:', error);
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`modal fade ${show ? 'show' : ''}`}
+        style={{ display: show ? 'block' : 'none' }}
+        tabIndex={-1}
+        role='dialog'
+        aria-labelledby='bidModalLabel'
+        aria-hidden={!show}
+      >
+        <div className='modal-dialog modal-dialog-centered' role='document'>
+          <div className='modal-content px-2'>
+            <div className='modal-header'>
+              <h4 className='modal-title' id='bidModalLabel'>
+                Place Your Bid
+              </h4>
+              <button
+                type='button'
+                className='btn-close'
+                onClick={onHide}
+                aria-label='Close'
+              ></button>
+            </div>
+            <div className='modal-body'>
+              <div className='mb-3'>
+                <label htmlFor='currentBid' className='form-label'>
+                  Current Minimum Bid
+                </label>
+                <div className='form-control-plaintext'>
+                  {minNextBid} tokens
+                </div>
+              </div>
+              <div className='mb-3'>
+                <label htmlFor='bidAmount' className='form-label'>
+                  Your Bid Amount
+                </label>
+                <input
+                  type='number'
+                  className='form-control'
+                  id='bidAmount'
+                  value={bidAmount}
+                  onChange={(e) => setBidAmount(e.target.value)}
+                  placeholder='Enter your bid amount'
+                  min={minNextBid}
+                  step='0.01'
+                />
+              </div>
+            </div>
+            <div className='modal-footer'>
+              <button
+                type='button'
+                className='btn btn-secondary'
+                onClick={onHide}
+              >
+                Cancel
+              </button>
+              <button
+                type='button'
+                className='btn btn-success'
+                onClick={handleSubmit}
+                disabled={!isBidValid}
+              >
+                <strong>Submit Bid 🎉</strong>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Modal backdrop */}
+      {show && (
+        <div
+          className='modal-backdrop fade show'
+          onClick={onHide}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              onHide();
+            }
+          }}
+          role='button'
+          tabIndex={0}
+          aria-label='Close modal'
+        ></div>
+      )}
+    </>
   );
 }
