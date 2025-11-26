@@ -7,12 +7,12 @@ import { useParams } from 'react-router-dom';
 import { UnauthorizedPage } from './Unauthorized.tsx';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
 import { Countdown } from '../components/Countdown.tsx';
-import { RegularUserInfo } from '@shared/users.ts';
+import { FullUserInfo, RegularUserInfo } from '@shared/users.ts';
 import UserApi from '../api/users.ts';
 import { BidInfo, CreateBidInfo, findHighestBid } from '@shared/bids.ts';
 
 export function AuctionView() {
-  const [token] = useAuth();
+  const [token, tokenPayload] = useAuth();
   const [showModal, setShowModal] = useState(false);
 
   const auctionId = useParams()['id'];
@@ -45,14 +45,27 @@ export function AuctionView() {
   });
   const bidHistory: BidInfo[] | undefined = bidHistoryQuery.data;
 
+  const userInfoQuery = useQuery<RegularUserInfo | FullUserInfo>({
+    queryKey: ['users', tokenPayload!.sub],
+    queryFn: () => UserApi.getUserInfo(tokenPayload!.sub, token!),
+    enabled: !!auctionInfo && !!sellerInfo && !!bidHistory,
+  });
+  const userInfo = userInfoQuery.data;
+
   // If the user goes to this page without being logged in then show an error message.
   if (!token) {
     return <UnauthorizedPage />;
   }
 
   // Show basic error UI if a query fails.
-  if (!auctionInfo || !sellerInfo || !bidHistory) {
-    return <BaseLayout>error loading auction information.</BaseLayout>;
+  if (!auctionInfo || !sellerInfo || !bidHistory || !userInfo) {
+    return (
+      <BaseLayout>
+        <div className='alert alert-danger'>
+          There was a problem loading the auction. Please try again.
+        </div>
+      </BaseLayout>
+    );
   }
 
   // If no bids have been made then this just gets set to 0.
@@ -90,6 +103,7 @@ export function AuctionView() {
                   <button
                     className='btn btn-success btn-lg w-100 text-uppercase'
                     onClick={() => setShowModal(true)}
+                    disabled={userInfo.tokens! <= minNextBid}
                   >
                     <strong>Make Bid</strong>
                   </button>
@@ -104,9 +118,7 @@ export function AuctionView() {
         show={showModal}
         onHide={() => {
           setShowModal(false);
-          bidHistoryQuery.refetch().then(() => {
-            console.log('bid refetch completed');
-          });
+          bidHistoryQuery.refetch();
         }}
         minNextBid={minNextBid}
         auctionInfo={auctionInfo}

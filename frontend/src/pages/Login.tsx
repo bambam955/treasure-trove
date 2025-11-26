@@ -8,7 +8,7 @@ export function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [, setToken] = useAuth();
+  const [, , setToken] = useAuth();
   const [passwordError, setPasswordError] = useState(''); // creating state for password error
 
   // When a user clicks the "Login" button then we will send an API request
