@@ -72,7 +72,10 @@ export function AuctionView() {
   // The minimum bid for the auction will be saved as minNextBid.
   const currHighestBid =
     bidHistory.length > 0 ? findHighestBid(bidHistory).amount : 0;
-  const minNextBid = Math.max(currHighestBid, auctionInfo.minimumBid);
+  const minNextBid =
+    bidHistory.length > 0
+      ? Math.max(auctionInfo.minimumBid, currHighestBid + 1)
+      : auctionInfo.minimumBid;
 
   // We do not want users to be able to make bids on their own auctions.
   const isUsersAuction = sellerInfo.id === userInfo.id;
@@ -121,89 +124,18 @@ export function AuctionView() {
               <h4>Bidding</h4>
 
               <p className='mb-1'>
-                <strong>Minimum bid:</strong> {auctionInfo.minimumBid} tokens
+                <strong>Starting minimum bid:</strong> {auctionInfo.minimumBid}{' '}
+                tokens
               </p>
 
-              {lastBid ? (
-                <p className='mb-1'>
-                  <strong>Current highest bid:</strong> {lastBid.amount} tokens
-                  {highestBidder && (
-                    <>
-                      {' '}
-                      by <strong>{highestBidder.username}</strong>
-                    </>
-                  )}
-                </p>
-              ) : (
-                <p className='mb-1'>
-                  <strong>No bids yet.</strong> Be the first!
-                </p>
-              )}
+              <p className='mb-1'>
+                <strong>Current highest bid:</strong>{' '}
+                {bidHistory.length > 0 ? currHighestBid : 'No bids yet'}
+              </p>
 
-              {auctionEnded && (
-                <p className='text-danger mb-2'>
-                  This auction has ended. No further bids can be placed.
-                </p>
-              )}
-
-              <form
-                className='row g-2 align-items-center mt-2'
-                onSubmit={handlePlaceBid}
-              >
-                <div className='col-auto'>
-                  <label htmlFor='bidAmount' className='col-form-label'>
-                    Your bid:
-                  </label>
-                </div>
-                <div className='col-auto'>
-                  <input
-                    id='bidAmount'
-                    type='number'
-                    className='form-control'
-                    min={clientMinBid}
-                    value={bidAmount}
-                    onChange={(e) =>
-                      setBidAmount(
-                        e.target.value === '' ? '' : Number(e.target.value),
-                      )
-                    }
-                    disabled={
-                      placeBidMutation.isPending ||
-                      userIsLastBidder ||
-                      auctionEnded ||
-                      userIsSeller
-                    }
-                  />
-                </div>
-                <div className='col-auto'>
-                  <button
-                    type='submit'
-                    className='btn btn-primary'
-                    disabled={
-                      bidAmount === '' ||
-                      placeBidMutation.isPending ||
-                      userIsLastBidder ||
-                      auctionEnded ||
-                      userIsSeller
-                    }
-                  >
-                    {placeBidMutation.isPending ? 'Placing bid...' : 'Make bid'}
-                  </button>
-                </div>
-              </form>
-
-              {userIsLastBidder && !auctionEnded && (
-                <div className='text-danger mt-2'>
-                  You already placed the last bid on this auction.
-                </div>
-              )}
-              {userIsSeller && !auctionEnded && (
-                <div className='text-danger mt-2'>
-                  You are the seller of this auction and cannot bid on it.
-                </div>
-              )}
-
-              {bidError && <div className='text-danger mt-2'>{bidError}</div>}
+              <p className='mb-1'>
+                <strong>Minimum next bid:</strong> {minNextBid} tokens
+              </p>
             </div>
           </div>
         </div>
@@ -314,7 +246,7 @@ function MakeBidModal({
                   onChange={(e) => setBidAmount(e.target.value)}
                   placeholder='Enter your bid amount'
                   min={minNextBid}
-                  step='0.01'
+                  step='1'
                 />
               </div>
             </div>
@@ -338,7 +270,6 @@ function MakeBidModal({
           </div>
         </div>
       </div>
-      {/* Modal backdrop */}
       {show && (
         <div
           className='modal-backdrop fade show'
