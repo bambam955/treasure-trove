@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AuctionInfo } from '@shared/auctions.ts';
 import AuctionsApi from '../api/auctions.ts';
@@ -55,8 +55,11 @@ export function AuctionView() {
     return <BaseLayout>error loading auction information.</BaseLayout>;
   }
 
-  const currHighestBid = findHighestBid(bidHistory);
-  const minNextBid = Math.max(currHighestBid.amount, auctionInfo.minimumBid);
+  // If no bids have been made then this just gets set to 0.
+  // The minimum bid for the auction will be saved as minNextBid.
+  const currHighestBid =
+    bidHistory.length > 0 ? findHighestBid(bidHistory).amount : 0;
+  const minNextBid = Math.max(currHighestBid, auctionInfo.minimumBid);
 
   return (
     <BaseLayout>
@@ -128,6 +131,18 @@ function MakeBidModal({
   const [token, tokenPayload] = useAuth();
   const [bidAmount, setBidAmount] = useState('');
 
+  // Used to disable the button until the bid amount is valid.
+  const isBidValid = bidAmount.trim() !== '' && Number(bidAmount) >= minNextBid;
+
+  // Clear bid amount when modal opens.
+  // Without this, you can enter a value, close the modal,
+  // then open it again, and the previous value will still be there.
+  useEffect(() => {
+    if (show) {
+      setBidAmount('');
+    }
+  }, [show]);
+
   const handleSubmit = async () => {
     if (bidAmount.trim() === '') {
       return;
@@ -159,11 +174,11 @@ function MakeBidModal({
         aria-hidden={!show}
       >
         <div className='modal-dialog modal-dialog-centered' role='document'>
-          <div className='modal-content'>
+          <div className='modal-content px-2'>
             <div className='modal-header'>
-              <h5 className='modal-title' id='bidModalLabel'>
+              <h4 className='modal-title' id='bidModalLabel'>
                 Place Your Bid
-              </h5>
+              </h4>
               <button
                 type='button'
                 className='btn-close'
@@ -177,7 +192,7 @@ function MakeBidModal({
                   Current Minimum Bid
                 </label>
                 <div className='form-control-plaintext'>
-                  ${minNextBid.toFixed(2)}
+                  {minNextBid} tokens
                 </div>
               </div>
               <div className='mb-3'>
@@ -208,8 +223,9 @@ function MakeBidModal({
                 type='button'
                 className='btn btn-success'
                 onClick={handleSubmit}
+                disabled={!isBidValid}
               >
-                Submit Bid
+                <strong>Submit Bid 🎉</strong>
               </button>
             </div>
           </div>
