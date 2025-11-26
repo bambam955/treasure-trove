@@ -18,7 +18,7 @@ export function BaseLayout({ children, checkAuth }: BaseLayoutProps) {
   // because they'll need to check authorization before loading API queries and whatnot...
   // but this provides a simple default.
   return (
-    <div className='vh-100 d-flex flex-column p-2'>
+    <div className='vh-100 d-flex flex-column'>
       <Header />
       {token || !reqAuth ? children : <UnauthContent />}
     </div>

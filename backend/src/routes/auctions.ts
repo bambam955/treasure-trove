@@ -98,9 +98,9 @@ auctionsRouter.post(
       // Use 201 when a POST request successfully creates a new resource on the server.
       return res.status(201).json(bid);
     } catch (error) {
-      console.error('Auction creation error:', error);
+      console.error('Bid creation error:', error);
       return res.status(400).json({
-        error: 'Failed to create auction',
+        error: 'Failed to create bid',
       });
     }
   },
