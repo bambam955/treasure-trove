@@ -9,6 +9,7 @@ import { Admin } from './pages/Admin.tsx';
 import { AuctionView } from './pages/AuctionView.tsx';
 import { AddAuction } from './pages/AddAuction.tsx';
 import { MyAuctions } from './pages/MyAuctions.tsx';
+import { PurchasedItems } from './pages/PurchasedItems.tsx';
 
 // Define the routes to different pages of the application.
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
   {
     path: '/my-auctions',
     element: <MyAuctions />,
+  },
+  {
+    path: '/purchased',
+    element: <PurchasedItems />,
   },
 ]);
 

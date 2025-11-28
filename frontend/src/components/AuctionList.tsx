@@ -1,5 +1,6 @@
 import type { AuctionInfo } from '@shared/auctions.ts';
 import { Link } from 'react-router-dom';
+import { Countdown } from '../components/Countdown.tsx';
 
 interface AuctionsListProps {
   auctions: AuctionInfo[];
@@ -62,7 +63,7 @@ export function AuctionsList({
               )}
 
               <p className='card-text mb-2'>
-                <strong>Ends:</strong>{' '}
+                <strong>Time Left:</strong> <Countdown endDate={auction.endDate} />
                 {new Date(auction.endDate).toLocaleString()}
               </p>
 

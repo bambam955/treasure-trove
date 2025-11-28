@@ -77,6 +77,8 @@ class UsersService {
       password: hashedPassword,
       role: 'user', // default role is 'user'
       tokens: SIGNUP_TOKEN_BONUS, // Give new users a sign-up bonus!!
+      points: 0,
+      purchasedAuctions: [],
     });
     await user.save();
     return this.parseFullUserInfo(user._id.toString(), user);
@@ -93,13 +95,17 @@ class UsersService {
   // Update a user's information.
   static async updateUser(
     userId: string,
-    newUser: Partial<FullUserInfo>,
+    updates: Partial<FullUserInfo>,
   ): Promise<FullUserInfo> {
     const user = await User.findById(userId);
-    if (!user) throw new Error('could not update user!');
-    user.set(newUser);
-    await user.save();
+    if (!user) throw new Error('could not update user!'); 
+    
+    if (updates.tokens !== undefined) user.tokens = updates.tokens;
+    if (updates.points !== undefined) user.points = updates.points;
+    if (updates.locked !== undefined) user.locked = updates.locked;
+    if (updates.canBeLocked !== undefined) user.canBeLocked = updates.canBeLocked;
 
+    await user.save();
     return this.parseFullUserInfo(userId, user);
   }
 
@@ -114,6 +120,10 @@ class UsersService {
       username: user.username,
       role: user.role,
       tokens: user.tokens,
+      points: user.points,
+      purchasedAuctions: user.purchasedAuctions.map((id) =>
+        id.toString()
+      ),
     };
   }
   static parseFullUserInfo(userId: string, user: UserDataType): FullUserInfo {
@@ -124,6 +134,10 @@ class UsersService {
       locked: user.locked,
       canBeLocked: user.canBeLocked,
       tokens: user.tokens,
+      points: user.points,
+      purchasedAuctions: user.purchasedAuctions.map((id) =>
+        id.toString()
+      ),
     };
   }
 }

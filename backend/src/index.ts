@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import app from './app.ts';
 import { initDatabase } from './db/init.ts';
-
+import { startAuctionCloseWorker } from './worker/auctionCloser.ts';
 async function main() {
   // Connect to the database.
   try {
@@ -10,6 +10,8 @@ async function main() {
     console.error('error connecting to database:', err);
     return;
   }
+  // Start the auction closer worker.
+  startAuctionCloseWorker();
 
   // Start the backend server.
   try {

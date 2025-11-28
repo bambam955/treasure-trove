@@ -18,6 +18,11 @@ class BidsService {
   static async createBid(bidInfo: CreateBidInfo): Promise<BidInfo> {
     const auction = await AuctionsService.getAuctionById(bidInfo.auctionId);
 
+    // Prevent bidding on closed auctions
+    if (auction.status !== 'active') {
+      throw new Error('cannot bid on a closed auction');
+    }
+
     // Do not allow users to make bids on their own auctions.
     if (bidInfo.userId === auction.sellerId) {
       throw new Error('users cannot bid on their own auctions');

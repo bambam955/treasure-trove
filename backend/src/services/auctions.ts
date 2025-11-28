@@ -4,6 +4,9 @@ import type {
   UpdateAuctionInfo,
 } from '@shared/auctions.ts';
 import { Auction, type AuctionDataType } from '../db/models/auction.ts';
+import { Bid } from '../db/models/bid.ts';
+import { User } from '../db/models/user.ts';
+import mongoose from 'mongoose';
 
 class AuctionsService {
   // Fetch information about all auctions in the database.
@@ -28,7 +31,7 @@ class AuctionsService {
       description: auctionInfo.description,
       sellerId: auctionInfo.sellerId,
       minimumBid: auctionInfo.minimumBid,
-      endDate: auctionInfo.endDate,
+      endDate: new Date(auctionInfo.endDate),
       expectedValue: auctionInfo.expectedValue,
     });
     await auction.save();
@@ -69,7 +72,49 @@ class AuctionsService {
       buyerId: auction.buyerId?.toString(),
       expectedValue: auction.expectedValue,
       createdDate: auction.createdAt,
+      status: auction.status,
+      finalBidAmount: auction.finalBidAmount,
     };
+  }
+  // Close an auction, determining the winner if there are any bids.
+  static async closeAuction(auctionId: string): Promise<void> {
+    const auction = await Auction.findById(auctionId);
+    if (!auction) throw new Error('auction not found');
+
+    // Already closed
+    if (auction.status !== 'active') return;
+
+    // Fetch bids 
+    const bids = await Bid.find({ auctionId }).sort({ amount: -1 });
+
+    // No bids 
+    if (bids.length === 0) {
+      auction.status = 'closed';
+      await auction.save();
+      await Auction.findByIdAndDelete(auctionId);
+      return;
+    }
+
+    // Highest bid
+    const highest = bids[0];
+
+    auction.buyerId = highest.userId;      
+    auction.finalBidAmount = highest.amount;
+    auction.status = 'closed';
+    await auction.save();
+
+    // Winner gets auction in purchased list
+    const buyer = await User.findById(highest.userId);
+    if (buyer) {
+      buyer.purchasedAuctions.push(new mongoose.Types.ObjectId(auctionId));
+      // Adjust buyer points based on expected value
+      if (auction.finalBidAmount > auction.expectedValue) {
+        buyer.points -= 1; // overpaid
+      } else {
+        buyer.points += 1; // fair or good deal
+      }
+      await buyer.save();
+    }
   }
 }
 

@@ -42,7 +42,7 @@ export function Admin() {
     }) => {
       await UserApi.updateUser(
         user.id,
-        { id: user.id, tokens: newTokens },
+        { tokens: newTokens },
         token!,
       );
     },

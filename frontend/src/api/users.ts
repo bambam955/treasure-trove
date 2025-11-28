@@ -73,6 +73,19 @@ class UserApi {
     if (!res.ok) throw new Error('failed to update user tokens');
     return await res.json();
   }
+    
+  static async getPurchasedAuctions(
+    userId: string,
+    token: string
+  ): Promise<string[]> {
+    const user = await UserApi.getUserInfo(userId, token);
+
+    // Filter out undefined values 
+    return (user.purchasedAuctions ?? []).filter(
+      (id): id is string => typeof id === "string"
+    );
+  }
+
 }
 
 export default UserApi;

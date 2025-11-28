@@ -13,7 +13,9 @@ const regularUserInfoSchema = yup.object({
   id: yup.string().required(),
   username: yup.string(),
   role: yup.string().oneOf(['admin', 'user']),
-  tokens: yup.number().min(0),
+  tokens: yup.number().required(),
+  points: yup.number().required(),
+  purchasedAuctions: yup.array(yup.string()).required(),
 });
 const fullUserInfoSchema = regularUserInfoSchema.concat(
   yup.object({
