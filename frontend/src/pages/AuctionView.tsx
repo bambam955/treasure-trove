@@ -70,12 +70,15 @@ export function AuctionView() {
 
   // If no bids have been made then this just gets set to 0.
   // The minimum bid for the auction will be saved as minNextBid.
-  const currHighestBid =
-    bidHistory.length > 0 ? findHighestBid(bidHistory).amount : 0;
-  const minNextBid = Math.max(currHighestBid, auctionInfo.minimumBid);
+  const highestBid =
+    bidHistory.length > 0 ? findHighestBid(bidHistory) : undefined;
+  const currHighestBid = highestBid ? highestBid.amount : 0;
+  const minNextBid = Math.max(currHighestBid + 1, auctionInfo.minimumBid);
 
   // We do not want users to be able to make bids on their own auctions.
   const isUsersAuction = sellerInfo.id === userInfo.id;
+
+  const userIsLastBidder = !!highestBid && highestBid.userId === userInfo.id;
 
   return (
     <BaseLayout>
@@ -107,13 +110,45 @@ export function AuctionView() {
                     <button
                       className='btn btn-success btn-lg w-100 text-uppercase'
                       onClick={() => setShowModal(true)}
-                      disabled={userInfo.tokens! <= minNextBid}
+                      disabled={
+                        userInfo.tokens! <= minNextBid || userIsLastBidder
+                      }
                     >
-                      <strong>Make Bid</strong>
+                      <strong>
+                        {userIsLastBidder
+                          ? 'You have the highest bid'
+                          : 'Make Bid'}
+                      </strong>
                     </button>
+                    {userIsLastBidder && (
+                      <small className='text-muted d-block mt-1'>
+                        You already placed the latest bid on this auction.
+                      </small>
+                    )}
                   </div>
                 )}
               </div>
+            </div>
+
+            <hr />
+            <div className='mt-3'>
+              <h4>Bidding</h4>
+
+              <p className='mb-1'>
+                <strong>Starting minimum bid:</strong> {auctionInfo.minimumBid}{' '}
+                tokens
+              </p>
+
+              <p className='mb-1'>
+                <strong>Current highest bid:</strong>{' '}
+                {bidHistory.length > 0
+                  ? currHighestBid + ' tokens'
+                  : 'No bids yet'}
+              </p>
+
+              <p className='mb-1'>
+                <strong>Minimum next bid:</strong> {minNextBid} tokens
+              </p>
             </div>
           </div>
         </div>
@@ -224,7 +259,7 @@ function MakeBidModal({
                   onChange={(e) => setBidAmount(e.target.value)}
                   placeholder='Enter your bid amount'
                   min={minNextBid}
-                  step='0.01'
+                  step='1'
                 />
               </div>
             </div>
@@ -248,7 +283,6 @@ function MakeBidModal({
           </div>
         </div>
       </div>
-      {/* Modal backdrop */}
       {show && (
         <div
           className='modal-backdrop fade show'
