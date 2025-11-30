@@ -6,7 +6,7 @@ import type {
 import { Auction, type AuctionDataType } from '../db/models/auction.ts';
 import { Bid } from '../db/models/bid.ts';
 import { User } from '../db/models/user.ts';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 class AuctionsService {
   // Fetch information about all auctions in the database.
@@ -86,6 +86,54 @@ class AuctionsService {
     await Auction.findByIdAndDelete(auctionId);
   }
 
+  // Close an auction, determining the winner if there are any bids.
+  static async closeAuction(auctionId: string): Promise<AuctionInfo> {
+    const auction = await Auction.findById(auctionId);
+    if (!auction) throw new Error('auction not found');
+
+    // Already closed
+    if (auction.status !== 'active')
+      return this.parseAuctionInfo(auctionId, auction);
+
+    // Fetch bids
+    const bids = await Bid.find({ auctionId }).sort({ amount: -1 });
+
+    // No bids
+    if (bids.length === 0) {
+      auction.status = 'closed';
+      await auction.save();
+      return this.parseAuctionInfo(auctionId, auction);
+    }
+
+    // Highest bid
+    const highest = bids[0];
+
+    auction.buyerId = highest.userId;
+    auction.finalBidAmount = highest.amount;
+    auction.status = 'purchased';
+    await auction.save();
+
+    // Winner gets auction in purchased list
+    const buyer = await User.findById(highest.userId);
+    if (buyer) {
+      buyer.purchasedAuctions.push(new Types.ObjectId(auctionId));
+      // Subtract cost of auction
+      buyer.tokens = Math.max(
+        0,
+        (buyer.tokens ?? 0) - (auction.finalBidAmount ?? 0),
+      );
+      // Adjust buyer points based on expected value
+      if (auction.finalBidAmount > auction.expectedValue) {
+        buyer.points -= 1; // overpaid
+      } else {
+        buyer.points += 1; // fair or good deal
+      }
+      await buyer.save();
+    }
+
+    return this.parseAuctionInfo(auctionId, auction);
+  }
+
   // This function is used for taking an auction DB document and converting it to
   // a usable interface.
   static parseAuctionInfo(
@@ -107,50 +155,6 @@ class AuctionsService {
       status: auction.status,
       finalBidAmount: auction.finalBidAmount,
     };
-  }
-  // Close an auction, determining the winner if there are any bids.
-  static async closeAuction(auctionId: string): Promise<void> {
-    const auction = await Auction.findById(auctionId);
-    if (!auction) throw new Error('auction not found');
-
-    // Already closed
-    if (auction.status !== 'active') return;
-
-    // Fetch bids
-    const bids = await Bid.find({ auctionId }).sort({ amount: -1 });
-
-    // No bids
-    if (bids.length === 0) {
-      auction.status = 'closed';
-      await auction.save();
-      return;
-    }
-
-    // Highest bid
-    const highest = bids[0];
-
-    auction.buyerId = highest.userId;
-    auction.finalBidAmount = highest.amount;
-    auction.status = 'purchased';
-    await auction.save();
-
-    // Winner gets auction in purchased list
-    const buyer = await User.findById(highest.userId);
-    if (buyer) {
-      buyer.purchasedAuctions.push(new mongoose.Types.ObjectId(auctionId));
-      // Subtract cost of auction
-      buyer.tokens = Math.max(
-        0,
-        (buyer.tokens ?? 0) - (auction.finalBidAmount ?? 0),
-      );
-      // Adjust buyer points based on expected value
-      if (auction.finalBidAmount > auction.expectedValue) {
-        buyer.points -= 1; // overpaid
-      } else {
-        buyer.points += 1; // fair or good deal
-      }
-      await buyer.save();
-    }
   }
 }
 

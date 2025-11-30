@@ -128,8 +128,8 @@ auctionsRouter.post(
   userFullAuth,
   async (req: Request, res: Response) => {
     try {
-      await AuctionsService.closeAuction(req.params.id);
-      return res.status(200).json({ success: true });
+      const auction = await AuctionsService.closeAuction(req.params.id);
+      return res.status(200).json(auction);
     } catch (error) {
       console.error('Error closing auction:', error);
       return res.status(400).json({ error: 'failed to close auction' });
