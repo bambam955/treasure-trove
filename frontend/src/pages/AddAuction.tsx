@@ -2,13 +2,11 @@ import { useAuth } from '../contexts/AuthContext';
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuctionsApi from '../api/auctions';
-import { jwtDecode } from 'jwt-decode';
-import type { TokenPayload } from '@shared/auth.ts';
 import { UnauthorizedPage } from './Unauthorized.tsx';
 import { BaseLayout } from '../layouts/BaseLayout.tsx';
 
 export function AddAuction() {
-  const [token] = useAuth();
+  const [token, tokenPayload] = useAuth();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
@@ -41,15 +39,13 @@ export function AddAuction() {
     setShowError(false);
 
     try {
-      const { sub } = jwtDecode<TokenPayload>(token);
-
       await AuctionsApi.createAuction(
         {
           title: title.trim(),
           description: description.trim(),
-          sellerId: sub,
+          sellerId: tokenPayload!.sub,
           minimumBid: Number(minBid),
-          endDate: new Date(endDate),
+          endDate: new Date(endDate).toISOString(),
           expectedValue: Number(expectedValue),
         },
         token,
@@ -118,7 +114,7 @@ export function AddAuction() {
                 </label>
                 <input
                   id='endDate'
-                  type='date'
+                  type='datetime-local'
                   className='form-control'
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}

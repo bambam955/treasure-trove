@@ -15,7 +15,13 @@ const userSchema = new Schema(
     canBeLocked: { type: Boolean, default: true }, // Certain accounts cannot be locked
 
     // "Tokens" are fake money in the platform.
-    tokens: { type: Number, required: true, default: 0 },
+    tokens: { type: Number, required: true, default: 1000 },
+
+    // Points can go up or down from auctions and feedback.
+    points: { type: Number, default: 0 },
+
+    // Restored purchased auctions
+    purchasedAuctions: [{ type: Schema.Types.ObjectId, ref: 'auction' }],
   },
   {
     timestamps: true,

@@ -1,25 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { jwtDecode } from 'jwt-decode';
 import { User } from './User';
-
-// The backend encodes the user ID in the JWT token.
-interface JwtPayload {
-  sub: string;
-}
 
 // If a user is logged in, then display their username and a Logout button.
 // If the user clicks Logout then the JWT token will be cleared.
 export function Header({}) {
-  const [token, setToken] = useAuth();
+  const [token, tokenPayload, setToken] = useAuth();
   const navigate = useNavigate();
 
   // If a user is logged in, then display their username and a Logout button.
   // If the user clicks Logout then the JWT token will be cleared.
   if (token) {
-    const { sub } = jwtDecode<JwtPayload>(token);
     return (
-      <nav className='navbar navbar-expand-lg bg-primary' data-bs-theme='dark'>
+      <nav
+        className='navbar navbar-expand-lg bg-primary p-2'
+        data-bs-theme='dark'
+      >
         <div className='container-fluid align-items-center'>
           <div className='d-flex align-items-center'>
             <button
@@ -36,6 +32,12 @@ export function Header({}) {
             </button>
             <button
               className='btn btn-outline-light btn-sm me-2'
+              onClick={() => navigate('/purchased')}
+            >
+              Purchased Items
+            </button>
+            <button
+              className='btn btn-outline-light btn-sm me-2'
               onClick={() => navigate('/auctions/add')}
             >
               Add Auction Item
@@ -43,7 +45,7 @@ export function Header({}) {
           </div>
           <div className='d-flex align-items-center ms-auto'>
             <span className='navbar-text text-light me-3'>
-              <User id={sub} />
+              <User id={tokenPayload!.sub} />
             </span>
             <button
               className='btn btn-outline-light btn-sm'

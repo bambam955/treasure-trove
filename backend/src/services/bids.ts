@@ -1,6 +1,11 @@
-import type { BidInfo, CreateBidInfo } from '@shared/bids.ts';
+import {
+  findHighestBid,
+  type BidInfo,
+  type CreateBidInfo,
+} from '@shared/bids.ts';
 import { Bid, type BidDataType } from '../db/models/bid.ts';
 import AuctionsService from './auctions.ts';
+import UsersService from './users.ts';
 
 class BidsService {
   // Get all the bids that have been made on a given auction.
@@ -13,15 +18,36 @@ class BidsService {
   static async createBid(bidInfo: CreateBidInfo): Promise<BidInfo> {
     const auction = await AuctionsService.getAuctionById(bidInfo.auctionId);
 
+    // Prevent bidding on closed auctions
+    if (auction.status !== 'active') {
+      throw new Error('cannot bid on a closed auction');
+    }
+
+    // Do not allow users to make bids on their own auctions.
+    if (bidInfo.userId === auction.sellerId) {
+      throw new Error('users cannot bid on their own auctions');
+    }
+
     // Make sure the bid is at least as high as the minimum bid.
     // We can make this preliminary check before going through all of the other bids
     // for a slight performance boost.
     if (bidInfo.amount < auction.minimumBid) {
       throw new Error('bid amount must be at least the minimum bid');
     }
+
+    // Make sure the user has enough tokens to cover the bid.
+    const user = await UsersService.getUserInfoById(bidInfo.userId);
+    if (!user.tokens || user.tokens < bidInfo.amount) {
+      throw new Error('user does not have enough tokens to make the bid');
+    }
+
     // If the bid as at least as high as the minimum bid, then make sure it is higher
     // than all other bids that have been made.
+    // the first if statement prevent a user from bidding over their own previous bid
     const currHighBid = await this.getCurrentHighestBid(bidInfo.auctionId);
+    if (currHighBid && currHighBid.userId === bidInfo.userId) {
+      throw new Error('you cannot place two bids in a row on the same auction');
+    }
     if (currHighBid && currHighBid.amount >= bidInfo.amount) {
       throw new Error('bid amount must be higher than the previous bid');
     }
@@ -43,14 +69,7 @@ class BidsService {
     const bids = await this.getAuctionBids(auctionId);
     if (bids.length === 0) return undefined;
 
-    let maxBid = bids[0];
-    for (let i = 1; i < bids.length; i++) {
-      if (bids[i].amount > maxBid.amount) {
-        maxBid = bids[i];
-      }
-    }
-
-    return maxBid;
+    return findHighestBid(bids);
   }
 
   // This function is used for taking an auction DB document and converting it to

@@ -2,9 +2,9 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import UsersService from '../services/users.ts';
 import {
-  fullUserInfoSchema,
   regularUserInfoSchema,
   userCredentialsSchema,
+  updateUserInfoSchema,
 } from 'treasure-trove-shared';
 import { checkAdmin } from '../middleware/isAdmin.ts';
 import { userFullAuth } from '../middleware/userAuth.ts';
@@ -91,10 +91,15 @@ usersRouter.put(
     try {
       // Check if the user's token has admin privileges.
       const isAdmin = (await checkAdmin(req.auth)) === 200;
-      // Validate the request body using the proper schema based on admin status.
-      const schema = isAdmin ? fullUserInfoSchema : regularUserInfoSchema;
-      const validatedBody = schema.validateSync(req.body);
-
+      if (!isAdmin) {
+        return res
+          .status(403)
+          .json({ error: 'Only admins can update user accounts' });
+      }
+      // Validate the request body against the update schema.
+      const validatedBody = updateUserInfoSchema.validateSync(req.body, {
+        stripUnknown: true,
+      });
       // Update the user info. Note that using the validated body ensures
       // only fields the user is permitted to update will be updated.
       const userInfo = await UsersService.updateUser(

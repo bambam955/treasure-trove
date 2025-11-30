@@ -98,9 +98,9 @@ auctionsRouter.post(
       // Use 201 when a POST request successfully creates a new resource on the server.
       return res.status(201).json(bid);
     } catch (error) {
-      console.error('Auction creation error:', error);
+      console.error('Bid creation error:', error);
       return res.status(400).json({
-        error: 'Failed to create auction',
+        error: 'Failed to create bid',
       });
     }
   },
@@ -118,6 +118,21 @@ auctionsRouter.delete(
     } catch (error) {
       console.error('Error deleting auction:', error);
       return res.status(400).json({ error: 'failed to delete auction' });
+    }
+  },
+);
+
+// Manually close an auction
+auctionsRouter.post(
+  '/:id/close',
+  userFullAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const auction = await AuctionsService.closeAuction(req.params.id);
+      return res.status(200).json(auction);
+    } catch (error) {
+      console.error('Error closing auction:', error);
+      return res.status(400).json({ error: 'failed to close auction' });
     }
   },
 );

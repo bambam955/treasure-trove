@@ -1,3 +1,5 @@
+import { TokenPayload } from '@shared/auth.ts';
+import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useContext, useState } from 'react';
 
 interface AuthContextType {
@@ -29,7 +31,12 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
 
 // This hook is how another React element can easily get access to the authentication
 // information when needed.
-export function useAuth(): [string | null, (token: string | null) => void] {
+export function useAuth(): [
+  string | null,
+  TokenPayload | null,
+  (token: string | null) => void,
+] {
   const { token, setToken } = useContext(AuthContext);
-  return [token, setToken];
+  const payload = token ? jwtDecode<TokenPayload>(token) : null;
+  return [token, payload, setToken];
 }

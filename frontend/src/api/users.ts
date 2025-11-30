@@ -7,6 +7,7 @@ import type {
   FullUserInfo,
 } from '@shared/users.ts';
 import { apiRoute, jwtHeaders } from './utils';
+import { queryClient } from './queryClient';
 
 class UserApi {
   // Register a new user account, which requires just a username and password.
@@ -71,7 +72,21 @@ class UserApi {
       body: JSON.stringify(user),
     });
     if (!res.ok) throw new Error('failed to update user tokens');
-    return await res.json();
+    const updated = await res.json();
+    queryClient.invalidateQueries({ queryKey: ['users', id] });
+    return updated;
+  }
+
+  static async getPurchasedAuctions(
+    userId: string,
+    token: string,
+  ): Promise<string[]> {
+    const user = await UserApi.getUserInfo(userId, token);
+
+    // Filter out undefined values
+    return (user.purchasedAuctions ?? []).filter(
+      (id): id is string => typeof id === 'string',
+    );
   }
 }
 
