@@ -62,10 +62,11 @@ export function AuctionsList({
                 </p>
               )}
 
-              <p className='card-text mb-2'>
-                <strong>Time Left:</strong> <Countdown endDate={auction.endDate} />
+              <div className='card-text mb-2'>
+                <strong>Time Left:</strong>{' '}
+                <Countdown endDate={auction.endDate} />
                 {new Date(auction.endDate).toLocaleString()}
-              </p>
+              </div>
 
               <div className='container'>
                 <div className='row justify-content-between mt-2'>

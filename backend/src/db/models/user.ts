@@ -20,9 +20,8 @@ const userSchema = new Schema(
     // Points can go up or down from auctions and feedback.
     points: { type: Number, default: 0 },
 
-    purchasedAuctions: [
-      { type: Schema.Types.ObjectId, ref: 'auction' }
-    ],
+    // Restored purchased auctions
+    purchasedAuctions: [{ type: Schema.Types.ObjectId, ref: 'auction' }],
   },
   {
     timestamps: true,

@@ -8,6 +8,7 @@ import {
   CreateAuctionInfo,
   UpdateAuctionInfo,
 } from '@shared/auctions.ts';
+import { queryClient } from '../queryClient';
 
 class AuctionsApi {
   // Retrieve information about all auctions.
@@ -133,7 +134,25 @@ class AuctionsApi {
     if (!res.ok) throw new Error('failed to make bid');
     const rawBody: BidInfo = await res.json();
     const body = bidInfoSchema.validateSync(rawBody);
+    queryClient.invalidateQueries({ queryKey: ['users'] });
     return body;
+  }
+
+  // Close
+  static async closeAuction(id: string, token: string): Promise<AuctionInfo> {
+    const res = await fetch(apiRoute(`auctions/${id}/close`), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...jwtHeaders(token) },
+    });
+
+    const body = await res.json();
+
+    // refresh of user info
+    queryClient.invalidateQueries({ queryKey: ['users', id] });
+
+    return body;
+    // const raw = await res.json();
+    // return auctionInfoSchema.validateSync(raw);
   }
 }
 

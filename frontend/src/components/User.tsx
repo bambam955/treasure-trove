@@ -16,6 +16,7 @@ export function User({ id }: UserProps) {
     queryKey: ['users', id],
     // Fetch the user info from the API.
     queryFn: () => UserApi.getUserInfo(id, token!),
+    enabled: !!token,
   });
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
@@ -32,10 +33,10 @@ export function User({ id }: UserProps) {
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>
       <strong className='me-3'>{userInfo.username}</strong>
       <div className='vr' style={{ width: '3px' }} />
-      <span className='fw-bold'>
+      <span className='fw-bold ms-2'>
         💰 <em>{userInfo.tokens ?? 0}</em>
       </span>
-      <span className='fw-bold'>
+      <span className='fw-bold ms-2'>
         ⭐ <em>{userInfo.points ?? 0}</em>
       </span>
     </div>

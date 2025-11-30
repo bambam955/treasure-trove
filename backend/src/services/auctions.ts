@@ -84,29 +84,33 @@ class AuctionsService {
     // Already closed
     if (auction.status !== 'active') return;
 
-    // Fetch bids 
+    // Fetch bids
     const bids = await Bid.find({ auctionId }).sort({ amount: -1 });
 
-    // No bids 
+    // No bids
     if (bids.length === 0) {
       auction.status = 'closed';
       await auction.save();
-      await Auction.findByIdAndDelete(auctionId);
       return;
     }
 
     // Highest bid
     const highest = bids[0];
 
-    auction.buyerId = highest.userId;      
+    auction.buyerId = highest.userId;
     auction.finalBidAmount = highest.amount;
-    auction.status = 'closed';
+    auction.status = 'purchased';
     await auction.save();
 
     // Winner gets auction in purchased list
     const buyer = await User.findById(highest.userId);
     if (buyer) {
       buyer.purchasedAuctions.push(new mongoose.Types.ObjectId(auctionId));
+      // Subtract cost of auction
+      buyer.tokens = Math.max(
+        0,
+        (buyer.tokens ?? 0) - (auction.finalBidAmount ?? 0),
+      );
       // Adjust buyer points based on expected value
       if (auction.finalBidAmount > auction.expectedValue) {
         buyer.points -= 1; // overpaid
