@@ -8,7 +8,7 @@ import {
   CreateAuctionInfo,
   UpdateAuctionInfo,
 } from '@shared/auctions.ts';
-import { queryClient } from '../queryClient';
+import { queryClient } from './queryClient';
 
 class AuctionsApi {
   // Retrieve information about all auctions.

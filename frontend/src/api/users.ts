@@ -7,7 +7,7 @@ import type {
   FullUserInfo,
 } from '@shared/users.ts';
 import { apiRoute, jwtHeaders } from './utils';
-import { queryClient } from '../queryClient';
+import { queryClient } from './queryClient';
 
 class UserApi {
   // Register a new user account, which requires just a username and password.
