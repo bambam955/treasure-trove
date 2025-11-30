@@ -28,6 +28,9 @@ export function AuctionsList({
   const filteredAuctions = useMemo(() => {
     let result = auctions;
 
+    // Filter out expired auctions.
+    result = result.filter((a) => a.status == 'active');
+
     if (searchTerm.trim()) {
       const term = searchTerm.trim().toLowerCase();
       result = result.filter((auction) =>

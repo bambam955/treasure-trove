@@ -119,7 +119,7 @@ export function AuctionView() {
               <div className='col-md-6'>
                 {!isUsersAuction && (
                   <div className='w-100'>
-                    {!biddingDisabled ? (
+                    {!isExpired ? (
                       <button
                         className='btn btn-success btn-lg w-100 text-uppercase'
                         onClick={() => setShowModal(true)}

@@ -10,21 +10,17 @@ import type { AuctionInfo } from '@shared/auctions.ts';
 export function PurchasedItems() {
   const [token, tokenPayload] = useAuth();
 
-  if (!token) {
-    return <UnauthorizedPage />;
-  }
-
   const userId = tokenPayload!.sub;
 
   // Load purchased auction IDs
   const purchasedIdsQuery = useQuery<string[]>({
     queryKey: ['purchased', userId],
-    queryFn: () => UserApi.getPurchasedAuctions(userId, token),
+    queryFn: () => UserApi.getPurchasedAuctions(userId, token!),
   });
 
   // Load auction info for each purchased auction
   const purchasedAuctionsQuery = useQuery<AuctionInfo[]>({
-    queryKey: ['purchasedAuctions', purchasedIdsQuery.data],
+    queryKey: ['purchasedAuctions', userId],
     enabled: !!purchasedIdsQuery.data,
     queryFn: async () => {
       const ids = purchasedIdsQuery.data!;
@@ -32,7 +28,7 @@ export function PurchasedItems() {
 
       for (const id of ids) {
         try {
-          const a = await AuctionsApi.getAuctionInfo(id, token);
+          const a = await AuctionsApi.getAuctionInfo(id, token!);
           results.push(a);
         } catch (err) {
           console.error('Failed to load purchased auction:', id, err);
@@ -41,6 +37,10 @@ export function PurchasedItems() {
       return results;
     },
   });
+
+  if (!token) {
+    return <UnauthorizedPage />;
+  }
 
   if (purchasedIdsQuery.isLoading || purchasedAuctionsQuery.isLoading) {
     return (
