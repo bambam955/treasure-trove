@@ -12,11 +12,6 @@ interface AuctionsListProps {
   onDelete?: (id: string) => void;
 }
 
-type AuctionForList = AuctionInfo & {
-  createdDate?: string | Date;
-  lastBidDate?: string | Date;
-};
-
 export function AuctionsList({
   auctions,
   isLoading,
@@ -28,10 +23,9 @@ export function AuctionsList({
 }: AuctionsListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'created' | 'lastBid'>('created');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const filteredAuctions = useMemo(() => {
-    const list = auctions as AuctionForList[];
-
-    let result = list;
+    let result = auctions;
 
     if (searchTerm.trim()) {
       const term = searchTerm.trim().toLowerCase();
@@ -44,15 +38,27 @@ export function AuctionsList({
       if (sortBy === 'created') {
         const aCreated = a.createdDate ? new Date(a.createdDate).getTime() : 0;
         const bCreated = b.createdDate ? new Date(b.createdDate).getTime() : 0;
-        return bCreated - aCreated; // newest first
+        return sortOrder === 'asc'
+          ? aCreated - bCreated // oldest first
+          : bCreated - aCreated; // newest first
       }
-      const aLast = a.lastBidDate ? new Date(a.lastBidDate).getTime() : 0;
-      const bLast = b.lastBidDate ? new Date(b.lastBidDate).getTime() : 0;
-      return bLast - aLast; // most recent bid first; no bids go last
+
+      const aHasLast = !!a.lastBidDate;
+      const bHasLast = !!b.lastBidDate;
+
+      if (aHasLast && !bHasLast) return -1;
+      if (!aHasLast && bHasLast) return 1;
+      if (!aHasLast && !bHasLast) return 0;
+
+      const aLast = new Date(a.lastBidDate as Date).getTime();
+      const bLast = new Date(b.lastBidDate as Date).getTime();
+      return sortOrder === 'asc'
+        ? aLast - bLast // oldest bid first
+        : bLast - aLast; // most recent bid first
     });
 
     return sorted;
-  }, [auctions, searchTerm, sortBy]);
+  }, [auctions, searchTerm, sortBy, sortOrder]);
 
   if (isLoading) {
     return (
@@ -85,14 +91,25 @@ export function AuctionsList({
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        <select
-          className='form-select'
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as 'created' | 'lastBid')}
-        >
-          <option value='created'>Created date (newest first)</option>
-          <option value='lastBid'>Last bid date (most recent first)</option>
-        </select>
+        <div className='d-flex gap-2'>
+          <select
+            className='form-select'
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'created' | 'lastBid')}
+          >
+            <option value='created'>Created date</option>
+            <option value='lastBid'>Last bid date</option>
+          </select>
+
+          <select
+            className='form-select'
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+          >
+            <option value='desc'>Newest / Most recent first</option>
+            <option value='asc'>Oldest / Least recent first</option>
+          </select>
+        </div>
       </div>
 
       {filteredAuctions.length === 0 ? (

@@ -23,6 +23,7 @@ const auctionInfoSchema = createAuctionSchema.concat(
   yup.object({
     id: yup.string().required(),
     createdDate: yup.date().required(),
+    lastBidDate: yup.date().nullable().optional(),
   }),
 );
 
