@@ -1,5 +1,6 @@
 import type { AuctionInfo } from '@shared/auctions.ts';
 import { Link } from 'react-router-dom';
+import { Countdown } from '../components/Countdown.tsx';
 import { useMemo, useState } from 'react';
 
 interface AuctionsListProps {
@@ -26,6 +27,9 @@ export function AuctionsList({
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const filteredAuctions = useMemo(() => {
     let result = auctions;
+
+    // Filter out expired auctions.
+    result = result.filter((a) => a.status == 'active');
 
     if (searchTerm.trim()) {
       const term = searchTerm.trim().toLowerCase();
@@ -137,10 +141,11 @@ export function AuctionsList({
                     </p>
                   )}
 
-                  <p className='card-text mb-2'>
-                    <strong>Ends:</strong>{' '}
+                  <div className='card-text mb-2'>
+                    <strong>Time Left:</strong>{' '}
+                    <Countdown endDate={auction.endDate} />
                     {new Date(auction.endDate).toLocaleString()}
-                  </p>
+                  </div>
 
                   <div className='container'>
                     <div className='row justify-content-between mt-2'>

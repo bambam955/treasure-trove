@@ -16,21 +16,29 @@ export function User({ id }: UserProps) {
     queryKey: ['users', id],
     // Fetch the user info from the API.
     queryFn: () => UserApi.getUserInfo(id, token!),
+    enabled: !!token,
   });
 
   // If for some reason we couldn't fetch the user info, default to the user ID as the username.
   // It won't look great, but it's better than nothing.
-  const userInfo: RegularUserInfo | FullUserInfo = userInfoQuery.data ?? {
+  const userInfo = userInfoQuery.data ?? {
     id,
     username: id,
+    role: 'user',
+    tokens: 0,
+    points: 0,
+    purchasedAuctions: [],
   };
   return (
     <div className='border rounded py-2 px-3 d-flex align-items-center justify-content-between bg-secondary'>
       <strong className='me-3'>{userInfo.username}</strong>
       <div className='vr' style={{ width: '3px' }} />
-      <strong className='ms-2 fs-5'>
+      <span className='fw-bold ms-2'>
         💰 <em>{userInfo.tokens ?? 0}</em>
-      </strong>
+      </span>
+      <span className='fw-bold ms-2'>
+        ⭐ <em>{userInfo.points ?? 0}</em>
+      </span>
     </div>
   );
 }

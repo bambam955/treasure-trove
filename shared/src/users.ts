@@ -13,7 +13,9 @@ const regularUserInfoSchema = yup.object({
   id: yup.string().required(),
   username: yup.string(),
   role: yup.string().oneOf(['admin', 'user']),
-  tokens: yup.number().min(0),
+  tokens: yup.number().min(0).required(),
+  points: yup.number().required(),
+  purchasedAuctions: yup.array(yup.string()).required(),
 });
 const fullUserInfoSchema = regularUserInfoSchema.concat(
   yup.object({
@@ -21,12 +23,27 @@ const fullUserInfoSchema = regularUserInfoSchema.concat(
     canBeLocked: yup.boolean(),
   }),
 );
+const updateUserInfoSchema = yup
+  .object({
+    tokens: yup.number().min(0),
+    points: yup.number(),
+    locked: yup.boolean(),
+    canBeLocked: yup.boolean(),
+  })
+  .noUnknown();
+
 export type RegularUserInfo = yup.InferType<typeof regularUserInfoSchema>;
 export type FullUserInfo = yup.InferType<typeof fullUserInfoSchema>;
+export type UpdateUserInfo = yup.InferType<typeof updateUserInfoSchema>;
 
 // This interface defines the information that will be returned from a successful login attempt.
 export interface AuthInfo {
   token: string;
 }
 
-export { userCredentialsSchema, regularUserInfoSchema, fullUserInfoSchema };
+export {
+  userCredentialsSchema,
+  regularUserInfoSchema,
+  fullUserInfoSchema,
+  updateUserInfoSchema,
+};

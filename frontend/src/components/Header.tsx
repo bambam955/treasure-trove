@@ -32,6 +32,12 @@ export function Header({}) {
             </button>
             <button
               className='btn btn-outline-light btn-sm me-2'
+              onClick={() => navigate('/purchased')}
+            >
+              Purchased Items
+            </button>
+            <button
+              className='btn btn-outline-light btn-sm me-2'
               onClick={() => navigate('/auctions/add')}
             >
               Add Auction Item

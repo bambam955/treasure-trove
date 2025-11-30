@@ -13,6 +13,7 @@ export function Home() {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    if (!token || !tokenPayload) return; // No need to load if not logged in
     let cancelled = false;
 
     async function loadAuctions() {

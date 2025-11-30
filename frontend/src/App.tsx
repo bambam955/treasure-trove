@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Home } from './pages/Home';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Signup } from './pages/Signup';
@@ -9,6 +9,8 @@ import { Admin } from './pages/Admin.tsx';
 import { AuctionView } from './pages/AuctionView.tsx';
 import { AddAuction } from './pages/AddAuction.tsx';
 import { MyAuctions } from './pages/MyAuctions.tsx';
+import { PurchasedItems } from './pages/PurchasedItems.tsx';
+import { queryClient } from './api/queryClient.ts';
 
 // Define the routes to different pages of the application.
 const router = createBrowserRouter([
@@ -44,11 +46,11 @@ const router = createBrowserRouter([
     path: '/my-auctions',
     element: <MyAuctions />,
   },
+  {
+    path: '/purchased',
+    element: <PurchasedItems />,
+  },
 ]);
-
-// The QueryClient is what allows for async fetches from a backend server to work
-// on the client side.
-const queryClient = new QueryClient();
 
 export function App() {
   return (

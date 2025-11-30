@@ -14,7 +14,7 @@ import { BidInfo, CreateBidInfo, findHighestBid } from '@shared/bids.ts';
 export function AuctionView() {
   const [token, tokenPayload] = useAuth();
   const [showModal, setShowModal] = useState(false);
-
+  const [expired, setExpired] = useState(false);
   const auctionId = useParams()['id'];
 
   // This is the query used to fetch the basic information about the auction.
@@ -77,8 +77,12 @@ export function AuctionView() {
 
   // We do not want users to be able to make bids on their own auctions.
   const isUsersAuction = sellerInfo.id === userInfo.id;
+  const endTimestamp = new Date(auctionInfo.endDate).getTime();
+  const isExpired =
+    expired || endTimestamp <= Date.now() || auctionInfo.status === 'closed';
 
   const userIsLastBidder = !!highestBid && highestBid.userId === userInfo.id;
+  const biddingDisabled = isExpired || isUsersAuction || userIsLastBidder;
 
   return (
     <BaseLayout>
@@ -101,29 +105,37 @@ export function AuctionView() {
                   </strong>
                 </div>
                 <div className='mt-3'>
-                  <Countdown endDate={auctionInfo.endDate} />
+                  <Countdown
+                    endDate={auctionInfo.endDate}
+                    onExpire={() => setExpired(true)}
+                  />
+                  {isExpired && (
+                    <div className='mt-2 badge bg-danger text-light fs-6'>
+                      Auction Closed
+                    </div>
+                  )}
                 </div>
               </div>
               <div className='col-md-6'>
                 {!isUsersAuction && (
                   <div className='w-100'>
-                    <button
-                      className='btn btn-success btn-lg w-100 text-uppercase'
-                      onClick={() => setShowModal(true)}
-                      disabled={
-                        userInfo.tokens! <= minNextBid || userIsLastBidder
-                      }
-                    >
-                      <strong>
-                        {userIsLastBidder
-                          ? 'You have the highest bid'
-                          : 'Make Bid'}
-                      </strong>
-                    </button>
-                    {userIsLastBidder && (
-                      <small className='text-muted d-block mt-1'>
-                        You already placed the latest bid on this auction.
-                      </small>
+                    {!isExpired ? (
+                      <button
+                        className='btn btn-success btn-lg w-100 text-uppercase'
+                        onClick={() => setShowModal(true)}
+                        disabled={
+                          biddingDisabled || userInfo.tokens! <= minNextBid
+                        }
+                      >
+                        <strong>Make Bid</strong>
+                      </button>
+                    ) : (
+                      <button
+                        className='btn btn-secondary btn-lg w-100 text-uppercase'
+                        disabled
+                      >
+                        <strong>Auction Closed</strong>
+                      </button>
                     )}
                   </div>
                 )}
@@ -185,6 +197,7 @@ function MakeBidModal({
 
   // Used to disable the button until the bid amount is valid.
   const isBidValid = bidAmount.trim() !== '' && Number(bidAmount) >= minNextBid;
+  const auctionExpired = new Date(auctionInfo.endDate).getTime() <= Date.now();
 
   // Clear bid amount when modal opens.
   // Without this, you can enter a value, close the modal,
@@ -275,7 +288,7 @@ function MakeBidModal({
                 type='button'
                 className='btn btn-success'
                 onClick={handleSubmit}
-                disabled={!isBidValid}
+                disabled={!isBidValid || auctionExpired}
               >
                 <strong>Submit Bid 🎉</strong>
               </button>

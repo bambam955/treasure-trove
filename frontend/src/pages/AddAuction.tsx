@@ -45,7 +45,7 @@ export function AddAuction() {
           description: description.trim(),
           sellerId: tokenPayload!.sub,
           minimumBid: Number(minBid),
-          endDate: new Date(endDate),
+          endDate: new Date(endDate).toISOString(),
           expectedValue: Number(expectedValue),
         },
         token,
@@ -114,7 +114,7 @@ export function AddAuction() {
                 </label>
                 <input
                   id='endDate'
-                  type='date'
+                  type='datetime-local'
                   className='form-control'
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}

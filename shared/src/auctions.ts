@@ -5,6 +5,8 @@ const updateAuctionSchema = yup.object({
   title: yup.string().required(),
   description: yup.string().required(),
   buyerId: yup.string(),
+  status: yup.string().oneOf(['active', 'closed', 'purchased']),
+  finalBidAmount: yup.number(),
 });
 // Creating an auction requires the above fields plus these additional ones.
 // These fields cannot be updated after the auction is created.
@@ -12,7 +14,7 @@ const createAuctionSchema = updateAuctionSchema.concat(
   yup.object({
     sellerId: yup.string().required(),
     minimumBid: yup.number().required().min(0),
-    endDate: yup.date().required(),
+    endDate: yup.mixed<string | Date>().required(),
     expectedValue: yup.number().min(0),
   }),
 );
