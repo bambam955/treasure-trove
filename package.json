@@ -9,6 +9,9 @@
   ],
   "scripts": {
     "prepare": "husky install",
+    "start": "npm run start -w backend",
+    "build": "npm run build -w frontend",
+    "heroku-postbuild": "npm run build -w frontend",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "format": "prettier --write .",

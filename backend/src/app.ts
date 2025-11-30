@@ -7,6 +7,11 @@ import bodyParser from 'body-parser';
 import usersRouter from './routes/users.ts';
 import auctionsRouter from './routes/auctions.ts';
 import adminRouter from './routes/admin.ts';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Create the Express app.
 const app = express();
@@ -16,7 +21,7 @@ const app = express();
 // and we have to take care of CORS errors.
 app.use(bodyParser.json());
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
@@ -36,6 +41,10 @@ app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/auctions', auctionsRouter);
 app.use('/api/v1/admin', adminRouter);
 
+// This is required for deployment. Not really sure what it does.
+const clientDist = path.resolve(__dirname, '../..', 'frontend', 'dist');
+app.use(express.static(clientDist));
+
 // Add a default response for the root of the API.
 app.get('/', (_req: Request, res: Response) => {
   res.json({
@@ -44,6 +53,11 @@ app.get('/', (_req: Request, res: Response) => {
     JWT_SECRET: process.env.JWT_SECRET ? 'Loaded' : 'Missing',
     NODE_ENV: process.env.NODE_ENV || 'development',
   });
+});
+
+// Add wildcard route for serving frontend files.
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(clientDist, 'index.html'));
 });
 
 export default app;

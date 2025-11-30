@@ -7,7 +7,7 @@ import {
   updateAuctionSchema,
 } from 'treasure-trove-shared';
 import BidsService from '../services/bids.ts';
-import { userFullAuth } from 'src/middleware/userAuth.ts';
+import { userFullAuth } from '../middleware/userAuth.ts';
 
 const auctionsRouter = express.Router();
 
