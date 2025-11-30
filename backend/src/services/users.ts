@@ -98,12 +98,13 @@ class UsersService {
     updates: Partial<FullUserInfo>,
   ): Promise<FullUserInfo> {
     const user = await User.findById(userId);
-    if (!user) throw new Error('could not update user!'); 
-    
+    if (!user) throw new Error('could not update user!');
+
     if (updates.tokens !== undefined) user.tokens = updates.tokens;
     if (updates.points !== undefined) user.points = updates.points;
     if (updates.locked !== undefined) user.locked = updates.locked;
-    if (updates.canBeLocked !== undefined) user.canBeLocked = updates.canBeLocked;
+    if (updates.canBeLocked !== undefined)
+      user.canBeLocked = updates.canBeLocked;
 
     await user.save();
     return this.parseFullUserInfo(userId, user);
@@ -121,9 +122,7 @@ class UsersService {
       role: user.role,
       tokens: user.tokens,
       points: user.points,
-      purchasedAuctions: user.purchasedAuctions.map((id) =>
-        id.toString()
-      ),
+      purchasedAuctions: user.purchasedAuctions.map((id) => id.toString()),
     };
   }
   static parseFullUserInfo(userId: string, user: UserDataType): FullUserInfo {
@@ -135,9 +134,7 @@ class UsersService {
       canBeLocked: user.canBeLocked,
       tokens: user.tokens,
       points: user.points,
-      purchasedAuctions: user.purchasedAuctions.map((id) =>
-        id.toString()
-      ),
+      purchasedAuctions: user.purchasedAuctions.map((id) => id.toString()),
     };
   }
 }

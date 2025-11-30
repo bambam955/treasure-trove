@@ -35,11 +35,11 @@ export function Countdown({ endDate, onExpire }: CountdownProps) {
         return;
       }
 
-        // Calculate the values of each countdown segment.
-        const seconds = Math.floor(remaining / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+      // Calculate the values of each countdown segment.
+      const seconds = Math.floor(remaining / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
 
       setTimeLeft({
         days,
@@ -68,7 +68,7 @@ export function Countdown({ endDate, onExpire }: CountdownProps) {
     <div className='d-flex justify-content-center gap-2 mt-2'>
       {segments.map((i) => {
         return (
-          <div 
+          <div
             key={i.label}
             className='text-center rounded p-2 bg-body w-25 h-50'
           >

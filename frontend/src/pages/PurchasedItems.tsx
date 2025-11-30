@@ -45,7 +45,7 @@ export function PurchasedItems() {
   if (purchasedIdsQuery.isLoading || purchasedAuctionsQuery.isLoading) {
     return (
       <BaseLayout>
-        <div className="mt-3 text-center">Loading purchased items...</div>
+        <div className='mt-3 text-center'>Loading purchased items...</div>
       </BaseLayout>
     );
   }
@@ -55,7 +55,7 @@ export function PurchasedItems() {
   if (purchasedAuctions.length === 0) {
     return (
       <BaseLayout>
-        <div className="mt-4 alert alert-info">
+        <div className='mt-4 alert alert-info'>
           You have not purchased any items yet.
         </div>
       </BaseLayout>
@@ -64,11 +64,11 @@ export function PurchasedItems() {
 
   return (
     <BaseLayout>
-      <div className="flex-grow-1 d-flex align-items-start justify-content-center mt-4">
-        <div className="w-100" style={{ maxWidth: '900px' }}>
-          <h5 className="mb-3">Purchased Items</h5>
+      <div className='flex-grow-1 d-flex align-items-start justify-content-center mt-4'>
+        <div className='w-100' style={{ maxWidth: '900px' }}>
+          <h5 className='mb-3'>Purchased Items</h5>
 
-          <div className="row g-3">
+          <div className='row g-3'>
             {purchasedAuctions.map((auction) => {
               const isBuyer = auction.buyerId === userId;
               const finalAmount = auction.finalBidAmount ?? 0;
@@ -81,39 +81,48 @@ export function PurchasedItems() {
                 : 'Great bidding — you got a fair deal!';
 
               return (
-                <div className="col-12" key={auction.id}>
-                  <div className="card">
-                    <div className="card-body">
-                      <h5 className="card-title">{auction.title}</h5>
-                      <p className="card-text">{auction.description}</p>
+                <div className='col-12' key={auction.id}>
+                  <div className='card'>
+                    <div className='card-body'>
+                      <h5 className='card-title'>{auction.title}</h5>
+                      <p className='card-text'>{auction.description}</p>
 
-                      <p className="card-text">
-                        <strong>Final Bid:</strong> {auction.finalBidAmount} Tokens
+                      <p className='card-text'>
+                        <strong>Final Bid:</strong> {auction.finalBidAmount}{' '}
+                        Tokens
                       </p>
 
                       {isBuyer && (
-                        <p className="card-text">
-                          <strong>Expected Value:</strong> {auction.expectedValue} Tokens
+                        <p className='card-text'>
+                          <strong>Expected Value:</strong>{' '}
+                          {auction.expectedValue} Tokens
                         </p>
                       )}
 
-                      <p className="card-text">
+                      <p className='card-text'>
                         <strong>Feedback:</strong> {feedback}
                       </p>
 
-                      <p className="card-text">
+                      <p className='card-text'>
                         <strong>Points Earned:</strong>{' '}
-                        <span className={pointsChange > 0 ? 'text-success' : 'text-danger'}>
+                        <span
+                          className={
+                            pointsChange > 0 ? 'text-success' : 'text-danger'
+                          }
+                        >
                           {pointsChange > 0 ? '+1' : '-1'}
                         </span>
                       </p>
 
-                      <p className="card-text">
+                      <p className='card-text'>
                         <strong>Purchased On:</strong>{' '}
                         {new Date(auction.createdDate).toLocaleString()}
                       </p>
 
-                      <Link className="btn btn-primary mt-2" to={`/auctions/${auction.id}`}>
+                      <Link
+                        className='btn btn-primary mt-2'
+                        to={`/auctions/${auction.id}`}
+                      >
                         View Auction
                       </Link>
                     </div>

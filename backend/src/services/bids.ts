@@ -43,7 +43,11 @@ class BidsService {
 
     // If the bid as at least as high as the minimum bid, then make sure it is higher
     // than all other bids that have been made.
+    // the first if statement prevent a user from bidding over their own previous bid
     const currHighBid = await this.getCurrentHighestBid(bidInfo.auctionId);
+    if (currHighBid && currHighBid.userId === bidInfo.userId) {
+      throw new Error('you cannot place two bids in a row on the same auction');
+    }
     if (currHighBid && currHighBid.amount >= bidInfo.amount) {
       throw new Error('bid amount must be higher than the previous bid');
     }

@@ -70,15 +70,19 @@ export function AuctionView() {
 
   // If no bids have been made then this just gets set to 0.
   // The minimum bid for the auction will be saved as minNextBid.
-  const currHighestBid =
-    bidHistory.length > 0 ? findHighestBid(bidHistory).amount : 0;
-  const minNextBid = Math.max(currHighestBid, auctionInfo.minimumBid);
+  const highestBid =
+    bidHistory.length > 0 ? findHighestBid(bidHistory) : undefined;
+  const currHighestBid = highestBid ? highestBid.amount : 0;
+  const minNextBid = Math.max(currHighestBid + 1, auctionInfo.minimumBid);
 
   // We do not want users to be able to make bids on their own auctions.
   const isUsersAuction = sellerInfo.id === userInfo.id;
   const endTimestamp = new Date(auctionInfo.endDate).getTime();
-  const isExpired = expired || endTimestamp <= Date.now() || auctionInfo.status === 'closed';
-  const biddingDisabled = isExpired || isUsersAuction;
+  const isExpired =
+    expired || endTimestamp <= Date.now() || auctionInfo.status === 'closed';
+
+  const userIsLastBidder = !!highestBid && highestBid.userId === userInfo.id;
+  const biddingDisabled = isExpired || isUsersAuction || userIsLastBidder;
 
   return (
     <BaseLayout>
@@ -105,8 +109,8 @@ export function AuctionView() {
                     endDate={auctionInfo.endDate}
                     onExpire={() => setExpired(true)}
                   />
-                  {(isExpired) && (
-                    <div className="mt-2 badge bg-danger text-light fs-6">
+                  {isExpired && (
+                    <div className='mt-2 badge bg-danger text-light fs-6'>
                       Auction Closed
                     </div>
                   )}
@@ -115,25 +119,48 @@ export function AuctionView() {
               <div className='col-md-6'>
                 {!isUsersAuction && (
                   <div className='w-100'>
-                {!biddingDisabled ? (
-                  <button
-                    className='btn btn-success btn-lg w-100 text-uppercase'
-                    onClick={() => setShowModal(true)}
-                    disabled={biddingDisabled || userInfo.tokens! <= minNextBid}
-                  >
-                    <strong>Make Bid</strong>
-                  </button>
-                ) : (
-                  <button
-                    className="btn btn-secondary btn-lg w-100 text-uppercase"
-                    disabled
-                  >
-                    <strong>Auction Closed</strong>
-                  </button>
-                )}
+                    {!biddingDisabled ? (
+                      <button
+                        className='btn btn-success btn-lg w-100 text-uppercase'
+                        onClick={() => setShowModal(true)}
+                        disabled={
+                          biddingDisabled || userInfo.tokens! <= minNextBid
+                        }
+                      >
+                        <strong>Make Bid</strong>
+                      </button>
+                    ) : (
+                      <button
+                        className='btn btn-secondary btn-lg w-100 text-uppercase'
+                        disabled
+                      >
+                        <strong>Auction Closed</strong>
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
+            </div>
+
+            <hr />
+            <div className='mt-3'>
+              <h4>Bidding</h4>
+
+              <p className='mb-1'>
+                <strong>Starting minimum bid:</strong> {auctionInfo.minimumBid}{' '}
+                tokens
+              </p>
+
+              <p className='mb-1'>
+                <strong>Current highest bid:</strong>{' '}
+                {bidHistory.length > 0
+                  ? currHighestBid + ' tokens'
+                  : 'No bids yet'}
+              </p>
+
+              <p className='mb-1'>
+                <strong>Minimum next bid:</strong> {minNextBid} tokens
+              </p>
             </div>
           </div>
         </div>
@@ -245,7 +272,7 @@ function MakeBidModal({
                   onChange={(e) => setBidAmount(e.target.value)}
                   placeholder='Enter your bid amount'
                   min={minNextBid}
-                  step='0.01'
+                  step='1'
                 />
               </div>
             </div>
@@ -269,7 +296,6 @@ function MakeBidModal({
           </div>
         </div>
       </div>
-      {/* Modal backdrop */}
       {show && (
         <div
           className='modal-backdrop fade show'

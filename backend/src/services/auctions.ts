@@ -12,14 +12,44 @@ class AuctionsService {
   // Fetch information about all auctions in the database.
   static async getAllAuctions(): Promise<AuctionInfo[]> {
     const auctions = await Auction.find({});
-    return auctions.map((a) => this.parseAuctionInfo(a._id.toString(), a));
+
+    const lastBids = await Bid.aggregate([
+      { $sort: { createdAt: -1 } },
+      {
+        $group: {
+          _id: '$auctionId',
+          lastBidDate: { $first: '$createdAt' },
+        },
+      },
+    ]);
+
+    const lastBidMap = new Map<string, Date>();
+    for (const b of lastBids) {
+      lastBidMap.set(b._id.toString(), b.lastBidDate as Date);
+    }
+    return auctions.map((a) =>
+      this.parseAuctionInfo(
+        a._id.toString(),
+        a,
+        lastBidMap.get(a._id.toString()),
+      ),
+    );
   }
 
   // Fetch information about a particular auction.
   static async getAuctionById(auctionId: string): Promise<AuctionInfo> {
     const auction = await Auction.findById(auctionId);
     if (!auction) throw new Error('could not find auction!');
-    return this.parseAuctionInfo(auctionId, auction);
+
+    const lastBid = await Bid.findOne({ auctionId })
+      .sort({ createdAt: -1 })
+      .exec();
+
+    return this.parseAuctionInfo(
+      auctionId,
+      auction,
+      lastBid ? lastBid.createdAt : undefined,
+    );
   }
 
   // Create a new auction.
@@ -61,6 +91,7 @@ class AuctionsService {
   static parseAuctionInfo(
     auctionId: string,
     auction: AuctionDataType,
+    lastBidDate?: Date | undefined,
   ): AuctionInfo {
     return {
       id: auctionId,
@@ -72,6 +103,7 @@ class AuctionsService {
       buyerId: auction.buyerId?.toString(),
       expectedValue: auction.expectedValue,
       createdDate: auction.createdAt,
+      lastBidDate,
       status: auction.status,
       finalBidAmount: auction.finalBidAmount,
     };

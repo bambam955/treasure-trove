@@ -12,7 +12,7 @@ const auctionSchema = new Schema(
     minimumBid: { type: Number, required: true, default: 0 },
     endDate: { type: Date, required: true, default: new Date() },
 
-     // Auction status to track whether it's active, closed, or purchased.
+    // Auction status to track whether it's active, closed, or purchased.
     status: {
       type: String,
       enum: ['active', 'closed', 'purchased'],
@@ -24,7 +24,7 @@ const auctionSchema = new Schema(
 
     // This will be updated as bids come in.
     finalBidAmount: { type: Number, default: 0 },
-    
+
     // These fields are used for the feedback system.
     expectedValue: { type: Number, default: 0 },
   },
