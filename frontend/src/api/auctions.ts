@@ -145,14 +145,12 @@ class AuctionsApi {
       headers: { 'Content-Type': 'application/json', ...jwtHeaders(token) },
     });
 
-    const body = await res.json();
-
+    const rawBody = await res.json();
+    const body = auctionInfoSchema.validateSync(rawBody);
     // refresh of user info
     queryClient.invalidateQueries({ queryKey: ['users', id] });
 
     return body;
-    // const raw = await res.json();
-    // return auctionInfoSchema.validateSync(raw);
   }
 }
 
