@@ -1,4 +1,4 @@
-import { TokenPayload } from 'treasure-trove-shared';
+import { type TokenPayload } from 'treasure-trove-shared';
 import type { Request } from 'express';
 
 // Extend Express Request type to include `auth`

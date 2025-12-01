@@ -2,7 +2,7 @@ import {
   findHighestBid,
   type BidInfo,
   type CreateBidInfo,
-} from '@shared/bids.ts';
+} from 'treasure-trove-shared';
 import { Bid, type BidDataType } from '../db/models/bid.ts';
 import AuctionsService from './auctions.ts';
 import UsersService from './users.ts';
