@@ -21,5 +21,4 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
           VITE_SOCKET_HOST: ${{ vars.VITE_SOCKET_HOST }}
