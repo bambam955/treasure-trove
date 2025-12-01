@@ -9,6 +9,9 @@ import auctionsRouter from './routes/auctions.ts';
 import adminRouter from './routes/admin.ts';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { createServer } from 'node:http';
+import { Server } from 'socket.io';
+import { handleSocket } from './services/socket-handler.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,4 +62,13 @@ app.get('*', (_req, res) => {
   res.sendFile(path.join(clientDist, 'index.html'));
 });
 
-export default app;
+// Create socket.io server.
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+});
+handleSocket(io);
+
+export default server;

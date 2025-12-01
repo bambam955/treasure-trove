@@ -1,7 +1,7 @@
 import { type TokenPayload } from 'treasure-trove-shared';
 import { User } from '../db/models/user.ts';
 import type { Response, NextFunction } from 'express';
-import type { AuthenticatedRequest } from './types.ts';
+import type { AuthenticatedRequest, MiddlewareArray } from './types.ts';
 import { userFullAuth } from './userAuth.ts';
 
 export async function checkAdmin(
@@ -19,9 +19,9 @@ export async function checkAdmin(
   return 200;
 }
 
-export const isAdmin = [
+export const isAdmin: MiddlewareArray = [
   // no redundant code...admin is a layer on top of JWT auth
-  userFullAuth,
+  ...userFullAuth,
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const valid = await checkAdmin(req.auth);
