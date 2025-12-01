@@ -12,12 +12,21 @@ export function Signup() {
   // When a user clicks the "Signup" button then we will send an API request
   // to attempt to register the new account.
   const signupMutation = useMutation({
-    mutationFn: () => UserApi.signup({ username, password }),
+    mutationFn: async () => {
+      console.warn('INSIDE mutationFn - about to call UserApi.signup');
+      return await UserApi.signup({ username, password });
+    },
+    onMutate: () => {
+      console.warn('onMutate fired - mutation is starting');
+    },
     // If the signup succeeded then take the user to the login page so that they can
     // log in to the platform.
     onSuccess: () => navigate('/login'),
     // make it very obvious something went wrong by showing a browser alert.
-    onError: () => alert('Failed to sign up!'),
+    onError: (error) => {
+      console.error('onError fired:', error);
+      alert('Failed to sign up!');
+    },
   });
 
   const validatePassword = (value: string): boolean => {
