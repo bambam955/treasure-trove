@@ -3,6 +3,7 @@ import { Home } from './pages/Home';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Signup } from './pages/Signup';
 import { AuthContextProvider } from './contexts/AuthContext';
+import { SocketContextProvider } from './contexts/SocketContext';
 import { Login } from './pages/Login';
 import { Landing } from './pages/Landing';
 import { Admin } from './pages/Admin.tsx';
@@ -57,7 +58,9 @@ export function App() {
     // QueryClientProvider connects the query client to the app.
     <QueryClientProvider client={queryClient}>
       <AuthContextProvider>
-        <RouterProvider router={router} />
+        <SocketContextProvider>
+          <RouterProvider router={router} />
+        </SocketContextProvider>
       </AuthContextProvider>
     </QueryClientProvider>
   );

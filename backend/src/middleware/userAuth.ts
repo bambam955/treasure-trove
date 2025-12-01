@@ -2,7 +2,7 @@ import type { Response, NextFunction } from 'express';
 import { User } from '../db/models/user.ts';
 import { type TokenPayload } from 'treasure-trove-shared';
 import { requireAuth } from './jwt.ts';
-import type { AuthenticatedRequest } from './types.ts';
+import type { AuthenticatedRequest, MiddlewareArray } from './types.ts';
 
 async function checkIsLocked(auth: TokenPayload | undefined): Promise<number> {
   // First verify token has proper parameters.
@@ -17,7 +17,7 @@ async function checkIsLocked(auth: TokenPayload | undefined): Promise<number> {
   return 200;
 }
 
-export const userFullAuth = [
+export const userFullAuth: MiddlewareArray = [
   requireAuth,
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
