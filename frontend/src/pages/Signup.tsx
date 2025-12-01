@@ -12,7 +12,7 @@ export function Signup() {
   // When a user clicks the "Signup" button then we will send an API request
   // to attempt to register the new account.
   const signupMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: function () {
       console.warn('THIS IS FROM THE MUTATION FN ITSELF');
       return UserApi.signup({ username, password });
     },
