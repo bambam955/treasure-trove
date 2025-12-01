@@ -46,14 +46,14 @@ const clientDist = path.resolve(__dirname, '../..', 'frontend', 'dist');
 app.use(express.static(clientDist));
 
 // Add a default response for the root of the API.
-app.get('/', (_req: Request, res: Response) => {
-  res.json({
-    PORT: process.env.PORT,
-    DATABASE_URL: process.env.DATABASE_URL ? 'Loaded' : 'Missing',
-    JWT_SECRET: process.env.JWT_SECRET ? 'Loaded' : 'Missing',
-    NODE_ENV: process.env.NODE_ENV || 'development',
-  });
-});
+// app.get('/', (_req: Request, res: Response) => {
+//   res.json({
+//     PORT: process.env.PORT,
+//     DATABASE_URL: process.env.DATABASE_URL ? 'Loaded' : 'Missing',
+//     JWT_SECRET: process.env.JWT_SECRET ? 'Loaded' : 'Missing',
+//     NODE_ENV: process.env.NODE_ENV || 'development',
+//   });
+// });
 
 // Add wildcard route for serving frontend files.
 app.get('*', (_req, res) => {
