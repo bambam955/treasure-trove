@@ -2,9 +2,18 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+const sharedDir = path.resolve(__dirname, '../shared/src');
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+
+  server: {
+    fs: {
+      allow: ['.', sharedDir],
+    },
+    historyApiFallback: true,
+  },
   css: {
     preprocessorOptions: {
       scss: {
@@ -14,9 +23,6 @@ export default defineConfig({
         silenceDeprecations: ['import', 'color-functions', 'global-builtin'],
       },
     },
-  },
-  server: {
-    historyApiFallback: true,
   },
   resolve: {
     alias: {
