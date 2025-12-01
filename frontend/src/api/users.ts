@@ -13,6 +13,7 @@ class UserApi {
   // Register a new user account, which requires just a username and password.
   // If successful, the new user's info will be returned.
   static async signup(auth: UserCredentials): Promise<RegularUserInfo> {
+    console.warn('trying to sign up...route:', apiRoute('users/signup'));
     const res = await fetch(apiRoute('users/signup'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
