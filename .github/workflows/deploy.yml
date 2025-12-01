@@ -9,6 +9,7 @@ on:
 jobs:
   heroku_deploy:
     runs-on: ubuntu-22.04
+    environment: Heroku Production
 
     steps:
       - uses: actions/checkout@v3
@@ -18,3 +19,8 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+          VITE_SOCKET_HOST: ${{ vars.VITE_SOCKET_HOST }}
