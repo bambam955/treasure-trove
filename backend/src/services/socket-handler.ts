@@ -69,21 +69,5 @@ export function handleSocket(io: Server) {
         }
       },
     );
-
-    // User info lookup
-    socket.on(
-      'user.info',
-      async (
-        socketId: string,
-        callback: (userInfo: RegularUserInfo | null) => void,
-      ) => {
-        const sockets = await io.in(socketId).fetchSockets();
-        if (sockets.length === 0) {
-          callback(null);
-          return;
-        }
-        callback((sockets[0] as unknown as Socket).user);
-      },
-    );
   });
 }
