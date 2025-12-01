@@ -1,1 +1,5 @@
+# Environment files (keep .env.development and .env.production)
 .env
+.env.local
+.env.development.local
+.env.production.local

@@ -1,8 +1,8 @@
 import urlJoin from 'url-join';
 
-// Build an API route. Uses VITE_BACKEND_URL if set, otherwise defaults to /api/v1/ for production.
+// Build an API route. Uses VITE_BACKEND_URL as the base of the route.
 export function apiRoute(endpoint: string): string {
-  const base = import.meta.env.VITE_BACKEND_URL ?? '/api/v1/';
+  const base = import.meta.env.VITE_BACKEND_URL!;
   return urlJoin(base, endpoint);
 }
 
