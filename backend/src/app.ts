@@ -45,15 +45,14 @@ app.use('/api/v1/admin', adminRouter);
 const clientDist = path.resolve(__dirname, '../..', 'frontend', 'dist');
 app.use(express.static(clientDist));
 
-// Add a default response for the root of the API.
-// app.get('/', (_req: Request, res: Response) => {
-//   res.json({
-//     PORT: process.env.PORT,
-//     DATABASE_URL: process.env.DATABASE_URL ? 'Loaded' : 'Missing',
-//     JWT_SECRET: process.env.JWT_SECRET ? 'Loaded' : 'Missing',
-//     NODE_ENV: process.env.NODE_ENV || 'development',
-//   });
-// });
+// Health check / API info endpoint
+app.get('/api/v1/', (_req: Request, res: Response) => {
+  res.json({
+    status: 'ok',
+    version: 'v1',
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
 
 // Add wildcard route for serving frontend files.
 app.get('*', (_req, res) => {

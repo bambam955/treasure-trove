@@ -12,7 +12,6 @@ export default defineConfig({
     fs: {
       allow: ['.', sharedDir],
     },
-    historyApiFallback: true,
   },
   css: {
     preprocessorOptions: {
