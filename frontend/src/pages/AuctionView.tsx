@@ -49,8 +49,6 @@ export function AuctionView() {
     );
   }
 
-  const isUsersAuction = sellerInfo.id === userInfo.id;
-
   return (
     <BaseLayout>
       <div className='container mt-4'>
@@ -80,7 +78,8 @@ export function AuctionView() {
             <hr />
             <BidHistory
               auctionInfo={auctionInfo}
-              isUsersAuction={isUsersAuction}
+              sellerInfo={sellerInfo}
+              userInfo={userInfo}
             />
           </div>
         </div>

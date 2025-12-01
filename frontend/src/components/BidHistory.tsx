@@ -3,16 +3,19 @@ import { AuctionInfo } from '@shared/auctions.ts';
 import { findHighestBid } from '@shared/bids.ts';
 import { useBidHistory } from '../hooks/useBidHistory';
 import { useAuth } from '../contexts/AuthContext';
+import { RegularUserInfo } from '@shared/users.ts';
 
 interface BidHistoryProps {
   auctionInfo: AuctionInfo;
-  isUsersAuction: boolean;
+  sellerInfo: RegularUserInfo;
+  userInfo: RegularUserInfo;
   onBidPlaced?: () => void;
 }
 
 export function BidHistory({
   auctionInfo,
-  isUsersAuction,
+  sellerInfo,
+  userInfo,
   onBidPlaced,
 }: BidHistoryProps) {
   const [, tokenPayload] = useAuth();
@@ -40,7 +43,12 @@ export function BidHistory({
 
   const userIsLastBidder =
     !!highestBid && highestBid.userId === tokenPayload?.sub;
-  const biddingDisabled = isExpired || isUsersAuction || userIsLastBidder;
+  const isUsersAuction = sellerInfo.id == userInfo.id;
+  const biddingDisabled =
+    isExpired ||
+    isUsersAuction ||
+    userIsLastBidder ||
+    minNextBid > userInfo.tokens;
 
   const handleBidPlaced = () => {
     setShowModal(false);
