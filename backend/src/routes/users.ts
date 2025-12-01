@@ -42,6 +42,7 @@ usersRouter.post('/login', async (req: Request, res: Response) => {
 usersRouter.post('/signup', async (req: Request, res: Response) => {
   try {
     const validatedBody = userCredentialsSchema.validateSync(req.body);
+    console.log('TRYING TO SIGN UP NEW USER! name:', validatedBody);
     const user = await UsersService.signup(validatedBody);
     // Use 201 when a POST request successfully creates a new resource on the server.
     return res.status(201).json(user);
