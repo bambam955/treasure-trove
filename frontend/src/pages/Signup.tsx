@@ -12,10 +12,7 @@ export function Signup() {
   // When a user clicks the "Signup" button then we will send an API request
   // to attempt to register the new account.
   const signupMutation = useMutation({
-    mutationFn: function () {
-      console.warn('THIS IS FROM THE MUTATION FN ITSELF');
-      return UserApi.signup({ username, password });
-    },
+    mutationFn: () => UserApi.signup({ username, password }),
     // If the signup succeeded then take the user to the login page so that they can
     // log in to the platform.
     onSuccess: () => navigate('/login'),
@@ -50,6 +47,7 @@ export function Signup() {
       );
       return;
     }
+    console.warn('RIGHT BEFORE THE MUTATION');
     signupMutation.mutate();
   };
 
