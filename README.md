@@ -1,5 +1,7 @@
 # treasure-trove
 
+> Development has moved to GitLab: https://gitlab.com/bambam955-udayton/treasure-trove
+
 The deployed app can be found here: https://group-13-treasure-trove-d3bbee55637a.herokuapp.com/
 
 ## Development
